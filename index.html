@@ -11,11 +11,44 @@
             box-sizing: border-box;
         }
 
+        /* Extra small mobile screens */
+        @media (max-width: 480px) {
+            .nutrition-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.3rem;
+                margin: 1.5rem 0;
+            }
+
+            .stat-card {
+                padding: 0.6rem 0.3rem;
+                border-radius: 8px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.65rem;
+                line-height: 1;
+            }
+
+            .nutrition {
+                padding: 50px 0.25rem;
+            }
+
+            .nutrition-container {
+                padding: 0 0.25rem;
+            }
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #2c3e50;
             overflow-x: hidden;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         /* Header */
