@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaf Nest - Where Help Takes Roots</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #a8e6a3;
+        }
+
+        .logo-text span {
+            color: #ffffff;
+            font-size: 0.8rem;
+            display: block;
+            font-weight: 300;
+            margin-top: -5px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #a8e6a3;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+            padding: 120px 2rem 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(ellipse, rgba(168, 230, 163, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2c5530;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero .tagline {
+            font-size: 1.2rem;
+            color: #4a7c59;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #556b5d;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(74, 124, 89, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(74, 124, 89, 0.4);
+        }
+
+        /* Products Section */
+        .products {
+            padding: 80px 2rem;
+            background: white;
+        }
+
+        .products-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #2c5530;
+            margin-bottom: 3rem;
+            font-weight: 700;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .product-card {
+            background: #f8fffe;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(74, 124, 89, 0.15);
+            border-color: #a8e6a3;
+        }
+
+        .product-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .product-card h3 {
+            font-size: 1.5rem;
+            color: #2c5530;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .product-card p {
+            color: #556b5d;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-features {
+            list-style: none;
+            margin: 1.5rem 0;
+            padding: 0;
+        }
+
+        .product-features li {
+            color: #4a7c59;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-features li::before {
+            content: "✓";
+            color: #a8e6a3;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Why Choose Us Section */
+        .why-choose {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edd6 100%);
+            padding: 80px 2rem;
+        }
+
+        .why-choose-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .why-choose-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .why-choose-text h2 {
+            font-size: 2.5rem;
+            color: #2c5530;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .why-choose-list {
+            list-style: none;
+        }
+
+        .why-choose-list li {
+            background: white;
+            margin: 1rem 0;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(74, 124, 89, 0.1);
+            border-left: 4px solid #a8e6a3;
+            transition: transform 0.3s ease;
+        }
+
+        .why-choose-list li:hover {
+            transform: translateX(10px);
+        }
+
+        .why-choose-list li strong {
+            color: #2c5530;
+            font-weight: 600;
+        }
+
+        .why-choose-visual {
+            text-align: center;
+            position: relative;
+        }
+
+        .why-choose-circle {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            position: relative;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(168, 230, 163, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(168, 230, 163, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(168, 230, 163, 0); }
+        }
+
+        /* Nutrition Section */
+        .nutrition {
+            background: linear-gradient(135deg, #f8fffe 0%, #ffffff 100%);
+            padding: 100px 2rem;
+        }
+
+        .nutrition-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nutrition-intro {
+            text-align: center;
+            margin-bottom: 5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .nutrition-intro p {
+            font-size: 1.2rem;
+            color: #556b5d;
+            line-height: 1.8;
+            margin-top: 1.5rem;
+        }
+
+        .nutrition-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            margin: 5rem 0;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(74, 124, 89, 0.1);
+            border: 1px solid rgba(168, 230, 163, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(74, 124, 89, 0.15);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #2c5530;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #556b5d;
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        /* Nutrition Comparison */
+        .nutrition-comparison {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            padding: 4rem 3rem;
+            border-radius: 25px;
+            margin: 6rem 0;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nutrition-comparison::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .comparison-title {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 3rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+        }
+
+        .comparison-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4rem;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .comparison-item {
+            text-align: center;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .comparison-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .comparison-label {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .comparison-label small {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            color: #a8e6a3;
+        }
+
+        .vs-text {
+            font-size: 2.5rem;
+            color: #a8e6a3;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            margin: 0 1rem;
+        }
+
+        /* Detailed Nutrition Grid */
+        .nutrition-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 6rem;
+        }
+
+        .nutrition-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 25px;
+            border: 1px solid rgba(168, 230, 163, 0.2);
+            box-shadow: 0 15px 35px rgba(74, 124, 89, 0.08);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nutrition-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+        }
+
+        .nutrition-card::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(168, 230, 163, 0.1);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+        }
+
+        .nutrition-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(74, 124, 89, 0.15);
+        }
+
+        .nutrition-card:hover::after {
+            transform: scale(1.2);
+            background: rgba(168, 230, 163, 0.2);
+        }
+
+        .nutrition-card h3 {
+            color: #2c5530;
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .microgreen-icon {
+            font-size: 2.5rem;
+            background: rgba(168, 230, 163, 0.2);
+            padding: 0.5rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+        }
+
+        .nutrition-benefits {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nutrition-benefits li {
+            margin: 1.2rem 0;
+            padding: 1rem;
+            background: rgba(168, 230, 163, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid #a8e6a3;
+            color: #556b5d;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .nutrition-benefits li:hover {
+            background: rgba(168, 230, 163, 0.1);
+            transform: translateX(5px);
+        }
+
+        .nutrition-benefits li::before {
+            content: "✨";
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .vitamin-highlight {
+            background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-right: 0.8rem;
+            box-shadow: 0 2px 8px rgba(168, 230, 163, 0.3);
+        }
+
+        .health-benefit {
+            color: #2c5530;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+            padding: 80px 2rem;
+        }
+
+        .testimonials-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(74, 124, 89, 0.1);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            font-size: 6rem;
+            color: #a8e6a3;
+            position: absolute;
+            top: -20px;
+            left: 30px;
+            font-family: serif;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            color: #556b5d;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            color: #2c5530;
+            font-weight: 600;
+        }
+
+        /* Location Section */
+        .location {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 60px 2rem;
+            text-align: center;
+        }
+
+        .location h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .location p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a2e1d;
+            color: white;
+            padding: 40px 2rem 20px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: #a8e6a3;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .why-choose-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .why-choose-circle {
+                width: 200px;
+                height: 200px;
+                font-size: 3rem;
+            }
+
+            .nav {
+                padding: 0 1rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nutrition-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .nutrition-details {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .vs-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <div class="logo-placeholder">🌿</div>
+                <div class="logo-text">
+                    Leaf Nest
+                    <span>Where Help Takes Roots</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#nutrition">Nutrition</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Fresh Microgreens Delivered Daily</h1>
+            <p class="tagline">Where Help Takes Roots</p>
+            <p>We grow premium, nutrient-packed microgreens in Hyderabad and deliver them fresh to your doorstep. Experience the concentrated power of vitamins, minerals, and flavor in every bite!</p>
+            <a href="#products" class="cta-button">Order Fresh Microgreens</a>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products">
+        <div class="products-container">
+            <h2 class="section-title">Our Fresh Microgreens</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-icon">🌱</div>
+                    <h3>Radish Microgreens</h3>
+                    <p>Spicy and peppery flavor that adds a kick to salads, sandwiches, and garnishes.</p>
+                    <ul class="product-features">
+                        <li>High in Vitamin C</li>
+                        <li>Bold, spicy flavor</li>
+                        <li>Perfect for garnishing</li>
+                    </ul>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🌿</div>
+                    <h3>Pea Shoots</h3>
+                    <p>Sweet, tender shoots with a fresh pea flavor. Great in salads and stir-fries.</p>
+                    <ul class="product-features">
+                        <li>Rich in protein</li>
+                        <li>Sweet, delicate taste</li>
+                        <li>Excellent for cooking</li>
+                    </ul>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🌾</div>
+                    <h3>Sunflower Microgreens</h3>
+                    <p>Nutty flavor with a satisfying crunch. Packed with healthy fats and protein.</p>
+                    <ul class="product-features">
+                        <li>High in healthy fats</li>
+                        <li>Nutty, satisfying taste</li>
+                        <li>Great texture variety</li>
+                    </ul>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🥬</div>
+                    <h3>Mixed Greens</h3>
+                    <p>Our signature blend of various microgreens for a complex flavor profile.</p>
+                    <ul class="product-features">
+                        <li>Variety of nutrients</li>
+                        <li>Complex flavor blend</li>
+                        <li>Perfect for beginners</li>
+                    </ul>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🌺</div>
+                    <h3>Purple Cabbage</h3>
+                    <p>Vibrant purple color with a mild cabbage flavor and beautiful presentation.</p>
+                    <ul class="product-features">
+                        <li>High in antioxidants</li>
+                        <li>Beautiful purple color</li>
+                        <li>Mild, pleasant taste</li>
+                    </ul>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🥒</div>
+                    <h3>Broccoli Microgreens</h3>
+                    <p>Concentrated broccoli flavor with powerful cancer-fighting compounds.</p>
+                    <ul class="product-features">
+                        <li>High in sulforaphane</li>
+                        <li>Cancer-fighting properties</li>
+                        <li>Mild broccoli flavor</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Section */
+    <section class="why-choose">
+        <div class="why-choose-container">
+            <div class="why-choose-content">
+                <div class="why-choose-text">
+                    <h2>Why Choose Leaf Nest?</h2>
+                    <ul class="why-choose-list">
+                        <li><strong>Locally Grown:</strong> Cultivated fresh in Hyderabad using sustainable practices</li>
+                        <li><strong>Daily Harvest:</strong> Picked at peak nutrition and delivered within 24 hours</li>
+                        <li><strong>Pesticide-Free:</strong> 100% organic growing methods with no harmful chemicals</li>
+                        <li><strong>Maximum Nutrition:</strong> Harvested at the optimal time for nutrient density</li>
+                        <li><strong>Fresh Delivery:</strong> Direct from our farm to your table across Hyderabad</li>
+                    </ul>
+                </div>
+                <div class="why-choose-visual">
+                    <div class="why-choose-circle">🌱</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nutrition Section -->
+    <section id="nutrition" class="nutrition">
+        <div class="nutrition-container">
+            <div class="nutrition-intro">
+                <h2 class="section-title">Nutritional Powerhouse</h2>
+                <p>Our microgreens are concentrated sources of vitamins, minerals, and antioxidants that surpass mature vegetables in nutritional density</p>
+            </div>
+            
+            <div class="nutrition-stats">
+                <div class="stat-card">
+                    <div class="stat-number">40x</div>
+                    <div class="stat-label">More Nutrients than Mature Plants</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Organic & Chemical-Free</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">7-14</div>
+                    <div class="stat-label">Days from Seed to Harvest</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24hr</div>
+                    <div class="stat-label">Fresh Delivery Promise</div>
+                </div>
+            </div>
+
+            <!-- Nutrition Comparison -->
+            <div class="nutrition-comparison">
+                <h3 class="comparison-title">Microgreens vs Mature Vegetables</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-item">
+                        <div class="comparison-icon">🥬</div>
+                        <div class="comparison-label">1 Cup Mature Lettuce<br><small>14 calories, Low nutrients</small></div>
+                    </div>
+                    <div class="vs-text">VS</div>
+                    <div class="comparison-item">
+                        <div class="comparison-icon">🌱</div>
+                        <div class="comparison-label">1 Cup Microgreens<br><small>Same calories, 40x nutrients!</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Nutrition for Each Microgreen -->
+            <div class="nutrition-details">
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🌶️</span>Radish Microgreens</h3>
+                    <ul class="nutrition-benefits">
+                        <li><span class="vitamin-highlight">Vitamin C</span> <span class="health-benefit">Boosts immune system - 6x more than oranges</span></li>
+                        <li><span class="vitamin-highlight">Vitamin K</span> <span class="health-benefit">Supports bone health and blood clotting</span></li>
+                        <li><span class="vitamin-highlight">Folate</span> <span class="health-benefit">Essential for cell division and DNA synthesis</span></li>
+                        <li><span class="vitamin-highlight">Antioxidants</span> <span class="health-benefit">Reduces inflammation and oxidative stress</span></li>
+                        <li><span class="vitamin-highlight">Fiber</span> <span class="health-benefit">Promotes digestive health</span></li>
+                        <li><span class="health-benefit">Natural detoxification properties</span></li>
+                    </ul>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🟢</span>Pea Shoots</h3>
+                    <ul class="nutrition-benefits">
+                        <li><span class="vitamin-highlight">Protein</span> <span class="health-benefit">Complete amino acid profile for muscle health</span></li>
+                        <li><span class="vitamin-highlight">Vitamin A</span> <span class="health-benefit">Supports eye health and vision</span></li>
+                        <li><span class="vitamin-highlight">Vitamin C</span> <span class="health-benefit">7x more than blueberries</span></li>
+                        <li><span class="vitamin-highlight">Iron</span> <span class="health-benefit">Prevents anemia and boosts energy</span></li>
+                        <li><span class="vitamin-highlight">Calcium</span> <span class="health-benefit">Strengthens bones and teeth</span></li>
+                        <li><span class="health-benefit">Natural blood sugar regulation</span></li>
+                    </ul>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🌻</span>Sunflower Microgreens</h3>
+                    <ul class="nutrition-benefits">
+                        <li><span class="vitamin-highlight">Vitamin E</span> <span class="health-benefit">Powerful antioxidant for skin health</span></li>
+                        <li><span class="vitamin-highlight">Healthy Fats</span> <span class="health-benefit">Omega-3 and Omega-6 for brain function</span></li>
+                        <li><span class="vitamin-highlight">Protein</span> <span class="health-benefit">25% protein content - muscle building</span></li>
+                        <li><span class="vitamin-highlight">Zinc</span> <span class="health-benefit">Immune system support and wound healing</span></li>
+                        <li><span class="vitamin-highlight">Magnesium</span> <span class="health-benefit">Heart health and muscle function</span></li>
+                        <li><span class="health-benefit">Helps lower cholesterol levels</span></li>
+                    </ul>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🥬</span>Mixed Greens</h3>
+                    <ul class="nutrition-benefits">
+                        <li><span class="vitamin-highlight">Full Spectrum</span> <span class="health-benefit">Complete range of vitamins A, C, K, E</span></li>
+                        <li><span class="vitamin-highlight">Minerals</span> <span class="health-benefit">Iron, calcium, potassium, magnesium</span></li>
+                        <li><span class="vitamin-highlight">Antioxidants</span> <span class="health-benefit">Diverse phytonutrients for overall health</span></li>
+                        <li><span class="vitamin-highlight">Fiber</span> <span class="health-benefit">Promotes gut health and satiety</span></li>
+                        <li><span class="vitamin-highlight">Chlorophyll</span> <span class="health-benefit">Natural detoxification and blood purification</span></li>
+                        <li><span class="health-benefit">Balanced nutrition for daily wellness</span></li>
+                    </ul>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🟣</span>Purple Cabbage</h3>
+                    <ul class="nutrition-benefits">
+                        <li><span class="vitamin-highlight">Anthocyanins</span> <span class="health-benefit">Purple pigments with anti-cancer properties</span></li>
+                        <li><span class="vitamin-highlight">Vitamin C</span> <span class="health-benefit">6x more than mature cabbage</span></li>
+                        <li><span class="vitamin-highlight">Vitamin K</span> <span class="health-benefit">Bone health and blood clotting</span></li>
+                        <li><span class="vitamin-highlight">Betalains</span> <span class="health-benefit">Anti-inflammatory compounds</span></li>
+                        <li><span class="vitamin-highlight">Fiber</span> <span class="health-benefit">Digestive health and weight management</span></li>
+                        <li><span class="health-benefit">Supports cardiovascular health</span></li>
+                    </ul>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🥦</span>Broccoli Microgreens</h3>
+                    <ul class="nutrition-benefits">
+                        <li><span class="vitamin-highlight">Sulforaphane</span> <span class="health-benefit">Powerful anti-cancer compound - 100x more than mature broccoli</span></li>
+                        <li><span class="vitamin-highlight">Vitamin C</span> <span class="health-benefit">Immune system boost - 4x more than oranges</span></li>
+                        <li><span class="vitamin-highlight">Vitamin K</span> <span class="health-benefit">Bone health and blood clotting</span></li>
+                        <li><span class="vitamin-highlight">Folate</span> <span class="health-benefit">Brain health and cellular function</span></li>
+                        <li><span class="vitamin-highlight">Fiber</span> <span class="health-benefit">Digestive health and detoxification</span></li>
+                        <li><span class="health-benefit">Liver detoxification support</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="testimonials-container">
+            <h2 class="section-title">What Our Customers Say</h2>
+            <div class="testimonial-card">
+                <p class="testimonial-text">Leaf Nest microgreens have transformed my cooking! The freshness and flavor are incredible. I love knowing they're grown locally in Hyderabad and delivered so quickly. My family's health has never been better!</p>
+                <div class="testimonial-author">- Priya Sharma, Banjara Hills</div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">As a restaurant owner, quality is everything. Leaf Nest consistently delivers the freshest, most vibrant microgreens. Our customers always compliment the beautiful presentation and amazing taste!</p>
+                <div class="testimonial-author">- Chef Rajesh, Jubilee Hills</div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">I was skeptical about the nutrition claims, but after three months of adding Leaf Nest microgreens to my daily meals, I feel more energetic and healthy. The convenience of home delivery is perfect!</p>
+                <div class="testimonial-author">- Dr. Meera Reddy, Gachibowli</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location -->
+    <section class="location">
+        <div>
+            <h2>Proudly Growing in Hyderabad</h2>
+            <p>Fresh microgreens cultivated with care and delivered across the city where help truly takes roots</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#products">Products</a>
+                <a href="#nutrition">Nutrition</a>
+                <a href="#about">About Us</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <p>&copy; 2025 Leaf Nest. All rights reserved. Where Help Takes Roots.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(44, 85, 48, 0.95)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, #2c5530 0%, #4a7c59 100%)';
+            }
+        });
+
+        // Add intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe product cards and testimonial cards
+        document.querySelectorAll('.product-card, .testimonial-card, .stat-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Counter animation for stats
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = counter.textContent;
+                let current = 0;
+                
+                if (target.includes('x')) {
+                    const num = parseInt(target);
+                    const increment = num / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= num) {
+                            counter.textContent = num + 'x';
+                            clearInterval(timer);
+                        } else {
+                            counter.textContent = Math.floor(current) + 'x';
+                        }
+                    }, 30);
+                } else if (target.includes('%')) {
+                    const num = parseInt(target);
+                    const increment = num / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= num) {
+                            counter.textContent = num + '%';
+                            clearInterval(timer);
+                        } else {
+                            counter.textContent = Math.floor(current) + '%';
+                        }
+                    }, 30);
+                }
+            });
+        }
+
+        // Trigger counter animation when nutrition section is visible
+        const nutritionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    nutritionObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        nutritionObserver.observe(document.querySelector('.nutrition'));
+    </script>
+</body>
+</html>
