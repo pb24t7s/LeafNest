@@ -137,12 +137,13 @@
             backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 999;
-            transform: translateY(-100%);
-            transition: transform 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
         }
 
         .mobile-nav.active {
-            transform: translateY(0);
+            max-height: 400px;
         }
 
         .mobile-nav ul {
@@ -1116,6 +1117,10 @@
                 display: block;
             }
 
+            .hero {
+                padding-top: 140px;
+            }
+
             .hero h1 {
                 font-size: 2.5rem;
             }
@@ -1714,12 +1719,23 @@
 
     <script>
         // Mobile menu functionality
+        let mobileMenuOpen = false;
+
         function toggleMobileMenu() {
             const mobileNav = document.getElementById('mobileNav');
             const menuBtn = document.querySelector('.mobile-menu-btn');
             
-            mobileNav.classList.toggle('active');
-            menuBtn.classList.toggle('active');
+            console.log('Menu toggle clicked'); // Debug log
+            
+            if (mobileMenuOpen) {
+                mobileNav.classList.remove('active');
+                menuBtn.classList.remove('active');
+                mobileMenuOpen = false;
+            } else {
+                mobileNav.classList.add('active');
+                menuBtn.classList.add('active');
+                mobileMenuOpen = true;
+            }
         }
 
         function closeMobileMenu() {
@@ -1728,16 +1744,13 @@
             
             mobileNav.classList.remove('active');
             menuBtn.classList.remove('active');
+            mobileMenuOpen = false;
         }
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const mobileNav = document.getElementById('mobileNav');
-            const menuBtn = document.querySelector('.mobile-menu-btn');
-            
-            if (!menuBtn.contains(event.target) && !mobileNav.contains(event.target)) {
-                mobileNav.classList.remove('active');
-                menuBtn.classList.remove('active');
+        // Close mobile menu when window is resized to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                closeMobileMenu();
             }
         });
 
