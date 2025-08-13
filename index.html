@@ -730,20 +730,40 @@
             }
 
             .nutrition-stats {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
             }
 
             .nutrition-details {
                 grid-template-columns: 1fr;
+                gap: 2.5rem;
             }
 
             .comparison-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+                flex-direction: column;
+                gap: 2rem;
             }
 
             .vs-text {
-                font-size: 1.5rem;
+                font-size: 2rem;
+                margin: 1rem 0;
+            }
+
+            .nutrition-card {
+                padding: 2rem;
+            }
+
+            .nutrition-card h3 {
+                font-size: 1.4rem;
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .microgreen-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 2rem;
             }
         }
     </style>
@@ -753,10 +773,10 @@
     <header class="header">
         <nav class="nav">
             <div class="logo">
-                <img src="leafnest-logo.png" alt="Leaf Nest Logo" class="logo-img">
+                <div class="logo-placeholder">🌿</div>
                 <div class="logo-text">
                     Leaf Nest
-                    <span>Where Help Takes Roots</span>
+                    <span>Where Health Takes Roots</span>
                 </div>
             </div>
             <ul class="nav-links">
@@ -773,7 +793,7 @@
     <section id="home" class="hero">
         <div class="hero-content">
             <h1>Fresh Microgreens Delivered Daily</h1>
-            <p class="tagline">Where Help Takes Roots</p>
+            <p class="tagline">Where Health Takes Roots</p>
             <p>We grow premium, nutrient-packed microgreens in Hyderabad and deliver them fresh to your doorstep. Experience the concentrated power of vitamins, minerals, and flavor in every bite!</p>
             <a href="#products" class="cta-button">Order Fresh Microgreens</a>
         </div>
@@ -1012,7 +1032,7 @@
     <section class="location">
         <div>
             <h2>Proudly Growing in Hyderabad</h2>
-            <p>Fresh microgreens cultivated with care and delivered across the city where help truly takes roots</p>
+            <p>Fresh microgreens cultivated with care and delivered across the city where health truly takes roots</p>
         </div>
     </section>
 
@@ -1026,7 +1046,7 @@
                 <a href="#about">About Us</a>
                 <a href="#contact">Contact</a>
             </div>
-            <p>&copy; 2025 Leaf Nest. All rights reserved. Where Help Takes Roots.</p>
+            <p>&copy; 2025 Leaf Nest. All rights reserved. Where Health Takes Roots.</p>
         </div>
     </footer>
 
