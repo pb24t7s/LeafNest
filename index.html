@@ -832,7 +832,141 @@
             font-weight: 600;
         }
 
-        /* Location Section */
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 80px 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .contact-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .contact-info p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .contact-details {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            font-size: 1.1rem;
+        }
+
+        .contact-icon {
+            background: rgba(168, 230, 163, 0.2);
+            padding: 1rem;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a8e6a3;
+        }
+
+        .contact-text {
+            flex: 1;
+        }
+
+        .contact-text .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .contact-text .value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .phone-link {
+            color: #a8e6a3;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .phone-link:hover {
+            color: white;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .cta-text {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .contact-cta {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-cta:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
         .location {
             background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
             color: white;
@@ -964,9 +1098,33 @@
                 padding: 2rem;
             }
 
-            .promise-list li {
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+            }
+
+            .contact-details {
+                padding: 2rem;
+            }
+
+            .contact-item {
+                margin: 1.5rem 0;
                 font-size: 1rem;
-                margin: 1rem 0;
+            }
+
+            .contact-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+
+            .contact-info h2 {
+                font-size: 2rem;
+            }
+
+            .contact-info p {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -1363,6 +1521,59 @@
             <div class="testimonial-card">
                 <p class="testimonial-text">I was skeptical about the nutrition claims, but after three months of adding Leaf Nest microgreens to my daily meals, I feel more energetic and healthy. The convenience of home delivery is perfect!</p>
                 <div class="testimonial-author">- Dr. Meera Reddy, Gachibowli</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="contact-container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2>Get Fresh Microgreens Delivered</h2>
+                    <p>Ready to experience the freshest, most nutritious microgreens in Hyderabad? Contact us today for daily fresh deliveries straight from our farm to your table.</p>
+                    
+                    <div class="cta-section">
+                        <div class="cta-text">Order your fresh microgreens today!</div>
+                        <a href="tel:+919618571131" class="contact-cta">Call Now to Order</a>
+                    </div>
+                </div>
+                
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <div class="contact-icon">👨‍💼</div>
+                        <div class="contact-text">
+                            <div class="label">Contact Person</div>
+                            <div class="value">Susheel Jilla</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div class="contact-text">
+                            <div class="label">Phone Number</div>
+                            <div class="value">
+                                <a href="tel:+919618571131" class="phone-link">+91 9618571131</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div class="contact-text">
+                            <div class="label">Location</div>
+                            <div class="value">Hyderabad, Telangana, India</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">🚚</div>
+                        <div class="contact-text">
+                            <div class="label">Delivery</div>
+                            <div class="value">Fresh Daily Across Hyderabad</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
