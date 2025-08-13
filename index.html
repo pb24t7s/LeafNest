@@ -510,7 +510,7 @@
             background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
             border-radius: 25px;
             overflow: hidden;
-            margin-bottom: 5rem;
+            margin-bottom: 4rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -524,12 +524,13 @@
             right: 0;
             bottom: 0;
             background: url('images/banners/nutrition-banner-desktop.jpg') center/cover;
-            opacity: 0.8;
+            opacity: 0.3;
             transition: opacity 0.3s ease;
+            z-index: 1;
         }
 
         .nutrition-banner:hover::before {
-            opacity: 0.9;
+            opacity: 0.4;
         }
 
         .nutrition-banner-content {
@@ -538,13 +539,16 @@
             text-align: center;
             color: white;
             padding: 3rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
         }
 
         .nutrition-banner h2 {
             font-size: 3rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .nutrition-banner p {
@@ -552,38 +556,7 @@
             opacity: 0.95;
             max-width: 600px;
             margin: 0 auto;
-            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Fallback when image doesn't load */
-        .nutrition-banner-fallback {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(74, 124, 89, 0.9) 0%, rgba(44, 85, 48, 0.9) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 2rem;
-            z-index: 1;
-        }
-
-        .nutrition-item {
-            text-align: center;
-            color: white;
-        }
-
-        .nutrition-item-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .nutrition-item-text {
-            font-size: 1.1rem;
-            font-weight: 600;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
         }
 
         .nutrition-intro {
@@ -1556,25 +1529,6 @@
                 <div class="nutrition-banner-content">
                     <h2>Nutritional Powerhouse</h2>
                     <p>Our microgreens are concentrated sources of vitamins, minerals, and antioxidants that surpass mature vegetables in nutritional density</p>
-                </div>
-                <!-- Fallback content when image isn't available -->
-                <div class="nutrition-banner-fallback">
-                    <div class="nutrition-item">
-                        <span class="nutrition-item-icon">🥬</span>
-                        <div class="nutrition-item-text">Fresh Microgreens</div>
-                    </div>
-                    <div class="nutrition-item">
-                        <span class="nutrition-item-icon">🌱</span>
-                        <div class="nutrition-item-text">Nutrient Dense</div>
-                    </div>
-                    <div class="nutrition-item">
-                        <span class="nutrition-item-icon">💚</span>
-                        <div class="nutrition-item-text">Naturally Grown</div>
-                    </div>
-                    <div class="nutrition-item">
-                        <span class="nutrition-item-icon">🍽️</span>
-                        <div class="nutrition-item-text">Ready to Eat</div>
-                    </div>
                 </div>
             </div>
             
