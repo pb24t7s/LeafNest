@@ -646,7 +646,148 @@
             flex: 1;
         }
 
-        /* Testimonials */
+        /* About Us Section */
+        .about-us {
+            background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+            padding: 100px 2rem;
+        }
+
+        .about-us-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .about-text {
+            color: #556b5d;
+            line-height: 1.8;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            color: #2c5530;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .about-promises {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(74, 124, 89, 0.1);
+            border-left: 5px solid #a8e6a3;
+        }
+
+        .about-promises h3 {
+            color: #2c5530;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .promise-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .promise-list li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+            color: #556b5d;
+            font-weight: 500;
+        }
+
+        .promise-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .about-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .about-highlight {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 25px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-highlight::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .about-highlight h4 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-highlight p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+            margin: 0;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(74, 124, 89, 0.1);
+            border-top: 4px solid #a8e6a3;
+        }
+
+        .stat-item .number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2c5530;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item .label {
+            color: #556b5d;
+            font-weight: 600;
+        }
         .testimonials {
             background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
             padding: 80px 2rem;
@@ -799,10 +940,32 @@
                 gap: 0.5rem;
             }
 
-            .microgreen-icon {
-                width: 50px;
-                height: 50px;
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+            }
+
+            .about-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-item {
+                padding: 1.5rem;
+            }
+
+            .stat-item .number {
                 font-size: 2rem;
+            }
+
+            .about-promises {
+                padding: 2rem;
+            }
+
+            .promise-list li {
+                font-size: 1rem;
+                margin: 1rem 0;
             }
         }
     </style>
@@ -1116,6 +1279,70 @@
                         <li><span class="health-benefit">Liver detoxification support</span></li>
                     </ul>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="about-us">
+        <div class="about-us-container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>About Leaf Nest</h2>
+                    <p>At Leaf Nest, we believe that health begins at the root — literally. We grow premium, nutrient-rich microgreens that deliver maximum freshness, flavor, and vitality straight from our farm to your table.</p>
+                    
+                    <p>Every leaf is nurtured in a clean, sustainable environment, free from harmful chemicals, so you get nothing but pure, living nutrition. Our microgreens are packed with essential vitamins, minerals, and antioxidants, making them a perfect boost for your salads, smoothies, wraps, and everyday meals.</p>
+                    
+                    <p>From wheatgrass to sunflower shoots, every batch is harvested at peak freshness to lock in the goodness nature intended.</p>
+                </div>
+                
+                <div class="about-visual">
+                    <div class="about-highlight">
+                        <h4>Where Health Takes Roots</h4>
+                        <p>Health doesn't just grow — it thrives. Let's put nature back on your plate.</p>
+                    </div>
+                    
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <div class="number">100%</div>
+                            <div class="label">Natural & Fresh</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="number">Daily</div>
+                            <div class="label">Fresh Harvest</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="number">Zero</div>
+                            <div class="label">Pesticides</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="number">24hr</div>
+                            <div class="label">Farm to Table</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-promises">
+                <h3>Our Promise</h3>
+                <ul class="promise-list">
+                    <li>
+                        <span class="promise-icon">🌱</span>
+                        <span><strong>Freshly harvested and packed daily</strong> - Maximum nutrition and flavor</span>
+                    </li>
+                    <li>
+                        <span class="promise-icon">🌿</span>
+                        <span><strong>100% natural, no pesticides</strong> - Pure, clean microgreens</span>
+                    </li>
+                    <li>
+                        <span class="promise-icon">♻️</span>
+                        <span><strong>Grown with eco-friendly practices</strong> - Sustainable farming methods</span>
+                    </li>
+                    <li>
+                        <span class="promise-icon">💚</span>
+                        <span><strong>Handled with care from seed to sprout</strong> - Quality at every step</span>
+                    </li>
+                </ul>
             </div>
         </div>
     </section>
