@@ -643,7 +643,7 @@
             margin: 0 1rem;
         }
 
-        /* Detailed Nutrition Grid */
+        /* Nutrition Details Grid - Option 1 Modern Cards */
         .nutrition-details {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -718,54 +718,43 @@
             height: 60px;
         }
 
-        .nutrition-benefits {
-            list-style: none;
-            margin: 0;
-            padding: 0;
+        /* Modern Card Benefits Grid */
+        .modern-benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
         }
 
-        .nutrition-benefits li {
-            margin: 1.2rem 0;
-            padding: 1rem;
-            background: rgba(168, 230, 163, 0.05);
-            border-radius: 12px;
-            border-left: 4px solid #a8e6a3;
-            color: #556b5d;
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            transition: all 0.3s ease;
-            line-height: 1.6;
+        .modern-benefit-card {
+            background: linear-gradient(135deg, #fff 0%, #f8fffe 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid #4a7c59;
+            box-shadow: 0 5px 15px rgba(74, 124, 89, 0.1);
+            transition: transform 0.3s ease;
         }
 
-        .nutrition-benefits li:hover {
-            background: rgba(168, 230, 163, 0.1);
-            transform: translateX(5px);
+        .modern-benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(74, 124, 89, 0.15);
         }
 
-        .nutrition-benefits li::before {
-            content: "✨";
-            font-size: 1.2rem;
-            flex-shrink: 0;
-            margin-top: 0.1rem;
-        }
-
-        .vitamin-highlight {
-            background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+        .modern-vitamin-badge {
+            background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
             color: white;
-            padding: 0.3rem 0.8rem;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
-            font-weight: 700;
             font-size: 0.85rem;
+            font-weight: 600;
             display: inline-block;
-            margin-right: 0.8rem;
-            box-shadow: 0 2px 8px rgba(168, 230, 163, 0.3);
+            margin-bottom: 1rem;
+            box-shadow: 0 3px 10px rgba(74, 124, 89, 0.3);
         }
 
-        .health-benefit {
-            color: #2c5530;
+        .modern-benefit-text {
+            color: #556b5d;
             font-weight: 500;
-            flex: 1;
+            line-height: 1.6;
         }
 
         /* About Us Section */
@@ -1519,74 +1508,182 @@
             <div class="nutrition-details">
                 <div class="nutrition-card">
                     <h3><span class="microgreen-icon">🌶️</span>Radish Microgreens</h3>
-                    <ul class="nutrition-benefits">
-                        <li><span class="vitamin-highlight">Vitamin C</span> <span class="health-benefit">Boosts immune system - 6x more than oranges</span></li>
-                        <li><span class="vitamin-highlight">Vitamin K</span> <span class="health-benefit">Supports bone health and blood clotting</span></li>
-                        <li><span class="vitamin-highlight">Folate</span> <span class="health-benefit">Essential for cell division and DNA synthesis</span></li>
-                        <li><span class="vitamin-highlight">Antioxidants</span> <span class="health-benefit">Reduces inflammation and oxidative stress</span></li>
-                        <li><span class="vitamin-highlight">Fiber</span> <span class="health-benefit">Promotes digestive health</span></li>
-                        <li><span class="health-benefit">Natural detoxification properties</span></li>
-                    </ul>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin C</div>
+                            <div class="modern-benefit-text">Boosts immune system - 6x more than oranges</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin K</div>
+                            <div class="modern-benefit-text">Supports bone health and blood clotting</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Folate</div>
+                            <div class="modern-benefit-text">Essential for cell division and DNA synthesis</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Antioxidants</div>
+                            <div class="modern-benefit-text">Reduces inflammation and oxidative stress</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Fiber</div>
+                            <div class="modern-benefit-text">Promotes digestive health</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Detox</div>
+                            <div class="modern-benefit-text">Natural detoxification properties</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="nutrition-card">
                     <h3><span class="microgreen-icon">🟢</span>Pea Shoots</h3>
-                    <ul class="nutrition-benefits">
-                        <li><span class="vitamin-highlight">Protein</span> <span class="health-benefit">Complete amino acid profile for muscle health</span></li>
-                        <li><span class="vitamin-highlight">Vitamin A</span> <span class="health-benefit">Supports eye health and vision</span></li>
-                        <li><span class="vitamin-highlight">Vitamin C</span> <span class="health-benefit">7x more than blueberries</span></li>
-                        <li><span class="vitamin-highlight">Iron</span> <span class="health-benefit">Prevents anemia and boosts energy</span></li>
-                        <li><span class="vitamin-highlight">Calcium</span> <span class="health-benefit">Strengthens bones and teeth</span></li>
-                        <li><span class="health-benefit">Natural blood sugar regulation</span></li>
-                    </ul>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Protein</div>
+                            <div class="modern-benefit-text">Complete amino acid profile for muscle health</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin A</div>
+                            <div class="modern-benefit-text">Supports eye health and vision</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin C</div>
+                            <div class="modern-benefit-text">7x more than blueberries</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Iron</div>
+                            <div class="modern-benefit-text">Prevents anemia and boosts energy</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Calcium</div>
+                            <div class="modern-benefit-text">Strengthens bones and teeth</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Blood Sugar</div>
+                            <div class="modern-benefit-text">Natural blood sugar regulation</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="nutrition-card">
                     <h3><span class="microgreen-icon">🌻</span>Sunflower Microgreens</h3>
-                    <ul class="nutrition-benefits">
-                        <li><span class="vitamin-highlight">Vitamin E</span> <span class="health-benefit">Powerful antioxidant for skin health</span></li>
-                        <li><span class="vitamin-highlight">Healthy Fats</span> <span class="health-benefit">Omega-3 and Omega-6 for brain function</span></li>
-                        <li><span class="vitamin-highlight">Protein</span> <span class="health-benefit">25% protein content - muscle building</span></li>
-                        <li><span class="vitamin-highlight">Zinc</span> <span class="health-benefit">Immune system support and wound healing</span></li>
-                        <li><span class="vitamin-highlight">Magnesium</span> <span class="health-benefit">Heart health and muscle function</span></li>
-                        <li><span class="health-benefit">Helps lower cholesterol levels</span></li>
-                    </ul>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin E</div>
+                            <div class="modern-benefit-text">Powerful antioxidant for skin health</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Healthy Fats</div>
+                            <div class="modern-benefit-text">Omega-3 and Omega-6 for brain function</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Protein</div>
+                            <div class="modern-benefit-text">25% protein content - muscle building</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Zinc</div>
+                            <div class="modern-benefit-text">Immune system support and wound healing</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Magnesium</div>
+                            <div class="modern-benefit-text">Heart health and muscle function</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Cholesterol</div>
+                            <div class="modern-benefit-text">Helps lower cholesterol levels</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="nutrition-card">
                     <h3><span class="microgreen-icon">🥬</span>Mixed Greens</h3>
-                    <ul class="nutrition-benefits">
-                        <li><span class="vitamin-highlight">Full Spectrum</span> <span class="health-benefit">Complete range of vitamins A, C, K, E</span></li>
-                        <li><span class="vitamin-highlight">Minerals</span> <span class="health-benefit">Iron, calcium, potassium, magnesium</span></li>
-                        <li><span class="vitamin-highlight">Antioxidants</span> <span class="health-benefit">Diverse phytonutrients for overall health</span></li>
-                        <li><span class="vitamin-highlight">Fiber</span> <span class="health-benefit">Promotes gut health and satiety</span></li>
-                        <li><span class="vitamin-highlight">Chlorophyll</span> <span class="health-benefit">Natural detoxification and blood purification</span></li>
-                        <li><span class="health-benefit">Balanced nutrition for daily wellness</span></li>
-                    </ul>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Full Spectrum</div>
+                            <div class="modern-benefit-text">Complete range of vitamins A, C, K, E</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Minerals</div>
+                            <div class="modern-benefit-text">Iron, calcium, potassium, magnesium</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Antioxidants</div>
+                            <div class="modern-benefit-text">Diverse phytonutrients for overall health</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Fiber</div>
+                            <div class="modern-benefit-text">Promotes gut health and satiety</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Chlorophyll</div>
+                            <div class="modern-benefit-text">Natural detoxification and blood purification</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Daily Wellness</div>
+                            <div class="modern-benefit-text">Balanced nutrition for daily wellness</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="nutrition-card">
                     <h3><span class="microgreen-icon">🟣</span>Purple Cabbage</h3>
-                    <ul class="nutrition-benefits">
-                        <li><span class="vitamin-highlight">Anthocyanins</span> <span class="health-benefit">Purple pigments with anti-cancer properties</span></li>
-                        <li><span class="vitamin-highlight">Vitamin C</span> <span class="health-benefit">6x more than mature cabbage</span></li>
-                        <li><span class="vitamin-highlight">Vitamin K</span> <span class="health-benefit">Bone health and blood clotting</span></li>
-                        <li><span class="vitamin-highlight">Betalains</span> <span class="health-benefit">Anti-inflammatory compounds</span></li>
-                        <li><span class="vitamin-highlight">Fiber</span> <span class="health-benefit">Digestive health and weight management</span></li>
-                        <li><span class="health-benefit">Supports cardiovascular health</span></li>
-                    </ul>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Anthocyanins</div>
+                            <div class="modern-benefit-text">Purple pigments with anti-cancer properties</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin C</div>
+                            <div class="modern-benefit-text">6x more than mature cabbage</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin K</div>
+                            <div class="modern-benefit-text">Bone health and blood clotting</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Betalains</div>
+                            <div class="modern-benefit-text">Anti-inflammatory compounds</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Fiber</div>
+                            <div class="modern-benefit-text">Digestive health and weight management</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Heart Health</div>
+                            <div class="modern-benefit-text">Supports cardiovascular health</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="nutrition-card">
                     <h3><span class="microgreen-icon">🥦</span>Broccoli Microgreens</h3>
-                    <ul class="nutrition-benefits">
-                        <li><span class="vitamin-highlight">Sulforaphane</span> <span class="health-benefit">Powerful anti-cancer compound - 100x more than mature broccoli</span></li>
-                        <li><span class="vitamin-highlight">Vitamin C</span> <span class="health-benefit">Immune system boost - 4x more than oranges</span></li>
-                        <li><span class="vitamin-highlight">Vitamin K</span> <span class="health-benefit">Bone health and blood clotting</span></li>
-                        <li><span class="vitamin-highlight">Folate</span> <span class="health-benefit">Brain health and cellular function</span></li>
-                        <li><span class="vitamin-highlight">Fiber</span> <span class="health-benefit">Digestive health and detoxification</span></li>
-                        <li><span class="health-benefit">Liver detoxification support</span></li>
-                    </ul>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Sulforaphane</div>
+                            <div class="modern-benefit-text">Powerful anti-cancer compound - 100x more than mature broccoli</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin C</div>
+                            <div class="modern-benefit-text">Immune system boost - 4x more than oranges</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin K</div>
+                            <div class="modern-benefit-text">Bone health and blood clotting</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Folate</div>
+                            <div class="modern-benefit-text">Brain health and cellular function</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Fiber</div>
+                            <div class="modern-benefit-text">Digestive health and detoxification</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Liver Support</div>
+                            <div class="modern-benefit-text">Liver detoxification support</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
