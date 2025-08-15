@@ -1637,19 +1637,21 @@
             grid-template-columns: 1fr 1fr; /* 2 columns on mobile */
         }
         
-        /* --- MOBILE LAYOUT FIXES --- */
-        /* 1. Fix Product Card overflow */
+        /* 1. Fix Product Card Overflow */
         .products-grid {
-            grid-template-columns: 1fr; /* Stack products in a single column on mobile */
+            grid-template-columns: 1fr; /* Stack products in a single column */
         }
         .product-card {
-            padding: 1.5rem; /* Reduce padding to give more space */
+            padding: 1.5rem; /* Reduce padding for more space */
         }
-        .nutrition-result .result-unit {
-            word-wrap: break-word; /* Ensure long text wraps if needed */
-            width: 100%;
+        .product-card .nutrition-result {
+            width: 100% !important; /* Force the result box to fit the card */
+            box-sizing: border-box !important; /* Ensure padding is included in the width */
         }
-
+        .product-card .result-unit {
+            white-space: normal !important; /* Allow long text to wrap */
+            word-break: break-word !important; /* Force long words to break if needed */
+        }
         /* 2. Center the Custom Blend options */
         .microgreens-selection {
             justify-items: center; /* Center the items within the grid */
