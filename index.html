@@ -1637,22 +1637,22 @@
             grid-template-columns: 1fr 1fr; /* 2 columns on mobile */
         }
         
-        /* 1. Fix Product Card Overflow */
+        /* 1. Fix Product Card overflow and spacing */
         .products-grid {
-            grid-template-columns: 1fr; /* Stack products in a single column */
+            grid-template-columns: 1fr;   /* Stack products in a single column */
+            gap: 2.5rem;                  /* Increased the space BETWEEN cards */
         }
         .product-card {
-            padding: 1.5rem; /* Reduce padding for more space */
-            min-height: 750px; /* Add this line to ensure enough height */
-
+            padding: 1.5rem;              /* Reduced padding for more space inside */
+            min-height: 530px !important; /* Increased card height to fit everything */
         }
         .product-card .nutrition-result {
-            width: 100% !important; /* Force the result box to fit the card */
-            box-sizing: border-box !important; /* Ensure padding is included in the width */
+            width: 100% !important;
+            box-sizing: border-box !important;
         }
         .product-card .result-unit {
-            white-space: normal !important; /* Allow long text to wrap */
-            word-break: break-word !important; /* Force long words to break if needed */
+            white-space: normal !important;
+            word-break: break-word !important;
         }
         /* 2. Center the Custom Blend options */
         .microgreens-selection {
