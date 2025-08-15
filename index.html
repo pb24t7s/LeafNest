@@ -1652,6 +1652,10 @@
             white-space: normal !important; /* Allow long text to wrap */
             word-break: break-word !important; /* Force long words to break if needed */
         }
+        /* Failsafe to hide overflow on product cards */
+        .product-card {
+             overflow-x: hidden !important;
+        }   
         /* 2. Center the Custom Blend options */
         .microgreens-selection {
             justify-items: center; /* Center the items within the grid */
