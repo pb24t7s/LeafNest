@@ -341,8 +341,12 @@
             background: rgba(168, 230, 163, 0.1);
             padding: 1.5rem;
             border-radius: 15px;
-            margin: 2rem 0;
+            margin: 2rem 0 0 0;
             border: 1px solid rgba(168, 230, 163, 0.3);
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .calculator-title {
@@ -351,6 +355,7 @@
             font-weight: 600;
             margin-bottom: 1rem;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .calculator-controls {
@@ -358,11 +363,13 @@
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
             margin-bottom: 1.5rem;
+            flex-grow: 1;
         }
 
         .control-group {
             display: flex;
             flex-direction: column;
+            justify-content: flex-start;
         }
 
         .control-label {
@@ -380,6 +387,7 @@
             font-size: 0.9rem;
             color: #2c5530;
             transition: border-color 0.3s ease;
+            height: 45px;
         }
 
         .calculator-select:focus {
@@ -398,6 +406,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            margin-top: auto;
         }
 
         .result-value {
@@ -492,7 +502,219 @@
             margin-right: 0.5rem;
         }
 
-        /* Why Choose Us Section */
+        /* Custom Blend Calculator Section */
+        .custom-blend {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edd6 100%);
+            padding: 80px 2rem;
+        }
+
+        .custom-blend-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blend-intro {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .blend-intro h2 {
+            font-size: 2.5rem;
+            color: #2c5530;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .blend-intro p {
+            font-size: 1.2rem;
+            color: #556b5d;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .blend-calculator {
+            background: white;
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: 0 15px 35px rgba(74, 124, 89, 0.1);
+            border: 1px solid rgba(168, 230, 163, 0.2);
+        }
+
+        .blend-controls {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .microgreens-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .microgreen-control {
+            background: rgba(168, 230, 163, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .microgreen-control.active {
+            border-color: #4a7c59;
+            background: rgba(168, 230, 163, 0.1);
+        }
+
+        .microgreen-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .microgreen-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: #4a7c59;
+        }
+
+        .microgreen-checkbox label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c5530;
+            cursor: pointer;
+        }
+
+        .percentage-slider {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .percentage-slider.active {
+            display: block;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #4a7c59;
+        }
+
+        .slider-input {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4a7c59;
+            cursor: pointer;
+        }
+
+        .slider-input::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4a7c59;
+            cursor: pointer;
+            border: none;
+        }
+
+        .blend-results {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .nutrition-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .nutrition-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .nutrition-item .nutrient-name {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.3rem;
+        }
+
+        .nutrition-item .nutrient-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .quantity-selector {
+            margin-bottom: 1.5rem;
+        }
+
+        .quantity-selector select {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .quantity-selector option {
+            background: #2c5530;
+            color: white;
+        }
+
+        .blend-summary {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .create-blend-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .create-blend-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
         .why-choose {
             background: linear-gradient(135deg, #e8f5e8 0%, #d4edd6 100%);
             padding: 80px 2rem;
@@ -1567,15 +1789,9 @@
                                 <select class="calculator-select" id="pea-mineral" onchange="calculateNutrition('pea')">
                                     <option value="vitamin-c">Vitamin C</option>
                                     <option value="vitamin-a">Vitamin A</option>
-                                    <option value="vitamin-k">Vitamin K</option>
                                     <option value="protein">Protein</option>
                                     <option value="iron">Iron</option>
                                     <option value="calcium">Calcium</option>
-                                    <option value="potassium">Potassium</option>
-                                    <option value="magnesium">Magnesium</option>
-                                    <option value="phosphorus">Phosphorus</option>
-                                    <option value="zinc">Zinc</option>
-                                    <option value="folate">Folate</option>
                                     <option value="fiber">Fiber</option>
                                 </select>
                             </div>
@@ -1613,17 +1829,10 @@
                                 <label class="control-label">Mineral/Vitamin</label>
                                 <select class="calculator-select" id="sunflower-mineral" onchange="calculateNutrition('sunflower')">
                                     <option value="vitamin-e">Vitamin E</option>
-                                    <option value="vitamin-c">Vitamin C</option>
-                                    <option value="vitamin-a">Vitamin A</option>
                                     <option value="protein">Protein</option>
                                     <option value="zinc">Zinc</option>
                                     <option value="magnesium">Magnesium</option>
-                                    <option value="iron">Iron</option>
-                                    <option value="calcium">Calcium</option>
-                                    <option value="potassium">Potassium</option>
-                                    <option value="phosphorus">Phosphorus</option>
                                     <option value="healthy-fats">Healthy Fats</option>
-                                    <option value="folate">Folate</option>
                                     <option value="fiber">Fiber</option>
                                 </select>
                             </div>
@@ -1654,6 +1863,36 @@
                         <li>Beautiful purple color</li>
                         <li>Mild, pleasant taste</li>
                     </ul>
+                    
+                    <!-- Nutrition Calculator -->
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="purple-quantity" onchange="calculateNutrition('purple')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="purple-mineral" onchange="calculateNutrition('purple')">
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="anthocyanins">Anthocyanins</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="calcium">Calcium</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="purple-result">
+                            <span class="result-value">70</span><span class="result-unit">mg Vitamin C</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="product-card">
                     <img src="images/products/broccoli-microgreens.jpg" alt="Fresh Broccoli Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1665,6 +1904,36 @@
                         <li>Cancer-fighting properties</li>
                         <li>Mild broccoli flavor</li>
                     </ul>
+                    
+                    <!-- Nutrition Calculator -->
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="broccoli-quantity" onchange="calculateNutrition('broccoli')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="broccoli-mineral" onchange="calculateNutrition('broccoli')">
+                                    <option value="sulforaphane">Sulforaphane</option>
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="folate">Folate</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="broccoli-result">
+                            <span class="result-value">30</span><span class="result-unit">mg Sulforaphane</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="product-card">
                     <img src="images/products/arugula-microgreens.jpg" alt="Fresh Arugula Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1676,6 +1945,36 @@
                         <li>Peppery, sophisticated flavor</li>
                         <li>Great for gourmet dishes</li>
                     </ul>
+                    
+                    <!-- Nutrition Calculator -->
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="arugula-quantity" onchange="calculateNutrition('arugula')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="arugula-mineral" onchange="calculateNutrition('arugula')">
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-a">Vitamin A</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="calcium">Calcium</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="arugula-result">
+                            <span class="result-value">41.25</span><span class="result-unit">mcg Vitamin K</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="product-card">
                     <img src="images/products/kale-microgreens.jpg" alt="Fresh Kale Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1687,6 +1986,36 @@
                         <li>High in iron & calcium</li>
                         <li>Tender texture</li>
                     </ul>
+                    
+                    <!-- Nutrition Calculator -->
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="kale-quantity" onchange="calculateNutrition('kale')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="kale-mineral" onchange="calculateNutrition('kale')">
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="calcium">Calcium</option>
+                                    <option value="protein">Protein</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="kale-result">
+                            <span class="result-value">80</span><span class="result-unit">mg Vitamin C</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="product-card">
                     <img src="images/products/beetroot-microgreens.jpg" alt="Fresh Beetroot Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1698,6 +2027,36 @@
                         <li>Beautiful red color</li>
                         <li>Sweet, earthy taste</li>
                     </ul>
+                    
+                    <!-- Nutrition Calculator -->
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="beetroot-quantity" onchange="calculateNutrition('beetroot')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="beetroot-mineral" onchange="calculateNutrition('beetroot')">
+                                    <option value="nitrates">Nitrates</option>
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="folate">Folate</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="potassium">Potassium</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="beetroot-result">
+                            <span class="result-value">21.25</span><span class="result-unit">mg Nitrates</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="product-card">
                     <img src="images/products/mustard-microgreens.jpg" alt="Fresh Mustard Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1709,6 +2068,36 @@
                         <li>Spicy, tangy flavor</li>
                         <li>Perfect for Asian cuisine</li>
                     </ul>
+                    
+                    <!-- Nutrition Calculator -->
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="mustard-quantity" onchange="calculateNutrition('mustard')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="mustard-mineral" onchange="calculateNutrition('mustard')">
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="vitamin-a">Vitamin A</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="calcium">Calcium</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="mustard-result">
+                            <span class="result-value">68.75</span><span class="result-unit">mg Vitamin C</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="product-card">
                     <img src="images/products/cilantro-microgreens.jpg" alt="Fresh Cilantro Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1720,6 +2109,36 @@
                         <li>Perfect for Indian food</li>
                         <li>Natural detoxifier</li>
                     </ul>
+                    
+                    <!-- Nutrition Calculator -->
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="cilantro-quantity" onchange="calculateNutrition('cilantro')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="cilantro-mineral" onchange="calculateNutrition('cilantro')">
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-a">Vitamin A</option>
+                                    <option value="folate">Folate</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="cilantro-result">
+                            <span class="result-value">38.75</span><span class="result-unit">mcg Vitamin K</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="product-card">
                     <img src="images/products/wheat-grass.jpg" alt="Fresh Wheat Grass" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1731,6 +2150,36 @@
                         <li>Perfect for juicing</li>
                         <li>Detoxifying properties</li>
                     </ul>
+                    
+                    <!-- Nutrition Calculator -->
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="wheatgrass-quantity" onchange="calculateNutrition('wheatgrass')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="wheatgrass-mineral" onchange="calculateNutrition('wheatgrass')">
+                                    <option value="chlorophyll">Chlorophyll</option>
+                                    <option value="vitamin-a">Vitamin A</option>
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="protein">Protein</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="wheatgrass-result">
+                            <span class="result-value">112.5</span><span class="result-unit">mg Chlorophyll</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2149,179 +2598,31 @@
     </footer>
 
     <script>
-        // Comprehensive nutrition calculation data (per 100g)
+        // Nutrition calculation data (per 100g)
         const nutritionData = {
             'radish': {
                 'vitamin-c': { value: 300, unit: 'mg', name: 'Vitamin C' },
                 'vitamin-k': { value: 120, unit: 'mcg', name: 'Vitamin K' },
-                'vitamin-a': { value: 85, unit: 'mcg', name: 'Vitamin A' },
                 'folate': { value: 95, unit: 'mcg', name: 'Folate' },
                 'iron': { value: 1.8, unit: 'mg', name: 'Iron' },
                 'calcium': { value: 52, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 280, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 28, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 42, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 0.8, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 2.2, unit: 'g', name: 'Fiber' },
-                'protein': { value: 3.2, unit: 'g', name: 'Protein' }
+                'fiber': { value: 2.2, unit: 'g', name: 'Fiber' }
             },
             'pea': {
                 'vitamin-c': { value: 250, unit: 'mg', name: 'Vitamin C' },
                 'vitamin-a': { value: 180, unit: 'mcg', name: 'Vitamin A' },
-                'vitamin-k': { value: 95, unit: 'mcg', name: 'Vitamin K' },
-                'folate': { value: 85, unit: 'mcg', name: 'Folate' },
                 'protein': { value: 8.5, unit: 'g', name: 'Protein' },
                 'iron': { value: 2.1, unit: 'mg', name: 'Iron' },
                 'calcium': { value: 48, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 320, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 35, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 78, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 1.2, unit: 'mg', name: 'Zinc' },
                 'fiber': { value: 2.8, unit: 'g', name: 'Fiber' }
             },
             'sunflower': {
                 'vitamin-e': { value: 15, unit: 'mg', name: 'Vitamin E' },
-                'vitamin-c': { value: 180, unit: 'mg', name: 'Vitamin C' },
-                'vitamin-a': { value: 65, unit: 'mcg', name: 'Vitamin A' },
-                'folate': { value: 78, unit: 'mcg', name: 'Folate' },
                 'protein': { value: 12, unit: 'g', name: 'Protein' },
                 'zinc': { value: 1.5, unit: 'mg', name: 'Zinc' },
                 'magnesium': { value: 78, unit: 'mg', name: 'Magnesium' },
-                'iron': { value: 1.6, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 38, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 290, unit: 'mg', name: 'Potassium' },
-                'phosphorus': { value: 92, unit: 'mg', name: 'Phosphorus' },
                 'healthy-fats': { value: 4.2, unit: 'g', name: 'Healthy Fats' },
                 'fiber': { value: 3.1, unit: 'g', name: 'Fiber' }
-            },
-            'mixed': {
-                'vitamin-c': { value: 220, unit: 'mg', name: 'Vitamin C' },
-                'vitamin-a': { value: 125, unit: 'mcg', name: 'Vitamin A' },
-                'vitamin-k': { value: 105, unit: 'mcg', name: 'Vitamin K' },
-                'vitamin-e': { value: 8, unit: 'mg', name: 'Vitamin E' },
-                'folate': { value: 88, unit: 'mcg', name: 'Folate' },
-                'iron': { value: 1.9, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 45, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 305, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 42, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 65, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 1.1, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 2.5, unit: 'g', name: 'Fiber' },
-                'protein': { value: 5.8, unit: 'g', name: 'Protein' }
-            },
-            'purple-cabbage': {
-                'vitamin-c': { value: 280, unit: 'mg', name: 'Vitamin C' },
-                'vitamin-k': { value: 135, unit: 'mcg', name: 'Vitamin K' },
-                'vitamin-a': { value: 92, unit: 'mcg', name: 'Vitamin A' },
-                'folate': { value: 68, unit: 'mcg', name: 'Folate' },
-                'anthocyanins': { value: 45, unit: 'mg', name: 'Anthocyanins' },
-                'iron': { value: 1.4, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 41, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 265, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 32, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 58, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 0.9, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 2.1, unit: 'g', name: 'Fiber' },
-                'protein': { value: 3.8, unit: 'g', name: 'Protein' }
-            },
-            'broccoli': {
-                'sulforaphane': { value: 120, unit: 'mg', name: 'Sulforaphane' },
-                'vitamin-c': { value: 350, unit: 'mg', name: 'Vitamin C' },
-                'vitamin-k': { value: 150, unit: 'mcg', name: 'Vitamin K' },
-                'vitamin-a': { value: 110, unit: 'mcg', name: 'Vitamin A' },
-                'folate': { value: 105, unit: 'mcg', name: 'Folate' },
-                'iron': { value: 2.2, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 55, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 340, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 38, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 72, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 1.3, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 2.6, unit: 'g', name: 'Fiber' },
-                'protein': { value: 4.2, unit: 'g', name: 'Protein' }
-            },
-            'arugula': {
-                'vitamin-c': { value: 195, unit: 'mg', name: 'Vitamin C' },
-                'vitamin-k': { value: 165, unit: 'mcg', name: 'Vitamin K' },
-                'vitamin-a': { value: 145, unit: 'mcg', name: 'Vitamin A' },
-                'folate': { value: 72, unit: 'mcg', name: 'Folate' },
-                'iron': { value: 1.7, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 48, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 285, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 34, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 62, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 1.0, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 2.3, unit: 'g', name: 'Fiber' },
-                'protein': { value: 3.5, unit: 'g', name: 'Protein' }
-            },
-            'kale': {
-                'vitamin-c': { value: 320, unit: 'mg', name: 'Vitamin C' },
-                'vitamin-k': { value: 180, unit: 'mcg', name: 'Vitamin K' },
-                'vitamin-a': { value: 165, unit: 'mcg', name: 'Vitamin A' },
-                'folate': { value: 95, unit: 'mcg', name: 'Folate' },
-                'iron': { value: 2.5, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 68, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 365, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 45, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 78, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 1.4, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 3.2, unit: 'g', name: 'Fiber' },
-                'protein': { value: 5.2, unit: 'g', name: 'Protein' }
-            },
-            'beetroot': {
-                'vitamin-c': { value: 165, unit: 'mg', name: 'Vitamin C' },
-                'folate': { value: 125, unit: 'mcg', name: 'Folate' },
-                'vitamin-a': { value: 75, unit: 'mcg', name: 'Vitamin A' },
-                'nitrates': { value: 85, unit: 'mg', name: 'Nitrates' },
-                'iron': { value: 1.9, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 42, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 295, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 36, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 55, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 0.8, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 2.4, unit: 'g', name: 'Fiber' },
-                'protein': { value: 3.1, unit: 'g', name: 'Protein' }
-            },
-            'mustard': {
-                'vitamin-c': { value: 275, unit: 'mg', name: 'Vitamin C' },
-                'vitamin-k': { value: 125, unit: 'mcg', name: 'Vitamin K' },
-                'vitamin-a': { value: 98, unit: 'mcg', name: 'Vitamin A' },
-                'folate': { value: 82, unit: 'mcg', name: 'Folate' },
-                'iron': { value: 2.0, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 52, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 315, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 38, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 65, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 1.1, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 2.7, unit: 'g', name: 'Fiber' },
-                'protein': { value: 4.1, unit: 'g', name: 'Protein' }
-            },
-            'cilantro': {
-                'vitamin-c': { value: 210, unit: 'mg', name: 'Vitamin C' },
-                'vitamin-k': { value: 155, unit: 'mcg', name: 'Vitamin K' },
-                'vitamin-a': { value: 135, unit: 'mcg', name: 'Vitamin A' },
-                'folate': { value: 75, unit: 'mcg', name: 'Folate' },
-                'iron': { value: 1.6, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 45, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 275, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 32, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 58, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 0.9, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 2.0, unit: 'g', name: 'Fiber' },
-                'protein': { value: 3.4, unit: 'g', name: 'Protein' }
-            },
-            'wheatgrass': {
-                'vitamin-c': { value: 145, unit: 'mg', name: 'Vitamin C' },
-                'vitamin-a': { value: 185, unit: 'mcg', name: 'Vitamin A' },
-                'vitamin-e': { value: 12, unit: 'mg', name: 'Vitamin E' },
-                'chlorophyll': { value: 450, unit: 'mg', name: 'Chlorophyll' },
-                'iron': { value: 3.2, unit: 'mg', name: 'Iron' },
-                'calcium': { value: 72, unit: 'mg', name: 'Calcium' },
-                'potassium': { value: 385, unit: 'mg', name: 'Potassium' },
-                'magnesium': { value: 52, unit: 'mg', name: 'Magnesium' },
-                'phosphorus': { value: 88, unit: 'mg', name: 'Phosphorus' },
-                'zinc': { value: 1.8, unit: 'mg', name: 'Zinc' },
-                'fiber': { value: 3.8, unit: 'g', name: 'Fiber' },
-                'protein': { value: 6.5, unit: 'g', name: 'Protein' }
             }
         };
 
@@ -2345,14 +2646,7 @@
 
         // Initialize calculations on page load
         document.addEventListener('DOMContentLoaded', function() {
-            const microgreens = ['radish', 'pea', 'sunflower', 'mixed', 'purple-cabbage', 'broccoli', 'arugula', 'kale', 'beetroot', 'mustard', 'cilantro', 'wheatgrass'];
-            microgreens.forEach(microgreen => {
-                const quantityEl = document.getElementById(microgreen + '-quantity');
-                const mineralEl = document.getElementById(microgreen + '-mineral');
-                if (quantityEl && mineralEl) {
-                    calculateNutrition(microgreen);
-                }
-            });
+            calculateNutrition('radish');
         });
 
         // Mobile menu functionality
