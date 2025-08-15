@@ -1638,7 +1638,28 @@
                 grid-template-columns: 1fr 1fr; /* 2 columns on mobile */
             }
             
-        
+             /* --- MOBILE LAYOUT FIXES --- */
+
+            /* 1. Fix Product Card overflow */
+            .products-grid {
+                grid-template-columns: 1fr; /* Stack products in a single column on mobile */
+            }
+            .product-card {
+                padding: 1.5rem; /* Reduce padding to give more space */
+            }
+            .nutrition-result .result-unit {
+                word-wrap: break-word; /* Ensure long text wraps if needed */
+                width: 100%;
+            }
+
+            /* 2. Center the Custom Blend options */
+            .microgreens-selection {
+                justify-items: center; /* Center the items within the grid */
+            }
+            .microgreen-control {
+                width: 100%;
+                max-width: 350px; /* Prevent options from stretching too wide */
+            }
             /* Nutrition Calculator Mobile Fixes */
             .nutrition-calculator {
                 padding: 1rem !important;
@@ -1700,22 +1721,7 @@
         .blend-results .nutrition-item .nutrient-value {
             font-size: 1.1rem; /* Make value text smaller */
         }
-     .blend-results .nutrition-display {
-            grid-template-columns: 1fr 1fr 1fr; /* Change to 3 columns */
-            gap: 0.8rem;
-        }
-
-        .blend-results .nutrition-item {
-            padding: 0.8rem; /* Slightly reduce padding */
-        }
-
-        .blend-results .nutrition-item .nutrient-name {
-            font-size: 0.8rem; /* Make label text smaller */
-        }
-
-        .blend-results .nutrition-item .nutrient-value {
-            font-size: 1.1rem; /* Make value text smaller */
-        }
+       
     </style>
 </head>
 <body>
