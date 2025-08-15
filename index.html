@@ -1643,6 +1643,8 @@
         }
         .product-card {
             padding: 1.5rem; /* Reduce padding for more space */
+            min-height: 530px; /* Add this line to ensure enough height */
+
         }
         .product-card .nutrition-result {
             width: 100% !important; /* Force the result box to fit the card */
@@ -1652,10 +1654,6 @@
             white-space: normal !important; /* Allow long text to wrap */
             word-break: break-word !important; /* Force long words to break if needed */
         }
-        /* Failsafe to hide overflow on product cards */
-        .product-card {
-             overflow-x: hidden !important;
-        }   
         /* 2. Center the Custom Blend options */
         .microgreens-selection {
             justify-items: center; /* Center the items within the grid */
@@ -1799,7 +1797,7 @@
                     </select>
                 </div>
             </div>
-            <div class="nutrition-result" id="radish-result">style="width: 100% !important; box-sizing: border-box !important;">
+            <div class="nutrition-result" id="radish-result">
                 <span class="result-value">150</span><span class="result-unit">mg Vitamin C</span>
             </div>
         </div>
