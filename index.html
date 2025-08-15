@@ -336,6 +336,81 @@
             border-color: #a8e6a3;
         }
 
+        /* Nutrition Calculator */
+        .nutrition-calculator {
+            background: rgba(168, 230, 163, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 1px solid rgba(168, 230, 163, 0.3);
+        }
+
+        .calculator-title {
+            color: #2c5530;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .calculator-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-label {
+            color: #4a7c59;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .calculator-select {
+            background: white;
+            border: 2px solid rgba(168, 230, 163, 0.5);
+            border-radius: 8px;
+            padding: 0.8rem;
+            font-size: 0.9rem;
+            color: #2c5530;
+            transition: border-color 0.3s ease;
+        }
+
+        .calculator-select:focus {
+            outline: none;
+            border-color: #4a7c59;
+        }
+
+        .nutrition-result {
+            background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .result-unit {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-left: 0.3rem;
+        }
+
         /* Add image loading optimization */
         .product-image {
             width: 100%;
@@ -1387,6 +1462,36 @@
                         <li>Bold, spicy flavor</li>
                         <li>Perfect for garnishing</li>
                     </ul>
+                    
+                    <!-- Nutrition Calculator -->
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="radish-quantity" onchange="calculateNutrition('radish')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="radish-mineral" onchange="calculateNutrition('radish')">
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="folate">Folate</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="calcium">Calcium</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="radish-result">
+                            <span class="result-value">150</span><span class="result-unit">mg Vitamin C</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="product-card">
                     <img src="images/products/pea-shoots.jpg" alt="Fresh Pea Shoots" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1926,6 +2031,57 @@
     </footer>
 
     <script>
+        // Nutrition calculation data (per 100g)
+        const nutritionData = {
+            'radish': {
+                'vitamin-c': { value: 300, unit: 'mg', name: 'Vitamin C' },
+                'vitamin-k': { value: 120, unit: 'mcg', name: 'Vitamin K' },
+                'folate': { value: 95, unit: 'mcg', name: 'Folate' },
+                'iron': { value: 1.8, unit: 'mg', name: 'Iron' },
+                'calcium': { value: 52, unit: 'mg', name: 'Calcium' },
+                'fiber': { value: 2.2, unit: 'g', name: 'Fiber' }
+            },
+            'pea': {
+                'vitamin-c': { value: 250, unit: 'mg', name: 'Vitamin C' },
+                'vitamin-a': { value: 180, unit: 'mcg', name: 'Vitamin A' },
+                'protein': { value: 8.5, unit: 'g', name: 'Protein' },
+                'iron': { value: 2.1, unit: 'mg', name: 'Iron' },
+                'calcium': { value: 48, unit: 'mg', name: 'Calcium' },
+                'fiber': { value: 2.8, unit: 'g', name: 'Fiber' }
+            },
+            'sunflower': {
+                'vitamin-e': { value: 15, unit: 'mg', name: 'Vitamin E' },
+                'protein': { value: 12, unit: 'g', name: 'Protein' },
+                'zinc': { value: 1.5, unit: 'mg', name: 'Zinc' },
+                'magnesium': { value: 78, unit: 'mg', name: 'Magnesium' },
+                'healthy-fats': { value: 4.2, unit: 'g', name: 'Healthy Fats' },
+                'fiber': { value: 3.1, unit: 'g', name: 'Fiber' }
+            }
+        };
+
+        // Calculate nutrition based on selected quantity and mineral
+        function calculateNutrition(microgreen) {
+            const quantity = parseInt(document.getElementById(microgreen + '-quantity').value);
+            const mineral = document.getElementById(microgreen + '-mineral').value;
+            const resultElement = document.getElementById(microgreen + '-result');
+            
+            if (nutritionData[microgreen] && nutritionData[microgreen][mineral]) {
+                const baseValue = nutritionData[microgreen][mineral].value;
+                const unit = nutritionData[microgreen][mineral].unit;
+                const name = nutritionData[microgreen][mineral].name;
+                
+                // Calculate for selected quantity (base values are per 100g)
+                const calculatedValue = (baseValue * quantity / 100).toFixed(1);
+                
+                resultElement.innerHTML = `<span class="result-value">${calculatedValue}</span><span class="result-unit">${unit} ${name}</span>`;
+            }
+        }
+
+        // Initialize calculations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateNutrition('radish');
+        });
+
         // Mobile menu functionality
         let mobileMenuOpen = false;
 
