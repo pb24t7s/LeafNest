@@ -2675,7 +2675,62 @@
         </button>
     </div>
 </div>
+<!-- 11. WHEAT GRASS -->
+<div class="product-card">
+    <img src="images/products/wheat-grass.jpg" alt="Fresh Wheat Grass" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <div class="product-icon" style="display: none;">🌾</div>
+    <h3>Wheat Grass</h3>
+    <p>Nutrient-dense young wheat shoots, perfect for juicing and smoothies.</p>
+    <ul class="product-features">
+        <li>High in chlorophyll</li>
+        <li>Perfect for juicing</li>
+        <li>Detoxifying properties</li>
+    </ul>
+    
+    <div class="nutrition-calculator">
+        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+        <div class="calculator-controls">
+            <div class="control-group">
+                <label class="control-label">Quantity</label>
+                <select class="calculator-select" id="wheatgrass-quantity" onchange="calculateNutrition('wheatgrass')">
+                    <option value="25">25g</option>
+                    <option value="50">50g</option>
+                    <option value="100">100g</option>
+                    <option value="200">200g</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Mineral/Vitamin</label>
+                <select class="calculator-select" id="wheatgrass-mineral" onchange="calculateNutrition('wheatgrass')">
+                    <option value="chlorophyll">Chlorophyll</option>
+                    <option value="vitamin-a">Vitamin A</option>
+                    <option value="vitamin-c">Vitamin C</option>
+                    <option value="iron">Iron</option>
+                    <option value="protein">Protein</option>
+                    <option value="fiber">Fiber</option>
+                </select>
+            </div>
+        </div>
+        <div class="nutrition-result" id="wheatgrass-result">
+            <span class="result-value">112.5</span><span class="result-unit">mg Chlorophyll</span>
+        </div>
+    </div>
 
+    <div class="add-to-cart-section">
+        <div class="quantity-selector-cart">
+            <label>Select Quantity & Price:</label>
+            <select id="wheatgrass-cart-quantity">
+                <option value="25">25g - ₹35</option>
+                <option value="50">50g - ₹60</option>
+                <option value="100">100g - ₹110</option>
+                <option value="200">200g - ₹205</option>
+            </select>
+        </div>
+        <button class="add-to-cart-btn" onclick="addToCart('wheatgrass', 'Wheat Grass', '🌾')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
     </section>
 
     <!-- Custom Blend Calculator Section -->
