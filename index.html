@@ -2442,9 +2442,237 @@
             </div>
         </div>
     </section>
-     <!-- ADD THESE SECTIONS AFTER THE CUSTOM BLEND SECTION -->
+     <!-- ADD THESE SECTIONS AFTER THE CUSTOM BLEND SECTION -->    
+    <!-- Custom Blend Calculator Section -->
+    <section class="custom-blend">
+        <div class="custom-blend-container">
+            <div class="blend-intro">
+                <h2>🌿 Create Your Custom Mix</h2>
+                <p>Design your perfect microgreen blend! Select your favorite varieties, adjust the percentages, and see the nutritional breakdown of your custom mix.</p>
+            </div>
+            
+            <div class="blend-calculator">
+                <div class="blend-controls">
+                    <div class="microgreens-selection">
+                        <div class="microgreen-control" id="radish-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="radish-check" onchange="toggleMicrogreen('radish')">
+                                <label for="radish-check">🌶️ Radish Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="radish-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="radish-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="radish-range" oninput="updatePercentage('radish')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="pea-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="pea-check" onchange="toggleMicrogreen('pea')">
+                                <label for="pea-check">🟢 Pea Shoots</label>
+                            </div>
+                            <div class="percentage-slider" id="pea-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="pea-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="pea-range" oninput="updatePercentage('pea')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="sunflower-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="sunflower-check" onchange="toggleMicrogreen('sunflower')">
+                                <label for="sunflower-check">🌻 Sunflower Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="sunflower-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="sunflower-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="sunflower-range" oninput="updatePercentage('sunflower')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="purple-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="purple-check" onchange="toggleMicrogreen('purple')">
+                                <label for="purple-check">🟣 Purple Cabbage</label>
+                            </div>
+                            <div class="percentage-slider" id="purple-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="purple-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="purple-range" oninput="updatePercentage('purple')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="broccoli-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="broccoli-check" onchange="toggleMicrogreen('broccoli')">
+                                <label for="broccoli-check">🥦 Broccoli Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="broccoli-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="broccoli-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="broccoli-range" oninput="updatePercentage('broccoli')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="arugula-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="arugula-check" onchange="toggleMicrogreen('arugula')">
+                                <label for="arugula-check">🌿 Arugula Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="arugula-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="arugula-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="arugula-range" oninput="updatePercentage('arugula')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="kale-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="kale-check" onchange="toggleMicrogreen('kale')">
+                                <label for="kale-check">🥬 Kale Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="kale-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="kale-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="kale-range" oninput="updatePercentage('kale')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="beetroot-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="beetroot-check" onchange="toggleMicrogreen('beetroot')">
+                                <label for="beetroot-check">🟤 Beetroot Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="beetroot-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="beetroot-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="beetroot-range" oninput="updatePercentage('beetroot')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="mustard-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="mustard-check" onchange="toggleMicrogreen('mustard')">
+                                <label for="mustard-check">🌿 Mustard Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="mustard-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="mustard-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="mustard-range" oninput="updatePercentage('mustard')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="cilantro-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="cilantro-check" onchange="toggleMicrogreen('cilantro')">
+                                <label for="cilantro-check">🌿 Cilantro Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="cilantro-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="cilantro-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="cilantro-range" oninput="updatePercentage('cilantro')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="wheatgrass-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="wheatgrass-check" onchange="toggleMicrogreen('wheatgrass')">
+                                <label for="wheatgrass-check">🌾 Wheat Grass</label>
+                            </div>
+                            <div class="percentage-slider" id="wheatgrass-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="wheatgrass-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="wheatgrass-range" oninput="updatePercentage('wheatgrass')">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="blend-results">
+                        <h3 class="results-title">Your Custom Blend</h3>
+                        
+                        <div class="quantity-selector">
+                            <label>Quantity: </label>
+                            <select id="blend-quantity" onchange="updateBlendNutrition()">
+                                <option value="25">25g</option>
+                                <option value="50">50g</option>
+                                <option value="100">100g</option>
+                                <option value="200">200g</option>
+                            </select>
+                        </div>
+                        
+                        <div class="blend-summary" id="blend-summary">
+                            Select microgreens to create your blend
+                        </div>
+                        
+                        <div class="nutrition-display">
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Vitamin C</div>
+                                <div class="nutrient-value" id="blend-vitamin-c">0 mg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Protein</div>
+                                <div class="nutrient-value" id="blend-protein">0 g</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Iron</div>
+                                <div class="nutrient-value" id="blend-iron">0 mg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Fiber</div>
+                                <div class="nutrient-value" id="blend-fiber">0 g</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Vitamin K</div>
+                                <div class="nutrient-value" id="blend-vitamin-k">0 mcg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Calcium</div>
+                                <div class="nutrient-value" id="blend-calcium">0 mg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Vitamin A</div>
+                                <div class="nutrient-value" id="blend-vitamin-a">0 mcg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Folate</div>
+                                <div class="nutrient-value" id="blend-folate">0 mcg</div>
+                            </div>
+                        </div>
+                        
+                        <button class="create-blend-btn" onclick="createCustomOrder()">Make Custom Blend</button>
+                        <button class="blend-add-to-cart" onclick="addCustomBlendFromCalculator()" id="blendCartBtn">
+                            🛒 Add Custom Blend to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- Why Choose Us Section -->
+    <!-- Why Choose Us, Nutrition, About, Testimonials, Contact sections... -->
+     <!-- Why Choose Us Section -->
     <section class="why-choose">
         <div class="why-choose-container">
             <div class="why-choose-content">
@@ -2692,238 +2920,7 @@
                         </div>
                     </div>
                 </div>   
-   <!-- REPLACE the custom blend section in Part 7 with this complete version -->
-    
-    <!-- Custom Blend Calculator Section -->
-    <section class="custom-blend">
-        <div class="custom-blend-container">
-            <div class="blend-intro">
-                <h2>🌿 Create Your Custom Mix</h2>
-                <p>Design your perfect microgreen blend! Select your favorite varieties, adjust the percentages, and see the nutritional breakdown of your custom mix.</p>
-            </div>
-            
-            <div class="blend-calculator">
-                <div class="blend-controls">
-                    <div class="microgreens-selection">
-                        <div class="microgreen-control" id="radish-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="radish-check" onchange="toggleMicrogreen('radish')">
-                                <label for="radish-check">🌶️ Radish Microgreens</label>
-                            </div>
-                            <div class="percentage-slider" id="radish-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="radish-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="radish-range" oninput="updatePercentage('radish')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="pea-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="pea-check" onchange="toggleMicrogreen('pea')">
-                                <label for="pea-check">🟢 Pea Shoots</label>
-                            </div>
-                            <div class="percentage-slider" id="pea-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="pea-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="pea-range" oninput="updatePercentage('pea')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="sunflower-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="sunflower-check" onchange="toggleMicrogreen('sunflower')">
-                                <label for="sunflower-check">🌻 Sunflower Microgreens</label>
-                            </div>
-                            <div class="percentage-slider" id="sunflower-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="sunflower-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="sunflower-range" oninput="updatePercentage('sunflower')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="purple-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="purple-check" onchange="toggleMicrogreen('purple')">
-                                <label for="purple-check">🟣 Purple Cabbage</label>
-                            </div>
-                            <div class="percentage-slider" id="purple-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="purple-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="purple-range" oninput="updatePercentage('purple')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="broccoli-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="broccoli-check" onchange="toggleMicrogreen('broccoli')">
-                                <label for="broccoli-check">🥦 Broccoli Microgreens</label>
-                            </div>
-                            <div class="percentage-slider" id="broccoli-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="broccoli-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="broccoli-range" oninput="updatePercentage('broccoli')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="arugula-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="arugula-check" onchange="toggleMicrogreen('arugula')">
-                                <label for="arugula-check">🌿 Arugula Microgreens</label>
-                            </div>
-                            <div class="percentage-slider" id="arugula-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="arugula-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="arugula-range" oninput="updatePercentage('arugula')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="kale-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="kale-check" onchange="toggleMicrogreen('kale')">
-                                <label for="kale-check">🥬 Kale Microgreens</label>
-                            </div>
-                            <div class="percentage-slider" id="kale-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="kale-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="kale-range" oninput="updatePercentage('kale')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="beetroot-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="beetroot-check" onchange="toggleMicrogreen('beetroot')">
-                                <label for="beetroot-check">🟤 Beetroot Microgreens</label>
-                            </div>
-                            <div class="percentage-slider" id="beetroot-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="beetroot-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="beetroot-range" oninput="updatePercentage('beetroot')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="mustard-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="mustard-check" onchange="toggleMicrogreen('mustard')">
-                                <label for="mustard-check">🌿 Mustard Microgreens</label>
-                            </div>
-                            <div class="percentage-slider" id="mustard-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="mustard-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="mustard-range" oninput="updatePercentage('mustard')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="cilantro-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="cilantro-check" onchange="toggleMicrogreen('cilantro')">
-                                <label for="cilantro-check">🌿 Cilantro Microgreens</label>
-                            </div>
-                            <div class="percentage-slider" id="cilantro-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="cilantro-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="cilantro-range" oninput="updatePercentage('cilantro')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="wheatgrass-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="wheatgrass-check" onchange="toggleMicrogreen('wheatgrass')">
-                                <label for="wheatgrass-check">🌾 Wheat Grass</label>
-                            </div>
-                            <div class="percentage-slider" id="wheatgrass-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="wheatgrass-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="wheatgrass-range" oninput="updatePercentage('wheatgrass')">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="blend-results">
-                        <h3 class="results-title">Your Custom Blend</h3>
-                        
-                        <div class="quantity-selector">
-                            <label>Quantity: </label>
-                            <select id="blend-quantity" onchange="updateBlendNutrition()">
-                                <option value="25">25g</option>
-                                <option value="50">50g</option>
-                                <option value="100">100g</option>
-                                <option value="200">200g</option>
-                            </select>
-                        </div>
-                        
-                        <div class="blend-summary" id="blend-summary">
-                            Select microgreens to create your blend
-                        </div>
-                        
-                        <div class="nutrition-display">
-                            <div class="nutrition-item">
-                                <div class="nutrient-name">Vitamin C</div>
-                                <div class="nutrient-value" id="blend-vitamin-c">0 mg</div>
-                            </div>
-                            <div class="nutrition-item">
-                                <div class="nutrient-name">Protein</div>
-                                <div class="nutrient-value" id="blend-protein">0 g</div>
-                            </div>
-                            <div class="nutrition-item">
-                                <div class="nutrient-name">Iron</div>
-                                <div class="nutrient-value" id="blend-iron">0 mg</div>
-                            </div>
-                            <div class="nutrition-item">
-                                <div class="nutrient-name">Fiber</div>
-                                <div class="nutrient-value" id="blend-fiber">0 g</div>
-                            </div>
-                            <div class="nutrition-item">
-                                <div class="nutrient-name">Vitamin K</div>
-                                <div class="nutrient-value" id="blend-vitamin-k">0 mcg</div>
-                            </div>
-                            <div class="nutrition-item">
-                                <div class="nutrient-name">Calcium</div>
-                                <div class="nutrient-value" id="blend-calcium">0 mg</div>
-                            </div>
-                            <div class="nutrition-item">
-                                <div class="nutrient-name">Vitamin A</div>
-                                <div class="nutrient-value" id="blend-vitamin-a">0 mcg</div>
-                            </div>
-                            <div class="nutrition-item">
-                                <div class="nutrient-name">Folate</div>
-                                <div class="nutrient-value" id="blend-folate">0 mcg</div>
-                            </div>
-                        </div>
-                        
-                        <button class="create-blend-btn" onclick="createCustomOrder()">Make Custom Blend</button>
-                        <button class="blend-add-to-cart" onclick="addCustomBlendFromCalculator()" id="blendCartBtn">
-                            🛒 Add Custom Blend to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Why Choose Us, Nutrition, About, Testimonials, Contact sections... -->
-    <!-- (Include all other sections from original) -->
 
     <!-- Cart Overlay -->
     <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
