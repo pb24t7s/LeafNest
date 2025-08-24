@@ -1,4 +1,3019 @@
-// REPLACE the nutrition data in Part 7 with this complete version:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaf Nest - Where Help Takes Roots</title>
+ <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Extra small mobile screens - Force Override */
+    @media screen and (max-width: 480px) {
+        .nutrition-stats {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0.8rem !important;
+            margin: 2rem 0 !important;
+        }
+        .stat-card {
+            padding: 1.8rem 1rem !important;
+            border-radius: 15px !important;
+            min-height: 160px !important;
+        }
+        .stat-number {
+            font-size: 2.2rem !important;
+            font-weight: 800 !important;
+        }
+        .stat-label {
+            font-size: 0.9rem !important;
+            line-height: 1.2 !important;
+            font-weight: 600 !important;
+        }
+        .nutrition {
+            padding: 50px 0.5rem !important;
+        }
+        .nutrition-container {
+            padding: 0 0.5rem !important;
+        }
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #2c3e50;
+        overflow-x: hidden;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Header */
+    .header {
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        color: white;
+        padding: 1rem 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+    }
+    .nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2rem;
+    }
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .logo-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: white;
+        padding: 2px;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    .logo-text {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #a8e6a3;
+    }
+    .logo-text span {
+        color: #ffffff;
+        font-size: 0.8rem;
+        display: block;
+        font-weight: 300;
+        margin-top: -5px;
+    }
+    .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+    }
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        font-weight: 500;
+    }
+    .nav-links a:hover {
+        color: #a8e6a3;
+    }
+
+    /* Cart Icon in Header */
+    .cart-icon-container {
+        position: relative;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 10px 16px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(5px);
+    }
+    
+    .cart-icon-container:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .cart-icon {
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .cart-count {
+        background: linear-gradient(135deg, #ff4757, #e84057);
+        color: white;
+        border-radius: 50%;
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        min-width: 20px;
+        text-align: center;
+        animation: bounce 0.3s ease;
+        box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+    }
+    
+    .cart-text {
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+    .mobile-menu-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .mobile-menu-btn span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: white;
+        margin: 5px 0;
+        transition: 0.3s;
+        border-radius: 2px;
+    }
+    .mobile-menu-btn.active span:nth-child(1) {
+        transform: rotate(-45deg) translate(-5px, 6px);
+    }
+    .mobile-menu-btn.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .mobile-menu-btn.active span:nth-child(3) {
+        transform: rotate(45deg) translate(-5px, -6px);
+    }
+    .mobile-nav {
+        display: none;
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 999;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    .mobile-nav.active {
+        max-height: 400px;
+    }
+    .mobile-nav ul {
+        list-style: none;
+        padding: 1rem 0;
+        margin: 0;
+    }
+    .mobile-nav li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .mobile-nav li:last-child {
+        border-bottom: none;
+    }
+    .mobile-nav a {
+        display: block;
+        color: white;
+        text-decoration: none;
+        padding: 1rem 2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .mobile-nav a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #a8e6a3;
+        padding-left: 3rem;
+    }
+
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+        padding: 120px 2rem 80px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 200%;
+        background: radial-gradient(ellipse, rgba(168, 230, 163, 0.1) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-20px) rotate(5deg);
+        }
+    }
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+    .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: #2c5530;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    .hero .tagline {
+        font-size: 1.2rem;
+        color: #4a7c59;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    .hero p {
+        font-size: 1.1rem;
+        color: #556b5d;
+        margin-bottom: 2.5rem;
+        line-height: 1.8;
+    }
+    .cta-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+        color: white;
+        padding: 15px 40px;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(74, 124, 89, 0.3);
+    }
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 25px rgba(74, 124, 89, 0.4);
+    }
+ </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <img src="leafnest-logo.png" alt="Leaf Nest Logo" class="logo-img">
+                <div class="logo-text">
+                    Leaf Nest
+                    <span>Where Health Takes Roots</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#nutrition">Nutrition</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            
+            <!-- Cart Icon -->
+            <div class="cart-icon-container" onclick="toggleCart()">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-text">Cart</span>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+            
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+        
+        <!-- Mobile Navigation -->
+        <nav class="mobile-nav" id="mobileNav">
+            <ul>
+                <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
+                <li><a href="#products" onclick="closeMobileMenu()">Products</a></li>
+                <li><a href="#nutrition" onclick="closeMobileMenu()">Nutrition</a></li>
+                <li><a href="#about" onclick="closeMobileMenu()">About</a></li>
+                <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Fresh Microgreens Delivered Daily</h1>
+            <p class="tagline">Where Health Takes Roots</p>
+            <p>We grow premium, nutrient-packed microgreens in Hyderabad and deliver them fresh to your doorstep. Experience the concentrated power of vitamins, minerals, and flavor in every bite!</p>
+            <a href="#products" class="cta-button">Order Fresh Microgreens</a>
+        </div>
+    </section>
+    <style>
+        /* Products Section */
+    .products {
+        padding: 80px 2rem;
+        background: white;
+    }
+    .products-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #2c5530;
+        margin-bottom: 3rem;
+        font-weight: 700;
+    }
+
+    /* Products Grid - Better Desktop Sizing */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-top: 4rem;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Ensure max 3 cards per row on large screens */
+    @media (min-width: 1200px) {
+        .products-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+    }
+
+    /* Ensure max 2 cards per row on medium screens */
+    @media (min-width: 768px) and (max-width: 1199px) {
+        .products-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+    }
+
+    /* Product Card Size Optimization */
+    .product-card {
+        background: #f8fffe;
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+        max-width: 400px;
+        margin: 0 auto;
+        width: 100%;
+    }
+    .product-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+    }
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(74, 124, 89, 0.15);
+        border-color: #a8e6a3;
+    }
+
+    /* Nutrition Calculator */
+    .nutrition-calculator {
+        background: rgba(168, 230, 163, 0.1);
+        padding: 1.2rem;
+        border-radius: 15px;
+        margin: 1.5rem 0;
+        border: 1px solid rgba(168, 230, 163, 0.3);
+        height: auto;
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .calculator-title {
+        color: #2c5530;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    .calculator-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+    .control-group {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .control-label {
+        color: #4a7c59;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .calculator-select {
+        background: white;
+        border: 2px solid rgba(168, 230, 163, 0.5);
+        border-radius: 8px;
+        padding: 0.6rem;
+        font-size: 0.85rem;
+        color: #2c5530;
+        transition: border-color 0.3s ease;
+        height: auto;
+    }
+    .calculator-select:focus {
+        outline: none;
+        border-color: #4a7c59;
+    }
+    .nutrition-result {
+        background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 600;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: auto;
+    }
+    .result-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+    .result-unit {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-left: 0.3rem;
+    }
+
+    /* Product Images and Icons */
+    .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px;
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease;
+        background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+        border: 2px solid rgba(168, 230, 163, 0.2);
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in forwards;
+    }
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(74, 124, 89, 0.2);
+    }
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+    .product-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+    .product-card .product-image+.product-icon {
+        display: none;
+    }
+
+    /* Product Content */
+    .product-card h3 {
+        font-size: 1.4rem;
+        color: #2c5530;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+    .product-card p {
+        color: #556b5d;
+        line-height: 1.6;
+        margin-bottom: 1.2rem;
+        font-size: 0.95rem;
+    }
+    .product-features {
+        list-style: none;
+        margin: 1.2rem 0;
+        padding: 0;
+        text-align: center;
+    }
+    .product-features li {
+        color: #4a7c59;
+        margin: 0.4rem 0;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .product-features li::before {
+        content: "✓";
+        color: #a8e6a3;
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+
+    /* Cart Integration Styles */
+    .add-to-cart-section {
+        margin-top: 1.2rem;
+        padding: 1.2rem;
+        border-top: 2px solid rgba(168, 230, 163, 0.2);
+        background: rgba(248, 255, 254, 0.5);
+        border-radius: 15px;
+    }
+
+    .quantity-selector-cart {
+        margin-bottom: 1rem;
+    }
+
+    .quantity-selector-cart label {
+        display: block;
+        color: #4a7c59;
+        font-weight: 600;
+        margin-bottom: 0.7rem;
+        font-size: 0.95rem;
+        text-align: center;
+    }
+
+    .quantity-selector-cart select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 2px solid rgba(168, 230, 163, 0.4);
+        border-radius: 10px;
+        background: white;
+        color: #2c5530;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .quantity-selector-cart select:focus {
+        outline: none;
+        border-color: #4a7c59;
+        box-shadow: 0 4px 12px rgba(74, 124, 89, 0.2);
+        transform: translateY(-1px);
+    }
+
+    .add-to-cart-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .add-to-cart-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .add-to-cart-btn:hover::before {
+        left: 100%;
+    }
+
+    .add-to-cart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(74, 124, 89, 0.4);
+    }
+
+    .add-to-cart-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 10px rgba(74, 124, 89, 0.3);
+    }
+    /* Cart Sidebar */
+    .cart-sidebar {
+        position: fixed;
+        top: 0;
+        right: -500px;
+        width: 500px;
+        height: 100vh;
+        background: white;
+        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+        z-index: 10000;
+        transition: right 0.4s ease;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cart-sidebar.open {
+        right: 0;
+    }
+
+    .cart-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .cart-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Cart Header */
+    .cart-header {
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        color: white;
+        padding: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .cart-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .cart-close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        padding: 8px 12px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .cart-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
+    }
+
+    /* Cart Content */
+    .cart-content {
+        flex: 1;
+        padding: 0;
+        overflow-y: auto;
+    }
+
+    .cart-empty {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #666;
+    }
+
+    .cart-empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    .cart-empty h3 {
+        color: #2c5530;
+        margin-bottom: 1rem;
+    }
+
+    /* Cart Items */
+    .cart-items {
+        padding: 1rem 0;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #f0f0f0;
+        gap: 1rem;
+        transition: background 0.3s ease;
+    }
+
+    .cart-item:hover {
+        background: #f8fffe;
+    }
+
+    .cart-item-icon {
+        font-size: 2rem;
+        background: rgba(168, 230, 163, 0.2);
+        padding: 1rem;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 60px;
+        height: 60px;
+    }
+
+    .cart-item-details {
+        flex: 1;
+    }
+
+    .cart-item-name {
+        font-weight: 600;
+        color: #2c5530;
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .cart-item-quantity {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .cart-item-blend {
+        background: rgba(168, 230, 163, 0.1);
+        padding: 0.5rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        color: #4a7c59;
+        margin-top: 0.5rem;
+    }
+
+    .cart-item-price {
+        font-weight: 700;
+        color: #2c5530;
+        font-size: 1.2rem;
+        margin-right: 1rem;
+    }
+
+    .cart-item-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f8f8f8;
+        border-radius: 25px;
+        padding: 0.3rem;
+    }
+
+    .quantity-btn {
+        background: #4a7c59;
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .quantity-btn:hover {
+        background: #2c5530;
+        transform: scale(1.1);
+    }
+
+    .quantity-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .quantity-display {
+        min-width: 40px;
+        text-align: center;
+        font-weight: 600;
+        color: #2c5530;
+    }
+
+    .remove-item {
+        background: #ff4757;
+        color: white;
+        border: none;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+    }
+
+    .remove-item:hover {
+        background: #e84057;
+        transform: translateY(-1px);
+    }
+
+    /* Cart Footer */
+    .cart-footer {
+        background: #f8fffe;
+        padding: 2rem;
+        border-top: 2px solid #e8f5e8;
+        flex-shrink: 0;
+
+    }
+    
+
+    .cart-summary {
+        margin-bottom: 1.5rem;
+    }
+
+    .cart-total-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .cart-total-row.final {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c5530;
+        border-top: 2px solid #e8f5e8;
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    .cart-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .cart-btn {
+        padding: 15px 25px;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .cart-btn-primary {
+        background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(74, 124, 89, 0.3);
+    }
+
+    .cart-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(74, 124, 89, 0.4);
+    }
+
+    .cart-btn-secondary {
+        background: white;
+        color: #4a7c59;
+        border: 2px solid #4a7c59;
+    }
+
+    .cart-btn-secondary:hover {
+        background: #4a7c59;
+        color: white;
+    }
+
+    /* Success/Error Messages */
+    .cart-message {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        z-index: 10001;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .cart-message.show {
+        transform: translateX(0);
+    }
+
+    .cart-message.success {
+        background: #2ed573;
+    }
+
+    .cart-message.error {
+        background: #ff4757;
+    }
+
+    /* Custom Blend Calculator Section */
+    .custom-blend {
+        background: linear-gradient(135deg, #e8f5e8 0%, #d4edd6 100%);
+        padding: 80px 2rem;
+    }
+    .custom-blend-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .blend-intro {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    .blend-intro h2 {
+        font-size: 2.5rem;
+        color: #2c5530;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+    .blend-intro p {
+        font-size: 1.2rem;
+        color: #556b5d;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+    .blend-calculator {
+        background: white;
+        border-radius: 25px;
+        padding: 3rem;
+        box-shadow: 0 15px 35px rgba(74, 124, 89, 0.1);
+        border: 1px solid rgba(168, 230, 163, 0.2);
+    }
+    .blend-controls {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+        margin-bottom: 2rem;
+    }
+    .microgreens-selection {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    .microgreen-control {
+        background: rgba(168, 230, 163, 0.05);
+        padding: 1.5rem;
+        border-radius: 15px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    .microgreen-control.active {
+        border-color: #4a7c59;
+        background: rgba(168, 230, 163, 0.1);
+    }
+    .microgreen-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+    }
+    .microgreen-checkbox input {
+        width: 18px;
+        height: 18px;
+        accent-color: #4a7c59;
+    }
+    .microgreen-checkbox label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c5530;
+        cursor: pointer;
+    }
+    .percentage-slider {
+        display: none;
+        margin-top: 1rem;
+    }
+    .percentage-slider.active {
+        display: block;
+    }
+    .slider-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: #4a7c59;
+    }
+    .slider-input {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: #e0e0e0;
+        outline: none;
+        -webkit-appearance: none;
+    }
+    .slider-input::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #4a7c59;
+        cursor: pointer;
+    }
+    .slider-input::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #4a7c59;
+        cursor: pointer;
+        border: none;
+    }
+    .blend-results {
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+    }
+    .results-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+    .nutrition-display {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .blend-results .nutrition-display {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.8rem;
+    }
+    .nutrition-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+    }
+    .blend-results .nutrition-item {
+        padding: 0.8rem;
+    }
+    .nutrition-item .nutrient-name {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 0.3rem;
+    }
+    .blend-results .nutrition-item .nutrient-name {
+        font-size: 0.8rem;
+    }
+    .nutrition-item .nutrient-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+    .blend-results .nutrition-item .nutrient-value {
+        font-size: 1.1rem;
+    }
+    .quantity-selector {
+        margin-bottom: 1.5rem;
+    }
+    .quantity-selector select {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 0.8rem;
+        border-radius: 10px;
+        font-size: 1rem;
+        backdrop-filter: blur(5px);
+    }
+    .quantity-selector option {
+        background: #2c5530;
+        color: white;
+    }
+    .blend-summary {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+    .create-blend-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+    .create-blend-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    /* Custom Blend Cart Integration */
+    .blend-add-to-cart {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .blend-add-to-cart:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .blend-add-to-cart:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+    /* Why Choose Us Section */
+    .why-choose {
+        background: linear-gradient(135deg, #e8f5e8 0%, #d4edd6 100%);
+        padding: 80px 2rem;
+    }
+    .why-choose-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .why-choose-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+    .why-choose-text h2 {
+        font-size: 2.5rem;
+        color: #2c5530;
+        margin-bottom: 2rem;
+        font-weight: 700;
+    }
+    .why-choose-list {
+        list-style: none;
+    }
+    .why-choose-list li {
+        background: white;
+        margin: 1rem 0;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(74, 124, 89, 0.1);
+        border-left: 4px solid #a8e6a3;
+        transition: transform 0.3s ease;
+    }
+    .why-choose-list li:hover {
+        transform: translateX(10px);
+    }
+    .why-choose-list li strong {
+        color: #2c5530;
+        font-weight: 600;
+    }
+    .why-choose-visual {
+        text-align: center;
+        position: relative;
+    }
+    .why-choose-circle {
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+        border-radius: 50%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: white;
+        position: relative;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(168, 230, 163, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 20px rgba(168, 230, 163, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(168, 230, 163, 0);
+        }
+    }
+
+    /* Nutrition Section */
+    .nutrition {
+        background: linear-gradient(135deg, #f8fffe 0%, #ffffff 100%);
+        padding: 80px 2rem 100px;
+    }
+    .nutrition-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .nutrition-banner {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+        border-radius: 25px;
+        overflow: hidden;
+        margin-bottom: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .nutrition-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('images/banners/nutrition-banner-desktop.jpg') center/cover;
+        opacity: 0.3;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+    }
+    .nutrition-banner:hover::before {
+        opacity: 0.4;
+    }
+    .nutrition-banner-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: white;
+        padding: 3rem;
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 15px;
+        backdrop-filter: blur(3px);
+    }
+    .nutrition-banner h2 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+    .nutrition-banner p {
+        font-size: 1.3rem;
+        opacity: 0.95;
+        max-width: 600px;
+        margin: 0 auto;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+    }
+    .nutrition-intro {
+        text-align: center;
+        margin-bottom: 4rem;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .nutrition-intro p {
+        font-size: 1.2rem;
+        color: #556b5d;
+        line-height: 1.8;
+        margin-top: 1.5rem;
+    }
+    .nutrition-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin: 4rem 0;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .stat-card {
+        background: white;
+        padding: 2.5rem 2rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(74, 124, 89, 0.1);
+        border: 1px solid rgba(168, 230, 163, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+    }
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(74, 124, 89, 0.15);
+    }
+    .stat-number {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #2c5530;
+        margin-bottom: 1rem;
+        line-height: 1;
+    }
+    .stat-label {
+        color: #556b5d;
+        font-weight: 600;
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+    .nutrition-comparison {
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        padding: 4rem 3rem;
+        border-radius: 25px;
+        margin: 6rem 0;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .nutrition-comparison::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 200%;
+        background: radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+    .comparison-title {
+        font-size: 2.5rem;
+        color: white;
+        margin-bottom: 3rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 2;
+    }
+    .comparison-grid {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 4rem;
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+    .comparison-item {
+        text-align: center;
+        flex: 1;
+        max-width: 300px;
+    }
+    .comparison-icon {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+    .comparison-label {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        line-height: 1.5;
+    }
+    .comparison-label small {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 1rem;
+        color: #a8e6a3;
+    }
+    .vs-text {
+        font-size: 2.5rem;
+        color: #a8e6a3;
+        font-weight: 800;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 0 1rem;
+    }
+    .nutrition-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 3rem;
+        margin-top: 6rem;
+    }
+    .nutrition-card {
+        background: white;
+        padding: 3rem;
+        border-radius: 25px;
+        border: 1px solid rgba(168, 230, 163, 0.2);
+        box-shadow: 0 15px 35px rgba(74, 124, 89, 0.08);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .nutrition-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+    }
+    .nutrition-card::after {
+        content: '';
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 80px;
+        height: 80px;
+        background: rgba(168, 230, 163, 0.1);
+        border-radius: 50%;
+        transition: all 0.4s ease;
+    }
+    .nutrition-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(74, 124, 89, 0.15);
+    }
+    .nutrition-card:hover::after {
+        transform: scale(1.2);
+        background: rgba(168, 230, 163, 0.2);
+    }
+    .nutrition-card h3 {
+        color: #2c5530;
+        font-size: 1.6rem;
+        margin-bottom: 2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    .microgreen-icon {
+        font-size: 2.5rem;
+        background: rgba(168, 230, 163, 0.2);
+        padding: 0.5rem;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+    }
+    .modern-benefits {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    .modern-benefit-card {
+        background: linear-gradient(135deg, #fff 0%, #f8fffe 100%);
+        padding: 1.5rem;
+        border-radius: 15px;
+        border-left: 4px solid #4a7c59;
+        box-shadow: 0 5px 15px rgba(74, 124, 89, 0.1);
+        transition: transform 0.3s ease;
+    }
+    .modern-benefit-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(74, 124, 89, 0.15);
+    }
+    .modern-vitamin-badge {
+        background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 1rem;
+        box-shadow: 0 3px 10px rgba(74, 124, 89, 0.3);
+    }
+    .modern-benefit-text {
+        color: #556b5d;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    /* About Us Section */
+    .about-us {
+        background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+        padding: 100px 2rem;
+    }
+    .about-us-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .about-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: center;
+    }
+    .about-text {
+        color: #556b5d;
+        line-height: 1.8;
+    }
+    .about-text h2 {
+        font-size: 2.5rem;
+        color: #2c5530;
+        margin-bottom: 2rem;
+        font-weight: 700;
+    }
+    .about-text p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+    .about-promises {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(74, 124, 89, 0.1);
+        border-left: 5px solid #a8e6a3;
+        margin-top: 4rem;
+    }
+    .about-promises h3 {
+        color: #2c5530;
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        font-weight: 700;
+    }
+    .promise-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .promise-list li {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        font-size: 1.1rem;
+        color: #556b5d;
+        font-weight: 500;
+    }
+    .promise-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+    .about-visual {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .about-highlight {
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        color: white;
+        padding: 3rem;
+        border-radius: 25px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .about-highlight::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 200%;
+        background: radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+    .about-highlight h4 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+    .about-highlight p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+        margin: 0;
+    }
+    .about-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        width: 100%;
+    }
+    .stat-item {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(74, 124, 89, 0.1);
+        border-top: 4px solid #a8e6a3;
+    }
+    .stat-item .number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2c5530;
+        margin-bottom: 0.5rem;
+    }
+    .stat-item .label {
+        color: #556b5d;
+        font-weight: 600;
+    }
+
+    /* Testimonials Section */
+    .testimonials {
+        background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+        padding: 80px 2rem;
+    }
+    .testimonials-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .testimonial-card {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        margin: 2rem 0;
+        box-shadow: 0 10px 30px rgba(74, 124, 89, 0.1);
+        position: relative;
+    }
+    .testimonial-card::before {
+        content: '"';
+        font-size: 6rem;
+        color: #a8e6a3;
+        position: absolute;
+        top: -20px;
+        left: 30px;
+        font-family: serif;
+    }
+    .testimonial-text {
+        font-size: 1.1rem;
+        color: #556b5d;
+        line-height: 1.8;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+    .testimonial-author {
+        color: #2c5530;
+        font-weight: 600;
+    }
+
+    /* Contact Section */
+    .contact {
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        color: white;
+        padding: 80px 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .contact::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 200%;
+        background: radial-gradient(ellipse, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+    .contact-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+    .contact-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+    .contact-info h2 {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        font-weight: 700;
+        color: white;
+    }
+    .contact-info p {
+        font-size: 1.2rem;
+        margin-bottom: 3rem;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+    .contact-details {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 3rem;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin: 2rem 0;
+        font-size: 1.1rem;
+    }
+    .contact-icon {
+        background: rgba(168, 230, 163, 0.2);
+        padding: 1rem;
+        border-radius: 15px;
+        font-size: 1.5rem;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #a8e6a3;
+    }
+    .contact-text {
+        flex: 1;
+    }
+    .contact-text .label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 0.3rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .contact-text .value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: white;
+    }
+    .phone-link {
+        color: #a8e6a3;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .phone-link:hover {
+        color: white;
+    }
+    .cta-section {
+        text-align: center;
+        margin-top: 3rem;
+    }
+    .cta-text {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+        font-weight: 600;
+    }
+    .contact-cta {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 15px 40px;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+    }
+    .contact-cta:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    .location {
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        color: white;
+        padding: 60px 2rem;
+        text-align: center;
+    }
+    .location h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    .location p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Footer */
+    .footer {
+        background: #1a2e1d;
+        color: white;
+        padding: 40px 2rem 20px;
+        text-align: center;
+    }
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .footer-logo {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 1rem;
+        display: block;
+        transition: transform 0.3s ease;
+        background: transparent;
+    }
+    .footer-logo:hover {
+        transform: scale(1.1);
+    }
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    .footer-links a {
+        color: #a8e6a3;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+        color: white;
+    }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+        .product-image {
+            height: 180px;
+        }
+        .nav-links {
+            display: none;
+        }
+        .mobile-menu-btn {
+            display: block;
+        }
+        .mobile-nav {
+            display: block;
+        }
+        .hero {
+            padding-top: 140px;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+        .why-choose-content {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+        .why-choose-circle {
+            width: 200px;
+            height: 200px;
+            font-size: 3rem;
+        }
+        .nav {
+            padding: 0 1rem;
+        }
+        .footer-links {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .nutrition-stats {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        .nutrition-details {
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+        }
+        .comparison-grid {
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .vs-text {
+            font-size: 2rem;
+            margin: 1rem 0;
+        }
+        .nutrition-card {
+            padding: 2rem;
+        }
+        .nutrition-card h3 {
+            font-size: 1.4rem;
+            flex-direction: column;
+            text-align: center;
+            gap: 0.5rem;
+        }
+        .about-content {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            text-align: center;
+        }
+        .about-stats {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .stat-item {
+            padding: 1.5rem;
+        }
+        .stat-item .number {
+            font-size: 2rem;
+        }
+        .about-promises {
+            padding: 2rem;
+        }
+        .contact-content {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            text-align: center;
+        }
+        .contact-details {
+            padding: 2rem;
+        }
+        .contact-item {
+            margin: 1.5rem 0;
+            font-size: 1rem;
+        }
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.3rem;
+        }
+        .contact-info h2 {
+            font-size: 2rem;
+        }
+        .contact-info p {
+            font-size: 1.1rem;
+        }
+
+        /* Mobile Cart Styles */
+        .cart-sidebar {
+            width: 100%;
+            right: -100%;
+        }
+        
+        .cart-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        
+        .cart-item-details {
+            width: 100%;
+        }
+        
+        .cart-item-controls {
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .cart-footer {
+            padding: 1.5rem 1rem;
+        }
+        
+        .cart-header {
+            padding: 1.5rem 1rem;
+        }
+        
+        .cart-icon-container {
+            padding: 8px 12px;
+        }
+        
+        .cart-text {
+            display: none;
+        }
+
+        /* Mobile Product Grid Final Override */
+        .products-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .product-card {
+            max-width: none;
+            padding: 1.5rem;
+        }
+        
+        .product-image {
+            height: 180px;
+        }
+        
+        .nutrition-calculator {
+            padding: 1rem;
+            min-height: 160px;
+        }
+        
+        .calculator-controls {
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
+
+        /* Custom Blend Mobile */
+        .blend-calculator {
+            padding: 1.5rem;
+        }
+        .blend-controls {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        .custom-blend .microgreens-selection {
+            grid-template-columns: 1fr !important;
+            justify-items: center !important;
+        }
+        .custom-blend .microgreen-control {
+            width: 100% !important;
+            max-width: 350px !important;
+        }
+        .blend-results .nutrition-display {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* Mobile nutrition calculator improvements */
+        .nutrition-calculator {
+            padding: 1rem !important;
+            margin: 1.5rem 0 !important;
+            height: auto !important;
+            min-height: 180px !important;
+        }
+        
+        .calculator-title {
+            font-size: 1rem !important;
+            margin-bottom: 0.8rem !important;
+        }
+        
+        .calculator-controls {
+            grid-template-columns: 1fr !important;
+            gap: 0.8rem !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .control-label {
+            font-size: 0.85rem !important;
+            margin-bottom: 0.4rem !important;
+        }
+        
+        .calculator-select {
+            padding: 0.6rem !important;
+            font-size: 0.85rem !important;
+            height: 40px !important;
+        }
+        
+        .nutrition-result {
+            padding: 0.8rem !important;
+            min-height: 50px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+        }
+        
+        .result-value {
+            font-size: 1.1rem !important;
+            display: block !important;
+            line-height: 1.2 !important;
+        }
+        
+        .result-unit {
+            font-size: 0.8rem !important;
+            margin-left: 0 !important;
+            margin-top: 0.2rem !important;
+            display: block !important;
+            text-align: center !important;
+            word-wrap: break-word !important;
+            max-width: 100% !important;
+        }
+    }
+    
+    </style>
+   <!-- Products Section -->
+    <!-- Products Section - REPLACE the products section in Part 7 with this complete version -->
+    <section id="products" class="products">
+        <div class="products-container">
+            <h2 class="section-title">Our Fresh Microgreens</h2>
+            <div class="products-grid">
+
+                <!-- 1. RADISH MICROGREENS -->
+                <div class="product-card">
+                    <img src="images/products/radish-microgreens.jpg" alt="Fresh Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="product-icon" style="display: none;">🌱</div>
+                    <h3>Radish Microgreens</h3>
+                    <p>Spicy and peppery flavor that adds a kick to salads, sandwiches, and garnishes.</p>
+                    <ul class="product-features">
+                        <li>High in Vitamin C</li>
+                        <li>Bold, spicy flavor</li>
+                        <li>Perfect for garnishing</li>
+                    </ul>
+                    
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="radish-quantity" onchange="calculateNutrition('radish')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="radish-mineral" onchange="calculateNutrition('radish')">
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="folate">Folate</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="calcium">Calcium</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="radish-result">
+                            <span class="result-value">150</span><span class="result-unit">mg Vitamin C</span>
+                        </div>
+                    </div>
+
+                    <div class="add-to-cart-section">
+                        <div class="quantity-selector-cart">
+                            <label>Select Quantity & Price:</label>
+                            <select id="radish-cart-quantity">
+                                <option value="25">25g - ₹45</option>
+                                <option value="50">50g - ₹80</option>
+                                <option value="100">100g - ₹145</option>
+                                <option value="200">200g - ₹275</option>
+                            </select>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCart('radish', 'Radish Microgreens', '🌶️')">
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. PEA SHOOTS -->
+                <div class="product-card">
+                    <img src="images/products/pea-shoots.jpg" alt="Fresh Pea Shoots" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="product-icon" style="display: none;">🌿</div>
+                    <h3>Pea Shoots</h3>
+                    <p>Sweet, tender shoots with a fresh pea flavor. Great in salads and stir-fries.</p>
+                    <ul class="product-features">
+                        <li>Rich in protein</li>
+                        <li>Sweet, delicate taste</li>
+                        <li>Excellent for cooking</li>
+                    </ul>
+                    
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="pea-quantity" onchange="calculateNutrition('pea')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="pea-mineral" onchange="calculateNutrition('pea')">
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-a">Vitamin A</option>
+                                    <option value="protein">Protein</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="calcium">Calcium</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="pea-result">
+                            <span class="result-value">62.5</span><span class="result-unit">mg Vitamin C</span>
+                        </div>
+                    </div>
+
+                    <div class="add-to-cart-section">
+                        <div class="quantity-selector-cart">
+                            <label>Select Quantity & Price:</label>
+                            <select id="pea-cart-quantity">
+                                <option value="25">25g - ₹50</option>
+                                <option value="50">50g - ₹90</option>
+                                <option value="100">100g - ₹165</option>
+                                <option value="200">200g - ₹310</option>
+                            </select>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCart('pea', 'Pea Shoots', '🟢')">
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. SUNFLOWER MICROGREENS -->
+                <div class="product-card">
+                    <img src="images/products/sunflower-microgreens.jpg" alt="Fresh Sunflower Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="product-icon" style="display: none;">🌻</div>
+                    <h3>Sunflower Microgreens</h3>
+                    <p>Nutty flavor with a satisfying crunch. Packed with healthy fats and protein.</p>
+                    <ul class="product-features">
+                        <li>High in healthy fats</li>
+                        <li>Nutty, satisfying taste</li>
+                        <li>Great texture variety</li>
+                    </ul>
+                    
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="sunflower-quantity" onchange="calculateNutrition('sunflower')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="sunflower-mineral" onchange="calculateNutrition('sunflower')">
+                                    <option value="vitamin-e">Vitamin E</option>
+                                    <option value="protein">Protein</option>
+                                    <option value="zinc">Zinc</option>
+                                    <option value="magnesium">Magnesium</option>
+                                    <option value="healthy-fats">Healthy Fats</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="sunflower-result">
+                            <span class="result-value">3.75</span><span class="result-unit">mg Vitamin E</span>
+                        </div>
+                    </div>
+
+                    <div class="add-to-cart-section">
+                        <div class="quantity-selector-cart">
+                            <label>Select Quantity & Price:</label>
+                            <select id="sunflower-cart-quantity">
+                                <option value="25">25g - ₹55</option>
+                                <option value="50">50g - ₹100</option>
+                                <option value="100">100g - ₹180</option>
+                                <option value="200">200g - ₹340</option>
+                            </select>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCart('sunflower', 'Sunflower Microgreens', '🌻')">
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. PURPLE CABBAGE -->
+                <div class="product-card">
+                    <img src="images/products/purple-cabbage.jpg" alt="Fresh Purple Cabbage Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="product-icon" style="display: none;">🟣</div>
+                    <h3>Purple Cabbage</h3>
+                    <p>Vibrant purple color with a mild cabbage flavor and beautiful presentation.</p>
+                    <ul class="product-features">
+                        <li>High in antioxidants</li>
+                        <li>Beautiful purple color</li>
+                        <li>Mild, pleasant taste</li>
+                    </ul>
+                    
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="purple-quantity" onchange="calculateNutrition('purple')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="purple-mineral" onchange="calculateNutrition('purple')">
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="anthocyanins">Anthocyanins</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="calcium">Calcium</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="purple-result">
+                            <span class="result-value">70</span><span class="result-unit">mg Vitamin C</span>
+                        </div>
+                    </div>
+
+                    <div class="add-to-cart-section">
+                        <div class="quantity-selector-cart">
+                            <label>Select Quantity & Price:</label>
+                            <select id="purple-cart-quantity">
+                                <option value="25">25g - ₹60</option>
+                                <option value="50">50g - ₹110</option>
+                                <option value="100">100g - ₹195</option>
+                                <option value="200">200g - ₹370</option>
+                            </select>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCart('purple', 'Purple Cabbage', '🟣')">
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 5. BROCCOLI MICROGREENS -->
+                <div class="product-card">
+                    <img src="images/products/broccoli-microgreens.jpg" alt="Fresh Broccoli Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="product-icon" style="display: none;">🥦</div>
+                    <h3>Broccoli Microgreens</h3>
+                    <p>Concentrated broccoli flavor with powerful cancer-fighting compounds.</p>
+                    <ul class="product-features">
+                        <li>High in sulforaphane</li>
+                        <li>Cancer-fighting properties</li>
+                        <li>Mild broccoli flavor</li>
+                    </ul>
+                    
+                    <div class="nutrition-calculator">
+                        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                        <div class="calculator-controls">
+                            <div class="control-group">
+                                <label class="control-label">Quantity</label>
+                                <select class="calculator-select" id="broccoli-quantity" onchange="calculateNutrition('broccoli')">
+                                    <option value="25">25g</option>
+                                    <option value="50">50g</option>
+                                    <option value="100">100g</option>
+                                    <option value="200">200g</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Mineral/Vitamin</label>
+                                <select class="calculator-select" id="broccoli-mineral" onchange="calculateNutrition('broccoli')">
+                                    <option value="sulforaphane">Sulforaphane</option>
+                                    <option value="vitamin-c">Vitamin C</option>
+                                    <option value="vitamin-k">Vitamin K</option>
+                                    <option value="folate">Folate</option>
+                                    <option value="iron">Iron</option>
+                                    <option value="fiber">Fiber</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="nutrition-result" id="broccoli-result">
+                            <span class="result-value">30</span><span class="result-unit">mg Sulforaphane</span>
+                        </div>
+                    </div>
+
+                    <div class="add-to-cart-section">
+                        <div class="quantity-selector-cart">
+                            <label>Select Quantity & Price:</label>
+                            <select id="broccoli-cart-quantity">
+                                <option value="25">25g - ₹65</option>
+                                <option value="50">50g - ₹115</option>
+                                <option value="100">100g - ₹210</option>
+                                <option value="200">200g - ₹395</option>
+                            </select>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCart('broccoli', 'Broccoli Microgreens', '🥦')">
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Continue with remaining 6 products... -->
+                <!-- 6. ARUGULA - 7. KALE - 8. BEETROOT - 9. MUSTARD - 10. CILANTRO - 11. WHEATGRASS -->
+                <!-- [Products 6-11 follow the same pattern with their respective data] -->
+
+            </div>
+        </div>
+    </section>
+     <!-- ADD THESE SECTIONS AFTER THE CUSTOM BLEND SECTION -->
+
+    <!-- Why Choose Us Section -->
+    <section class="why-choose">
+        <div class="why-choose-container">
+            <div class="why-choose-content">
+                <div class="why-choose-text">
+                    <h2>Why Choose Leaf Nest?</h2>
+                    <ul class="why-choose-list">
+                        <li><strong>Locally Grown:</strong> Cultivated fresh in Hyderabad using sustainable practices</li>
+                        <li><strong>Daily Harvest:</strong> Picked at peak nutrition and delivered within 24 hours</li>
+                        <li><strong>Pesticide-Free:</strong> 100% organic growing methods with no harmful chemicals</li>
+                        <li><strong>Maximum Nutrition:</strong> Harvested at the optimal time for nutrient density</li>
+                        <li><strong>Fresh Delivery:</strong> Direct from our farm to your table across Hyderabad</li>
+                    </ul>
+                </div>
+                <div class="why-choose-visual">
+                    <div class="why-choose-circle">🌱</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nutrition Section -->
+    <section id="nutrition" class="nutrition">
+        <div class="nutrition-container">
+            <!-- Nutrition Banner -->
+            <div class="nutrition-banner">
+                <div class="nutrition-banner-content">
+                    <h2>Nutritional Powerhouse</h2>
+                    <p>Our microgreens are concentrated sources of vitamins, minerals, and antioxidants that surpass mature vegetables in nutritional density</p>
+                </div>
+            </div>
+            
+            <div class="nutrition-stats">
+                <div class="stat-card">
+                    <div class="stat-number">40x</div>
+                    <div class="stat-label">More Nutrients than Mature Plants</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Organic & Chemical-Free</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">7-14</div>
+                    <div class="stat-label">Days from Seed to Harvest</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24hr</div>
+                    <div class="stat-label">Fresh Delivery Promise</div>
+                </div>
+            </div>
+
+            <!-- Nutrition Comparison -->
+            <div class="nutrition-comparison">
+                <h3 class="comparison-title">Microgreens vs Mature Vegetables</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-item">
+                        <div class="comparison-icon">🥬</div>
+                        <div class="comparison-label">1 Cup Mature Lettuce<br><small>14 calories, Low nutrients</small></div>
+                    </div>
+                    <div class="vs-text">VS</div>
+                    <div class="comparison-item">
+                        <div class="comparison-icon">🌱</div>
+                        <div class="comparison-label">1 Cup Microgreens<br><small>Same calories, 40x nutrients!</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Nutrition for Each Microgreen -->
+            <div class="nutrition-details">
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🌶️</span>Radish Microgreens</h3>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin C</div>
+                            <div class="modern-benefit-text">Boosts immune system - 6x more than oranges</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin K</div>
+                            <div class="modern-benefit-text">Supports bone health and blood clotting</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Folate</div>
+                            <div class="modern-benefit-text">Essential for cell division and DNA synthesis</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Antioxidants</div>
+                            <div class="modern-benefit-text">Reduces inflammation and oxidative stress</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Fiber</div>
+                            <div class="modern-benefit-text">Promotes digestive health</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Detox</div>
+                            <div class="modern-benefit-text">Natural detoxification properties</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🟢</span>Pea Shoots</h3>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Protein</div>
+                            <div class="modern-benefit-text">Complete amino acid profile for muscle health</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin A</div>
+                            <div class="modern-benefit-text">Supports eye health and vision</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin C</div>
+                            <div class="modern-benefit-text">7x more than blueberries</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Iron</div>
+                            <div class="modern-benefit-text">Prevents anemia and boosts energy</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Calcium</div>
+                            <div class="modern-benefit-text">Strengthens bones and teeth</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Blood Sugar</div>
+                            <div class="modern-benefit-text">Natural blood sugar regulation</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🌻</span>Sunflower Microgreens</h3>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin E</div>
+                            <div class="modern-benefit-text">Powerful antioxidant for skin health</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Healthy Fats</div>
+                            <div class="modern-benefit-text">Omega-3 and Omega-6 for brain function</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Protein</div>
+                            <div class="modern-benefit-text">25% protein content - muscle building</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Zinc</div>
+                            <div class="modern-benefit-text">Immune system support and wound healing</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Magnesium</div>
+                            <div class="modern-benefit-text">Heart health and muscle function</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Cholesterol</div>
+                            <div class="modern-benefit-text">Helps lower cholesterol levels</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🥬</span>Mixed Greens</h3>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Full Spectrum</div>
+                            <div class="modern-benefit-text">Complete range of vitamins A, C, K, E</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Minerals</div>
+                            <div class="modern-benefit-text">Iron, calcium, potassium, magnesium</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Antioxidants</div>
+                            <div class="modern-benefit-text">Diverse phytonutrients for overall health</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Fiber</div>
+                            <div class="modern-benefit-text">Promotes gut health and satiety</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Chlorophyll</div>
+                            <div class="modern-benefit-text">Natural detoxification and blood purification</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Daily Wellness</div>
+                            <div class="modern-benefit-text">Balanced nutrition for daily wellness</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🟣</span>Purple Cabbage</h3>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Anthocyanins</div>
+                            <div class="modern-benefit-text">Purple pigments with anti-cancer properties</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin C</div>
+                            <div class="modern-benefit-text">6x more than mature cabbage</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin K</div>
+                            <div class="modern-benefit-text">Bone health and blood clotting</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Betalains</div>
+                            <div class="modern-benefit-text">Anti-inflammatory compounds</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Fiber</div>
+                            <div class="modern-benefit-text">Digestive health and weight management</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Heart Health</div>
+                            <div class="modern-benefit-text">Supports cardiovascular health</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nutrition-card">
+                    <h3><span class="microgreen-icon">🥦</span>Broccoli Microgreens</h3>
+                    <div class="modern-benefits">
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Sulforaphane</div>
+                            <div class="modern-benefit-text">Powerful anti-cancer compound - 100x more than mature broccoli</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin C</div>
+                            <div class="modern-benefit-text">Immune system boost - 4x more than oranges</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Vitamin K</div>
+                            <div class="modern-benefit-text">Bone health and blood clotting</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Folate</div>
+                            <div class="modern-benefit-text">Brain health and cellular function</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Fiber</div>
+                            <div class="modern-benefit-text">Digestive health and detoxification</div>
+                        </div>
+                        <div class="modern-benefit-card">
+                            <div class="modern-vitamin-badge">Liver Support</div>
+                            <div class="modern-benefit-text">Liver detoxification support</div>
+                        </div>
+                    </div>
+                </div>   
+   <!-- REPLACE the custom blend section in Part 7 with this complete version -->
+    
+    <!-- Custom Blend Calculator Section -->
+    <section class="custom-blend">
+        <div class="custom-blend-container">
+            <div class="blend-intro">
+                <h2>🌿 Create Your Custom Mix</h2>
+                <p>Design your perfect microgreen blend! Select your favorite varieties, adjust the percentages, and see the nutritional breakdown of your custom mix.</p>
+            </div>
+            
+            <div class="blend-calculator">
+                <div class="blend-controls">
+                    <div class="microgreens-selection">
+                        <div class="microgreen-control" id="radish-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="radish-check" onchange="toggleMicrogreen('radish')">
+                                <label for="radish-check">🌶️ Radish Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="radish-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="radish-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="radish-range" oninput="updatePercentage('radish')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="pea-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="pea-check" onchange="toggleMicrogreen('pea')">
+                                <label for="pea-check">🟢 Pea Shoots</label>
+                            </div>
+                            <div class="percentage-slider" id="pea-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="pea-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="pea-range" oninput="updatePercentage('pea')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="sunflower-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="sunflower-check" onchange="toggleMicrogreen('sunflower')">
+                                <label for="sunflower-check">🌻 Sunflower Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="sunflower-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="sunflower-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="sunflower-range" oninput="updatePercentage('sunflower')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="purple-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="purple-check" onchange="toggleMicrogreen('purple')">
+                                <label for="purple-check">🟣 Purple Cabbage</label>
+                            </div>
+                            <div class="percentage-slider" id="purple-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="purple-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="purple-range" oninput="updatePercentage('purple')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="broccoli-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="broccoli-check" onchange="toggleMicrogreen('broccoli')">
+                                <label for="broccoli-check">🥦 Broccoli Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="broccoli-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="broccoli-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="broccoli-range" oninput="updatePercentage('broccoli')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="arugula-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="arugula-check" onchange="toggleMicrogreen('arugula')">
+                                <label for="arugula-check">🌿 Arugula Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="arugula-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="arugula-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="arugula-range" oninput="updatePercentage('arugula')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="kale-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="kale-check" onchange="toggleMicrogreen('kale')">
+                                <label for="kale-check">🥬 Kale Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="kale-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="kale-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="kale-range" oninput="updatePercentage('kale')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="beetroot-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="beetroot-check" onchange="toggleMicrogreen('beetroot')">
+                                <label for="beetroot-check">🟤 Beetroot Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="beetroot-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="beetroot-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="beetroot-range" oninput="updatePercentage('beetroot')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="mustard-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="mustard-check" onchange="toggleMicrogreen('mustard')">
+                                <label for="mustard-check">🌿 Mustard Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="mustard-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="mustard-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="mustard-range" oninput="updatePercentage('mustard')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="cilantro-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="cilantro-check" onchange="toggleMicrogreen('cilantro')">
+                                <label for="cilantro-check">🌿 Cilantro Microgreens</label>
+                            </div>
+                            <div class="percentage-slider" id="cilantro-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="cilantro-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="cilantro-range" oninput="updatePercentage('cilantro')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="wheatgrass-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="wheatgrass-check" onchange="toggleMicrogreen('wheatgrass')">
+                                <label for="wheatgrass-check">🌾 Wheat Grass</label>
+                            </div>
+                            <div class="percentage-slider" id="wheatgrass-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="wheatgrass-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="wheatgrass-range" oninput="updatePercentage('wheatgrass')">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="blend-results">
+                        <h3 class="results-title">Your Custom Blend</h3>
+                        
+                        <div class="quantity-selector">
+                            <label>Quantity: </label>
+                            <select id="blend-quantity" onchange="updateBlendNutrition()">
+                                <option value="25">25g</option>
+                                <option value="50">50g</option>
+                                <option value="100">100g</option>
+                                <option value="200">200g</option>
+                            </select>
+                        </div>
+                        
+                        <div class="blend-summary" id="blend-summary">
+                            Select microgreens to create your blend
+                        </div>
+                        
+                        <div class="nutrition-display">
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Vitamin C</div>
+                                <div class="nutrient-value" id="blend-vitamin-c">0 mg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Protein</div>
+                                <div class="nutrient-value" id="blend-protein">0 g</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Iron</div>
+                                <div class="nutrient-value" id="blend-iron">0 mg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Fiber</div>
+                                <div class="nutrient-value" id="blend-fiber">0 g</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Vitamin K</div>
+                                <div class="nutrient-value" id="blend-vitamin-k">0 mcg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Calcium</div>
+                                <div class="nutrient-value" id="blend-calcium">0 mg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Vitamin A</div>
+                                <div class="nutrient-value" id="blend-vitamin-a">0 mcg</div>
+                            </div>
+                            <div class="nutrition-item">
+                                <div class="nutrient-name">Folate</div>
+                                <div class="nutrient-value" id="blend-folate">0 mcg</div>
+                            </div>
+                        </div>
+                        
+                        <button class="create-blend-btn" onclick="createCustomOrder()">Make Custom Blend</button>
+                        <button class="blend-add-to-cart" onclick="addCustomBlendFromCalculator()" id="blendCartBtn">
+                            🛒 Add Custom Blend to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us, Nutrition, About, Testimonials, Contact sections... -->
+    <!-- (Include all other sections from original) -->
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3 class="cart-title">Your Cart</h3>
+            <button class="cart-close" onclick="closeCart()">×</button>
+        </div>
+        
+        <div class="cart-content">
+            <div class="cart-empty" id="cartEmpty">
+                <div class="cart-empty-icon">🛒</div>
+                <h3>Your cart is empty</h3>
+                <p>Add some fresh microgreens to get started!</p>
+            </div>
+            
+            <div class="cart-items" id="cartItems" style="display: none;">
+                <!-- Cart items will be dynamically generated here -->
+            </div>
+        </div>
+        
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-summary">
+                <div class="cart-total-row">
+                    <span>Subtotal:</span>
+                    <span id="cartSubtotal">₹0</span>
+                </div>
+                <div class="cart-total-row">
+                    <span>Delivery:</span>
+                    <span id="cartDelivery">₹30</span>
+                </div>
+                <div class="cart-total-row final">
+                    <span>Total:</span>
+                    <span id="cartTotal">₹30</span>
+                </div>
+            </div>
+            
+            <div class="cart-actions">
+                <button class="cart-btn cart-btn-primary" onclick="proceedToCheckout()">
+                    📱 Order via WhatsApp
+                </button>
+                <button class="cart-btn cart-btn-secondary" onclick="clearCart()">
+                    🗑️ Clear Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div class="cart-message success" id="cartMessage">
+        <span>✅</span>
+        <span id="cartMessageText">Item added to cart!</span>
+    </div>
+
+    <script>
+        // ===== CART SYSTEM JAVASCRIPT =====
+        
+        // Pricing data (₹ prices for Indian market)
+        const pricingData = {
+            radish: { 25: 45, 50: 80, 100: 145, 200: 275 },
+            pea: { 25: 50, 50: 90, 100: 165, 200: 310 },
+            sunflower: { 25: 55, 50: 100, 100: 180, 200: 340 },
+            purple: { 25: 60, 50: 110, 100: 195, 200: 370 },
+            broccoli: { 25: 65, 50: 115, 100: 210, 200: 395 },
+            arugula: { 25: 55, 50: 95, 100: 175, 200: 330 },
+            kale: { 25: 60, 50: 105, 100: 190, 200: 360 },
+            beetroot: { 25: 50, 50: 85, 100: 155, 200: 295 },
+            mustard: { 25: 45, 50: 80, 100: 145, 200: 275 },
+            cilantro: { 25: 40, 50: 70, 100: 125, 200: 235 },
+            wheatgrass: { 25: 35, 50: 60, 100: 110, 200: 205 }
+        };
+
+        // Product display names and icons
+        const productInfo = {
+            radish: { name: 'Radish Microgreens', icon: '🌶️' },
+            pea: { name: 'Pea Shoots', icon: '🟢' },
+            sunflower: { name: 'Sunflower Microgreens', icon: '🌻' },
+            purple: { name: 'Purple Cabbage', icon: '🟣' },
+            broccoli: { name: 'Broccoli Microgreens', icon: '🥦' },
+            arugula: { name: 'Arugula Microgreens', icon: '🌿' },
+            kale: { name: 'Kale Microgreens', icon: '🥬' },
+            beetroot: { name: 'Beetroot Microgreens', icon: '🟤' },
+            mustard: { name: 'Mustard Microgreens', icon: '🌿' },
+            cilantro: { name: 'Cilantro Microgreens', icon: '🌿' },
+            wheatgrass: { name: 'Wheat Grass', icon: '🌾' }
+        };
+
+      // REPLACE the nutrition data in Part 7 with this complete version:
 
 const nutritionData = {
     'radish': {
@@ -46,3 +3061,502 @@ const nutritionData = {
         'chlorophyll': { value: 450, unit: 'mg' }, 'vitamin-a': { value: 200, unit: 'mcg' }
     }
 };
+        // Cart state
+        let cart = [];
+        let cartTotal = 0;
+        const deliveryFee = 30;
+
+        // Cart Management Functions
+        function addToCart(productId, productName, productIcon, customBlend = null) {
+            let quantity, price, itemName;
+            
+            if (customBlend) {
+                quantity = customBlend.quantity;
+                price = calculateCustomBlendPrice(customBlend);
+                itemName = `Custom Blend (${quantity}g)`;
+            } else {
+                const quantityElement = document.getElementById(`${productId}-cart-quantity`);
+                if (!quantityElement) {
+                    showCartMessage('Quantity selector not found!', 'error');
+                    return;
+                }
+                
+                quantity = parseInt(quantityElement.value);
+                price = pricingData[productId][quantity];
+                itemName = `${productName} (${quantity}g)`;
+            }
+
+            const existingItemIndex = cart.findIndex(item => 
+                item.id === (customBlend ? 'custom-blend' : productId) && 
+                item.quantity === quantity &&
+                JSON.stringify(item.customBlend) === JSON.stringify(customBlend)
+            );
+
+            if (existingItemIndex > -1) {
+                cart[existingItemIndex].count += 1;
+                cart[existingItemIndex].totalPrice = cart[existingItemIndex].count * price;
+            } else {
+                const cartItem = {
+                    id: customBlend ? 'custom-blend' : productId,
+                    name: itemName,
+                    icon: customBlend ? '🌿' : productIcon,
+                    quantity: quantity,
+                    price: price,
+                    count: 1,
+                    totalPrice: price,
+                    customBlend: customBlend
+                };
+                cart.push(cartItem);
+            }
+
+            updateCartUI();
+            showCartMessage(`${itemName} added to cart!`, 'success');
+        }
+
+        function removeFromCart(index) {
+            const item = cart[index];
+            cart.splice(index, 1);
+            updateCartUI();
+            showCartMessage(`${item.name} removed from cart`, 'success');
+        }
+
+        function updateCartItemQuantity(index, change) {
+            const item = cart[index];
+            item.count += change;
+            
+            if (item.count <= 0) {
+                removeFromCart(index);
+                return;
+            }
+            
+            item.totalPrice = item.count * item.price;
+            updateCartUI();
+        }
+
+        function calculateCustomBlendPrice(blendData) {
+            const basePrice = pricingData.radish[blendData.quantity];
+            return Math.round(basePrice * 1.2);
+        }
+
+        function clearCart() {
+            if (cart.length === 0) return;
+            
+            if (confirm('Are you sure you want to clear your cart?')) {
+                cart = [];
+                updateCartUI();
+                showCartMessage('Cart cleared!', 'success');
+            }
+        }
+
+        // UI Update Functions
+        function updateCartUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartEmpty = document.getElementById('cartEmpty');
+            const cartItems = document.getElementById('cartItems');
+            const cartFooter = document.getElementById('cartFooter');
+            const cartSubtotal = document.getElementById('cartSubtotal');
+            const cartTotal = document.getElementById('cartTotal');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.count, 0);
+            cartCount.textContent = totalItems;
+            
+            if (cart.length === 0) {
+                cartEmpty.style.display = 'block';
+                cartItems.style.display = 'none';
+                cartFooter.style.display = 'none';
+            } else {
+                cartEmpty.style.display = 'none';
+                cartItems.style.display = 'block';
+                cartFooter.style.display = 'block';
+                
+                cartItems.innerHTML = cart.map((item, index) => `
+                    <div class="cart-item">
+                        <div class="cart-item-icon">${item.icon}</div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-quantity">Quantity: ${item.quantity}g</div>
+                            <div class="cart-item-price">₹${item.price} each</div>
+                            ${item.customBlend ? `<div class="cart-item-blend">Custom Blend: ${item.customBlend.summary}</div>` : ''}
+                        </div>
+                        <div class="cart-item-controls">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateCartItemQuantity(${index}, -1)" ${item.count <= 1 ? 'disabled' : ''}>-</button>
+                                <span class="quantity-display">${item.count}</span>
+                                <button class="quantity-btn" onclick="updateCartItemQuantity(${index}, 1)">+</button>
+                            </div>
+                            <button class="remove-item" onclick="removeFromCart(${index})">Remove</button>
+                        </div>
+                        <div class="cart-item-price">₹${item.totalPrice}</div>
+                    </div>
+                `).join('');
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
+            cartSubtotal.textContent = `₹${subtotal}`;
+            cartTotal.textContent = `₹${subtotal + deliveryFee}`;
+        }
+
+        // Cart UI Controls
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            const overlay = document.getElementById('cartOverlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            
+            if (sidebar.classList.contains('open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function closeCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            const overlay = document.getElementById('cartOverlay');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function showCartMessage(message, type = 'success') {
+            const messageEl = document.getElementById('cartMessage');
+            const messageText = document.getElementById('cartMessageText');
+            
+            messageText.textContent = message;
+            messageEl.className = `cart-message ${type}`;
+            messageEl.classList.add('show');
+            
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // Checkout Process
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                showCartMessage('Your cart is empty!', 'error');
+                return;
+            }
+            
+            const phoneNumber = '919618571131';
+            const subtotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
+            const total = subtotal + deliveryFee;
+            const estimatedDelivery = getEstimatedDelivery();
+            
+            let orderMessage = `🌱 *New Order from Leaf Nest Website*\n\n`;
+            orderMessage += `📋 *Order Details:*\n`;
+            
+            cart.forEach((item, index) => {
+                orderMessage += `${index + 1}. ${item.icon} ${item.name}\n`;
+                orderMessage += `   Quantity: ${item.count}x @ ₹${item.price} each\n`;
+                orderMessage += `   Total: ₹${item.totalPrice}\n`;
+                if (item.customBlend) {
+                    orderMessage += `   🌿 Custom Blend: ${item.customBlend.summary}\n`;
+                }
+                orderMessage += `\n`;
+            });
+            
+            orderMessage += `💰 *Payment Summary:*\n`;
+            orderMessage += `Subtotal: ₹${subtotal}\n`;
+            orderMessage += `Delivery Fee: ₹${deliveryFee}\n`;
+            orderMessage += `*Grand Total: ₹${total}*\n\n`;
+            
+            orderMessage += `🚚 *Estimated Delivery:* ${estimatedDelivery}\n`;
+            orderMessage += `📍 *Please provide:*\n`;
+            orderMessage += `• Complete delivery address in Hyderabad\n`;
+            orderMessage += `• Contact number\n`;
+            orderMessage += `• Preferred delivery time (9 AM - 6 PM)\n\n`;
+            
+            orderMessage += `💳 *Payment:* Cash on Delivery\n\n`;
+            orderMessage += `Thank you for choosing Leaf Nest! 🌿\n`;
+            orderMessage += `*"Where Health Takes Roots"*`;
+            
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(orderMessage)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            showCartMessage('Opening WhatsApp to complete your order...', 'success');
+            
+            setTimeout(() => {
+                if (confirm('Order sent! Would you like to clear your cart?')) {
+                    clearCart();
+                    closeCart();
+                }
+            }, 2000);
+        }
+
+        function getEstimatedDelivery() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            
+            const deliveryDate = new Date();
+            if (currentHour >= 18) {
+                deliveryDate.setDate(deliveryDate.getDate() + 2);
+            } else {
+                deliveryDate.setDate(deliveryDate.getDate() + 1);
+            }
+            
+            return deliveryDate.toLocaleDateString('en-IN', {
+                weekday: 'long',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Nutrition Calculator Functions
+        function calculateNutrition(microgreen) {
+            const quantity = parseInt(document.getElementById(microgreen + '-quantity').value);
+            const mineralKey = document.getElementById(microgreen + '-mineral').value;
+            const resultElement = document.getElementById(microgreen + '-result');
+            
+            const microgreenData = nutritionData[microgreen];
+            if (microgreenData && microgreenData[mineralKey]) {
+                const mineralInfo = microgreenData[mineralKey];
+                const baseValue = mineralInfo.value;
+                const unit = mineralInfo.unit;
+                const name = document.querySelector(`#${microgreen}-mineral option[value="${mineralKey}"]`).textContent;
+
+                const calculatedValue = (baseValue * quantity / 100).toFixed(2).replace(/\.00$/, '');
+                
+                resultElement.innerHTML = `<span class="result-value">${calculatedValue}</span><span class="result-unit">${unit} ${name}</span>`;
+            }
+        }
+
+        // Custom Blend Functions
+        let activeMicrogreens = [];
+
+        function toggleMicrogreen(name) {
+            const isChecked = document.getElementById(`${name}-check`).checked;
+            const sliderDiv = document.getElementById(`${name}-slider`);
+            const controlDiv = document.getElementById(`${name}-control`);
+
+            if (isChecked) {
+                sliderDiv.classList.add('active');
+                controlDiv.classList.add('active');
+                activeMicrogreens.push(name);
+            } else {
+                sliderDiv.classList.remove('active');
+                controlDiv.classList.remove('active');
+                activeMicrogreens = activeMicrogreens.filter(item => item !== name);
+                document.getElementById(`${name}-range`).value = 0;
+            }
+            distributePercentages();
+        }
+
+        function updatePercentage(changedName) {
+            distributePercentages(changedName);
+        }
+
+        function distributePercentages(changedName = null) {
+            if (activeMicrogreens.length === 0) {
+                updateBlendNutrition();
+                return;
+            }
+
+            let totalPercent = 100;
+            let lockedValue = 0;
+
+            if (changedName) {
+                lockedValue = parseInt(document.getElementById(`${changedName}-range`).value);
+                totalPercent -= lockedValue;
+            }
+            
+            let remainingGreens = activeMicrogreens.filter(name => name !== changedName);
+            let equalShare = remainingGreens.length > 0 ? totalPercent / remainingGreens.length : 0;
+
+            if (totalPercent < 0) {
+                lockedValue = 100;
+                totalPercent = 0;
+                equalShare = 0;
+                document.getElementById(`${changedName}-range`).value = 100;
+            }
+
+            if (changedName) {
+                document.getElementById(`${changedName}-percent`).textContent = `${lockedValue}%`;
+            }
+
+            remainingGreens.forEach(name => {
+                document.getElementById(`${name}-range`).value = equalShare;
+                document.getElementById(`${name}-percent`).textContent = `${Math.round(equalShare)}%`;
+            });
+            
+            let currentTotal = 0;
+            activeMicrogreens.forEach(name => {
+                currentTotal += Math.round(parseFloat(document.getElementById(`${name}-range`).value));
+            });
+            
+            if (currentTotal !== 100 && activeMicrogreens.length > 0) {
+                let difference = 100 - currentTotal;
+                let targetSlider = changedName ? remainingGreens[0] : activeMicrogreens[0];
+                if (targetSlider) {
+                    let currentValue = parseFloat(document.getElementById(`${targetSlider}-range`).value);
+                    document.getElementById(`${targetSlider}-range`).value = currentValue + difference;
+                    document.getElementById(`${targetSlider}-percent`).textContent = `${Math.round(currentValue + difference)}%`;
+                }
+            }
+            
+            updateBlendNutrition();
+        }
+
+        function updateBlendNutrition() {
+            const quantity = parseInt(document.getElementById('blend-quantity').value);
+            const summaryDiv = document.getElementById('blend-summary');
+
+            let totals = {
+                'vitamin-c': 0, 'protein': 0, 'iron': 0, 'fiber': 0,
+                'vitamin-k': 0, 'calcium': 0, 'vitamin-a': 0, 'folate': 0
+            };
+            let summaryText = [];
+
+            if (activeMicrogreens.length === 0) {
+                summaryDiv.textContent = 'Select microgreens to create your blend.';
+            } else {
+                activeMicrogreens.forEach(name => {
+                    const percentage = parseInt(document.getElementById(`${name}-range`).value);
+                    const weight = (quantity * percentage) / 100;
+                    
+                    if (percentage > 0) {
+                        const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+                        summaryText.push(`${nameCapitalized}: ${percentage}%`);
+                    }
+
+                    if (!nutritionData[name]) return;
+                    
+                    totals['vitamin-c'] += (nutritionData[name]['vitamin-c']?.value || 0) * (weight / 100);
+                    totals['protein'] += (nutritionData[name]['protein']?.value || 0) * (weight / 100);
+                    totals['iron'] += (nutritionData[name]['iron']?.value || 0) * (weight / 100);
+                    totals['fiber'] += (nutritionData[name]['fiber']?.value || 0) * (weight / 100);
+                    totals['vitamin-k'] += (nutritionData[name]['vitamin-k']?.value || 0) * (weight / 100);
+                    totals['calcium'] += (nutritionData[name]['calcium']?.value || 0) * (weight / 100);
+                    totals['vitamin-a'] += (nutritionData[name]['vitamin-a']?.value || 0) * (weight / 100);
+                    totals['folate'] += (nutritionData[name]['folate']?.value || 0) * (weight / 100);
+                });
+                summaryDiv.textContent = summaryText.join(' | ');
+            }
+
+            document.getElementById('blend-vitamin-c').textContent = `${totals['vitamin-c'].toFixed(1)} mg`;
+            document.getElementById('blend-protein').textContent = `${totals['protein'].toFixed(1)} g`;
+            document.getElementById('blend-iron').textContent = `${totals['iron'].toFixed(1)} mg`;
+            document.getElementById('blend-fiber').textContent = `${totals['fiber'].toFixed(1)} g`;
+            document.getElementById('blend-vitamin-k').textContent = `${totals['vitamin-k'].toFixed(1)} mcg`;
+            document.getElementById('blend-calcium').textContent = `${totals['calcium'].toFixed(1)} mg`;
+            document.getElementById('blend-vitamin-a').textContent = `${totals['vitamin-a'].toFixed(1)} mcg`;
+            document.getElementById('blend-folate').textContent = `${totals['folate'].toFixed(1)} mcg`;
+        }
+
+        function addCustomBlendFromCalculator() {
+            const activeMicrogreens = [];
+            let totalPercentage = 0;
+            
+            const microgreenTypes = ['radish', 'pea', 'sunflower', 'purple', 'broccoli', 'arugula', 'kale', 'beetroot', 'mustard', 'cilantro', 'wheatgrass'];
+            
+            microgreenTypes.forEach(type => {
+                const checkbox = document.getElementById(`${type}-check`);
+                const range = document.getElementById(`${type}-range`);
+                
+                if (checkbox && checkbox.checked && range && parseInt(range.value) > 0) {
+                    const percentage = parseInt(range.value);
+                    activeMicrogreens.push({
+                        type: type,
+                        name: productInfo[type].name,
+                        percentage: percentage
+                    });
+                    totalPercentage += percentage;
+                }
+            });
+            
+            if (activeMicrogreens.length === 0) {
+                showCartMessage('Please select microgreens for your blend!', 'error');
+                return;
+            }
+            
+            if (Math.abs(totalPercentage - 100) > 1) {
+                showCartMessage('Blend percentages must total 100%!', 'error');
+                return;
+            }
+            
+            const quantitySelect = document.getElementById('blend-quantity');
+            const quantity = quantitySelect ? parseInt(quantitySelect.value) : 100;
+            
+            const summary = activeMicrogreens
+                .map(mg => `${mg.name} ${mg.percentage}%`)
+                .join(', ');
+            
+            const customBlend = {
+                quantity: quantity,
+                summary: summary,
+                components: activeMicrogreens.reduce((acc, mg) => {
+                    acc[mg.type] = mg.percentage;
+                    return acc;
+                }, {})
+            };
+            
+            addToCart('custom-blend', 'Custom Blend', '🌿', customBlend);
+        }
+
+        // Mobile menu functionality
+        let mobileMenuOpen = false;
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            mobileNav.classList.toggle('active');
+            menuBtn.classList.toggle('active');
+            mobileMenuOpen = !mobileMenuOpen;
+        }
+        function closeMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            mobileNav.classList.remove('active');
+            menuBtn.classList.remove('active');
+            mobileMenuOpen = false;
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartUI();
+            
+            // Initialize all individual calculators on page load
+            const microgreens = ['radish', 'pea', 'sunflower', 'purple', 'broccoli', 'arugula', 'kale', 'beetroot', 'mustard', 'cilantro', 'wheatgrass'];
+            microgreens.forEach(mg => {
+                if (document.getElementById(`${mg}-quantity`)) {
+                    calculateNutrition(mg);
+                }
+            });
+            updateBlendNutrition();
+            
+            // Add event listeners for ESC key to close cart
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeCart();
+                }
+            });
+        });
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) closeMobileMenu();
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(44, 85, 48, 0.95)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, #2c5530 0%, #4a7c59 100%)';
+            }
+        });
+    </script>
+</body>
+</html>
