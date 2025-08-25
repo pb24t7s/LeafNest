@@ -2258,97 +2258,519 @@
         margin-top: 2rem;
     }
 
-    /* Mobile Responsiveness */
-    @media (max-width: 768px) {
-        .user-dropdown {
-            position: fixed;
-            top: 80px;
-            right: 1rem;
-            left: 1rem;
-            width: auto;
-            min-width: auto;
-        }
-        
-        .login-content, .profile-content, .address-content {
-            width: 95%;
-            max-height: 95vh;
-            margin: 0;
-        }
-        
-        .profile-content {
-            max-width: 95%;
-        }
-        
-        .profile-tabs {
-            overflow-x: auto;
-        }
-        
-        .tab-btn {
-            white-space: nowrap;
-            min-width: 100px;
-            font-size: 0.9rem;
-            padding: 0.8rem;
-        }
-        
-        .form-actions {
-            flex-direction: column;
-        }
-        
-        .cancel-btn {
-            margin-right: 0;
-            margin-bottom: 0.5rem;
-        }
-        
-        .address-actions {
-            gap: 0.3rem;
-        }
-        
-        .address-actions button {
-            font-size: 0.8rem;
-            padding: 5px 12px;
-        }
-        
-        .section-header {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 1rem;
-        }
-        
-        .order-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-        
-        .summary-item {
-        grid-template-columns: 1fr auto;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-        margin-bottom: 0.6rem;
-        }
-        
-        .summary-item .item-name {
-            font-size: 0.9rem;
-            line-height: 1.2;
-        }
-        
-        .summary-item .item-price {
-            font-size: 0.9rem;
-        }
-        
-        .summary-total {
-            font-size: 1.1rem;
-            gap: 0.5rem;
-        }
-        
-        .summary-total span:last-child {
-            font-size: 1.2rem;
-        }
-        
-        .order-summary {
-            padding: 1rem;
-        }
+    /* =================================== */
+/* ======== MOBILE RESPONSIVE ======== */
+/* =================================== */
+
+@media screen and (max-width: 768px) {
+    /* Header Mobile Fixes */
+    .header {
+        padding: 0.8rem 0;
     }
+    
+    .nav {
+        padding: 0 1rem;
+        position: relative;
+    }
+    
+    .logo-text {
+        font-size: 1.4rem;
+    }
+    
+    .logo-text span {
+        font-size: 0.7rem;
+    }
+    
+    .logo-img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    /* Hide desktop navigation */
+    .nav-links {
+        display: none !important;
+    }
+    
+    /* Show mobile menu button */
+    .mobile-menu-btn {
+        display: block !important;
+    }
+    
+    /* Show mobile navigation */
+    .mobile-nav {
+        display: block !important;
+    }
+    
+    /* Hero Section Mobile */
+    .hero {
+        padding: 120px 1rem 60px;
+        text-align: center;
+    }
+    
+    .hero h1 {
+        font-size: 2.2rem !important;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+    
+    .hero .tagline {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+        padding: 0 0.5rem;
+    }
+    
+    .cta-button {
+        font-size: 1rem;
+        padding: 12px 30px;
+    }
+    
+    /* Products Section Mobile */
+    .products {
+        padding: 60px 1rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+        margin-top: 2rem;
+    }
+    
+    .product-card {
+        padding: 1.5rem !important;
+        margin: 0 auto;
+        max-width: 400px;
+    }
+    
+    .product-card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .product-card p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .product-image {
+        height: 180px !important;
+        margin-bottom: 1rem;
+    }
+    
+    /* Product Purchase Section Mobile */
+    .product-purchase {
+        padding: 1rem !important;
+        margin-top: 1.5rem !important;
+    }
+    
+    .purchase-title {
+        font-size: 1rem !important;
+        margin-bottom: 0.8rem !important;
+    }
+    
+    .purchase-options {
+        grid-template-columns: 1fr !important;
+        gap: 0.8rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .option-label {
+        font-size: 0.85rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+    
+    .product-select {
+        padding: 0.7rem !important;
+        font-size: 0.85rem !important;
+        height: 42px !important;
+    }
+    
+    .price-display {
+        padding: 0.8rem !important;
+        margin-bottom: 1rem;
+    }
+    
+    .price-amount {
+        font-size: 1.3rem !important;
+    }
+    
+    .add-to-cart-btn {
+        padding: 12px 20px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Nutrition Calculator Mobile */
+    .nutrition-calculator {
+        padding: 1rem !important;
+        margin-top: 1.5rem !important;
+        height: auto !important;
+        min-height: 180px;
+    }
+    
+    .calculator-title {
+        font-size: 1rem !important;
+        margin-bottom: 0.8rem !important;
+    }
+    
+    .calculator-controls {
+        grid-template-columns: 1fr !important;
+        gap: 0.8rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .control-label {
+        font-size: 0.85rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+    
+    .calculator-select {
+        padding: 0.7rem !important;
+        font-size: 0.85rem !important;
+        height: 42px !important;
+    }
+    
+    .nutrition-result {
+        padding: 0.8rem !important;
+        min-height: 45px;
+    }
+    
+    .result-value {
+        font-size: 1.1rem !important;
+    }
+    
+    /* Custom Blend Mobile */
+    .custom-blend {
+        padding: 60px 1rem;
+    }
+    
+    .blend-intro h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .blend-intro p {
+        font-size: 1rem;
+    }
+    
+    .blend-calculator {
+        padding: 1.5rem !important;
+    }
+    
+    .blend-controls {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+    
+    .microgreens-selection {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .microgreen-control {
+        width: 100% !important;
+        max-width: none !important;
+    }
+    
+    .blend-results .nutrition-display {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem;
+    }
+    
+    .blend-results .nutrition-item {
+        padding: 0.6rem !important;
+    }
+    
+    .blend-results .nutrition-item .nutrient-name {
+        font-size: 0.75rem !important;
+    }
+    
+    .blend-results .nutrition-item .nutrient-value {
+        font-size: 1rem !important;
+    }
+    
+    /* Nutrition Section Mobile */
+    .nutrition {
+        padding: 60px 1rem;
+    }
+    
+    .nutrition-banner {
+        height: 250px;
+        margin-bottom: 3rem;
+    }
+    
+    .nutrition-banner h2 {
+        font-size: 2rem;
+    }
+    
+    .nutrition-banner p {
+        font-size: 1rem;
+    }
+    
+    .nutrition-stats {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 1rem !important;
+        margin: 2rem 0 !important;
+    }
+    
+    .stat-card {
+        padding: 1.5rem 1rem !important;
+        min-height: 140px;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem !important;
+        margin-bottom: 0.8rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem !important;
+        line-height: 1.3;
+    }
+    
+    .nutrition-comparison {
+        padding: 3rem 2rem;
+        margin: 4rem 0;
+    }
+    
+    .comparison-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .comparison-grid {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .vs-text {
+        font-size: 2rem;
+        margin: 1rem 0;
+    }
+    
+    .comparison-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .nutrition-details {
+        grid-template-columns: 1fr !important;
+        gap: 2rem;
+    }
+    
+    .nutrition-card {
+        padding: 2rem;
+    }
+    
+    .nutrition-card h3 {
+        font-size: 1.4rem;
+    }
+    
+    /* Why Choose Section Mobile */
+    .why-choose {
+        padding: 60px 1rem;
+    }
+    
+    .why-choose-content {
+        grid-template-columns: 1fr !important;
+        gap: 3rem;
+        text-align: center;
+    }
+    
+    .why-choose-text h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .why-choose-circle {
+        width: 180px !important;
+        height: 180px !important;
+        font-size: 3rem !important;
+    }
+    
+    /* Contact Section Mobile */
+    .contact {
+        padding: 60px 1rem;
+    }
+    
+    .contact-content {
+        grid-template-columns: 1fr !important;
+        gap: 3rem;
+        text-align: center;
+    }
+    
+    .contact-info h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-info p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .contact-details {
+        padding: 2rem !important;
+    }
+    
+    .contact-item {
+        margin: 1.5rem 0 !important;
+        font-size: 1rem !important;
+    }
+    
+    .contact-icon {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 1.3rem !important;
+    }
+    
+    /* Cart Mobile */
+    .cart-sidebar {
+        width: 100vw !important;
+        right: -100vw !important;
+    }
+    
+    .cart-sidebar.open {
+        right: 0 !important;
+    }
+    
+    /* Checkout Modal Mobile */
+    .checkout-modal {
+        width: 95% !important;
+        max-height: 95vh !important;
+        top: 2.5% !important;
+        left: 2.5% !important;
+        transform: none !important;
+        border-radius: 15px;
+    }
+    
+    .checkout-modal.show {
+        transform: none !important;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* User Profile Mobile */
+    .user-dropdown {
+        position: fixed !important;
+        top: 70px !important;
+        right: 1rem !important;
+        left: 1rem !important;
+        width: auto !important;
+        min-width: auto !important;
+    }
+    
+    .login-content, .profile-content, .address-content {
+        width: 95% !important;
+        max-height: 95vh !important;
+        margin: 0 !important;
+    }
+    
+    .profile-content {
+        max-width: 95% !important;
+    }
+    
+    .profile-tabs {
+        overflow-x: auto;
+    }
+    
+    .tab-btn {
+        white-space: nowrap;
+        min-width: 100px;
+        font-size: 0.9rem;
+        padding: 0.8rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .cancel-btn {
+        margin-right: 0 !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .address-actions {
+        gap: 0.3rem;
+        flex-wrap: wrap;
+    }
+    
+    .address-actions button {
+        font-size: 0.8rem;
+        padding: 5px 12px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .order-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    /* Footer Mobile */
+    .footer {
+        padding: 30px 1rem 20px;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    /* Mobile Menu Button Fix */
+    .mobile-menu-btn {
+        z-index: 1001;
+    }
+}
+
+/* Extra small screens */
+@media screen and (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.8rem !important;
+    }
+    
+    .nutrition-stats {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .stat-card {
+        padding: 1.2rem !important;
+        min-height: 120px;
+    }
+    
+    .stat-number {
+        font-size: 2rem !important;
+    }
+    
+    .comparison-grid {
+        gap: 1.5rem;
+    }
+    
+    .vs-text {
+        font-size: 1.5rem;
+    }
+}
     </style>
 </head>
 <body>
