@@ -5165,53 +5165,11 @@ function closeLoginModal() {
 
 // Send OTP (simulation)
 function sendOTP() {
-
-const phone = document.getElementById('loginPhone').value.trim();
-    
-    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-        alert('Please enter a valid 10-digit mobile number');
-        return;
-    }
-    
-    // For development - use demo mode
-    if (phone === '9999999999') {
-        // Show OTP step immediately for test number
-        document.getElementById('phoneStep').style.display = 'none';
-        document.getElementById('otpStep').style.display = 'block';
-        document.getElementById('phoneDisplay').textContent = '+91 ' + phone;
-        alert('Demo mode: Use OTP 123456');
-        return;
-    }
-    
-    // Try real Firebase OTP
     sendRealOTP();
 }
 
 function verifyOTP() {
-    const otp = document.getElementById('otpInput').value.trim();
-    const phone = document.getElementById('loginPhone').value.trim();
-    
-    // Demo mode for test number
-    if (phone === '9999999999' && otp === '123456') {
-        // Demo login successful
-        currentUser = {
-            uid: 'demo-user',
-            phone: '+91 ' + phone,
-            firstName: 'Demo',
-            lastName: 'User',
-            isLoggedIn: true
-        };
-        
-        updateUserUI();
-        closeLoginModal();
-        alert('Demo login successful!');
-        return;
-    }
-    
-    // Try real Firebase verification
     verifyRealOTP();
-
-    //sendRealOTP();
 }
    
 // Save user data to localStorage
