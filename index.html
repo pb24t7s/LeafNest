@@ -2741,6 +2741,28 @@
     .mobile-menu-btn {
         z-index: 1001;
     }
+    /* Mobile Profile Button */
+    .mobile-profile-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        width: 100%;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-profile-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+    }
 }
 
 /* Extra small screens */
@@ -3152,18 +3174,23 @@
             </div>
         </div>
         <!-- Mobile Navigation -->
-        <nav class="mobile-nav" id="mobileNav">
-            <ul>
-                <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
-                <li><a href="#products" onclick="closeMobileMenu()">Products</a></li>
-                <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
-                <li style="border: none; padding: 1rem 2rem;">
-                    <button class="cart-button" onclick="openCart(); closeMobileMenu();" style="width: 100%; justify-content: center;">
-                        🛒 Cart (<span id="mobileCartCount">0</span>)
-                    </button>
-                </li>
-            </ul>
-        </nav>
+            <nav class="mobile-nav" id="mobileNav">
+                <ul>
+                    <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
+                    <li><a href="#products" onclick="closeMobileMenu()">Products</a></li>
+                    <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
+                    <li style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1rem 2rem;">
+                        <button class="mobile-profile-btn" onclick="handleMobileProfile(); closeMobileMenu();" id="mobileProfileBtn">
+                            👤 <span id="mobileProfileText">Login</span>
+                        </button>
+                    </li>
+                    <li style="border: none; padding: 1rem 2rem;">
+                        <button class="cart-button" onclick="openCart(); closeMobileMenu();" style="width: 100%; justify-content: center;">
+                            🛒 Cart (<span id="mobileCartCount">0</span>)
+                        </button>
+                    </li>
+                </ul>
+            </nav>
     </header>
 
     <!-- Hero Section -->
@@ -4526,8 +4553,17 @@ function loadUserData() {
         userOrders = JSON.parse(localStorage.getItem('leafnest_orders_' + phoneKey) || '[]');
     }
 }
-
-// Update UI after login/logout
+// Handle mobile profile button
+function handleMobileProfile() {
+    if (currentUser && currentUser.isLoggedIn) {
+        // User is logged in, show profile
+        showProfile();
+    } else {
+        // User not logged in, show login modal
+        openLoginModal();
+    }
+}
+// Update the existing updateUserUI function to include mobile text
 function updateUserUI() {
     const profileText = document.querySelector('.profile-text');
     const mobileProfileText = document.getElementById('mobileProfileText');
@@ -4558,10 +4594,10 @@ function updateUserUI() {
         if (mobileProfileText) mobileProfileText.textContent = 'Login';
         userInfo.style.display = 'none';
         userDivider.style.display = 'none';
-       profileLink.style.display = 'none';
-       logoutLink.style.display = 'none';
-       loginLink.style.display = 'block';
-   }
+        profileLink.style.display = 'none';
+        logoutLink.style.display = 'none';
+        loginLink.style.display = 'block';
+    }
 }
 
 // Open profile modal
