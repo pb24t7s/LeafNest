@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaf Nest - Where Health Takes Roots</title>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Razorpay SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
  <style>
     * {
         margin: 0;
@@ -3208,15 +3217,17 @@
         <div class="products-container">
             <h2 class="section-title">Our Fresh Microgreens</h2>
             <div class="products-grid">
+    <div class="products-grid">
+    <!-- Alfalfa Microgreens -->
     <div class="product-card">
-        <img src="images/products/radish-microgreens.jpg" alt="Fresh Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <img src="images/products/alfalfa-microgreens.jpg" alt="Fresh Alfalfa Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
         <div class="product-icon" style="display: none;">🌱</div>
-        <h3>Radish Microgreens</h3>
-        <p>Spicy and peppery flavor that adds a kick to salads, sandwiches, and garnishes.</p>
+        <h3>Alfalfa Microgreens</h3>
+        <p>Mild, nutty flavor with tender leaves. Rich in protein and essential vitamins for daily nutrition.</p>
         <ul class="product-features">
-            <li>High in Vitamin C</li>
-            <li>Spicy, peppery taste</li>
-            <li>Great for garnishing</li>
+            <li>High in protein</li>
+            <li>Mild, nutty taste</li>
+            <li>Rich in vitamins K & C</li>
         </ul>
         
         <div class="nutrition-calculator">
@@ -3224,7 +3235,7 @@
             <div class="calculator-controls">
                 <div class="control-group">
                     <label class="control-label">Quantity</label>
-                    <select class="calculator-select" id="radish-quantity" onchange="calculateNutrition('radish')">
+                    <select class="calculator-select" id="alfalfa-quantity" onchange="calculateNutrition('alfalfa')">
                         <option value="25">25g</option>
                         <option value="50">50g</option>
                         <option value="100">100g</option>
@@ -3233,18 +3244,18 @@
                 </div>
                 <div class="control-group">
                     <label class="control-label">Mineral/Vitamin</label>
-                    <select class="calculator-select" id="radish-mineral" onchange="calculateNutrition('radish')">
-                        <option value="vitamin-c">Vitamin C</option>
+                    <select class="calculator-select" id="alfalfa-mineral" onchange="calculateNutrition('alfalfa')">
                         <option value="protein">Protein</option>
-                        <option value="iron">Iron</option>
-                        <option value="calcium">Calcium</option>
                         <option value="vitamin-k">Vitamin K</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="calcium">Calcium</option>
+                        <option value="iron">Iron</option>
                         <option value="fiber">Fiber</option>
                     </select>
                 </div>
             </div>
-            <div class="nutrition-result" id="radish-result">
-                <span class="result-value">75</span><span class="result-unit">mg Vitamin C</span>
+            <div class="nutrition-result" id="alfalfa-result">
+                <span class="result-value">9.2</span><span class="result-unit">g Protein</span>
             </div>
         </div>
 
@@ -3253,7 +3264,7 @@
             <div class="purchase-options">
                 <div class="option-group">
                     <label class="option-label">Quantity</label>
-                    <select class="product-select" id="radish-cart-quantity" onchange="updatePrice('radish')">
+                    <select class="product-select" id="alfalfa-cart-quantity" onchange="updatePrice('alfalfa')">
                         <option value="25">25g</option>
                         <option value="50">50g</option>
                         <option value="100" selected>100g</option>
@@ -3262,79 +3273,398 @@
                 </div>
             </div>
             <div class="price-display">
-                <span class="price-amount" id="radish-price">₹80</span>
+                <span class="price-amount" id="alfalfa-price">₹75</span>
             </div>
-            <button class="add-to-cart-btn" onclick="addToCart('radish', 'Radish Microgreens')">
+            <button class="add-to-cart-btn" onclick="addToCart('alfalfa', 'Alfalfa Microgreens')">
                 Add to Cart
             </button>
         </div>
     </div>
-            <div class="product-card">
-            <img src="images/products/pea-microgreens.jpg" alt="Fresh Pea Shoots" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="product-icon" style="display: none;">🟢</div>
-            <h3>Pea Shoots</h3>
-            <p>Sweet and delicate flavor with tender stems. Rich in protein and perfect for stir-fries and salads.</p>
-            <ul class="product-features">
-                <li>High in protein</li>
-                <li>Sweet, delicate taste</li>
-                <li>Excellent for cooking</li>
-            </ul>
-            
-            <div class="nutrition-calculator">
-                <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-                <div class="calculator-controls">
-                    <div class="control-group">
-                        <label class="control-label">Quantity</label>
-                        <select class="calculator-select" id="pea-quantity" onchange="calculateNutrition('pea')">
-                            <option value="25">25g</option>
-                            <option value="50">50g</option>
-                            <option value="100">100g</option>
-                            <option value="200">200g</option>
-                        </select>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Mineral/Vitamin</label>
-                        <select class="calculator-select" id="pea-mineral" onchange="calculateNutrition('pea')">
-                            <option value="vitamin-c">Vitamin C</option>
-                            <option value="vitamin-a">Vitamin A</option>
-                            <option value="protein">Protein</option>
-                            <option value="iron">Iron</option>
-                            <option value="calcium">Calcium</option>
-                            <option value="fiber">Fiber</option>
-                        </select>
-                    </div>
+
+    <!-- Beetroot Microgreens -->
+    <div class="product-card">
+        <img src="images/products/beetroot-microgreens.jpg" alt="Fresh Beetroot Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🟣</div>
+        <h3>Beetroot Microgreens</h3>
+        <p>Earthy, sweet flavor with vibrant purple stems. Packed with antioxidants and folate.</p>
+        <ul class="product-features">
+            <li>High in antioxidants</li>
+            <li>Sweet, earthy taste</li>
+            <li>Beautiful purple color</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Quantity</label>
+                    <select class="calculator-select" id="beetroot-quantity" onchange="calculateNutrition('beetroot')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100">100g</option>
+                        <option value="200">200g</option>
+                    </select>
                 </div>
-                <div class="nutrition-result" id="pea-result">
-                    <span class="result-value">62.5</span><span class="result-unit">mg Vitamin C</span>
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="beetroot-mineral" onchange="calculateNutrition('beetroot')">
+                        <option value="folate">Folate</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="potassium">Potassium</option>
+                        <option value="iron">Iron</option>
+                        <option value="fiber">Fiber</option>
+                        <option value="antioxidants">Antioxidants</option>
+                    </select>
                 </div>
             </div>
-
-            <div class="product-purchase">
-                <h4 class="purchase-title">🛒 Add to Cart</h4>
-                <div class="purchase-options">
-                    <div class="option-group">
-                        <label class="option-label">Quantity</label>
-                        <select class="product-select" id="pea-cart-quantity" onchange="updatePrice('pea')">
-                            <option value="25">25g</option>
-                            <option value="50">50g</option>
-                            <option value="100" selected>100g</option>
-                            <option value="200">200g</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="price-display">
-                    <span class="price-amount" id="pea-price">₹90</span>
-                </div>
-                <button class="add-to-cart-btn" onclick="addToCart('pea', 'Pea Shoots')">
-                    Add to Cart
-                </button>
+            <div class="nutrition-result" id="beetroot-result">
+                <span class="result-value">280</span><span class="result-unit">mcg Folate</span>
             </div>
         </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="option-group">
+                    <label class="option-label">Quantity</label>
+                    <select class="product-select" id="beetroot-cart-quantity" onchange="updatePrice('beetroot')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100" selected>100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+            </div>
+            <div class="price-display">
+                <span class="price-amount" id="beetroot-price">₹90</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('beetroot', 'Beetroot Microgreens')">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Cauliflower Microgreens -->
+    <div class="product-card">
+        <img src="images/products/cauliflower-microgreens.jpg" alt="Fresh Cauliflower Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🥦</div>
+        <h3>Cauliflower Microgreens</h3>
+        <p>Mild cabbage-like flavor with crisp texture. Excellent source of sulforaphane and vitamin K.</p>
+        <ul class="product-features">
+            <li>High in sulforaphane</li>
+            <li>Crisp, fresh texture</li>
+            <li>Mild cabbage flavor</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Quantity</label>
+                    <select class="calculator-select" id="cauliflower-quantity" onchange="calculateNutrition('cauliflower')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100">100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="cauliflower-mineral" onchange="calculateNutrition('cauliflower')">
+                        <option value="sulforaphane">Sulforaphane</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="folate">Folate</option>
+                        <option value="fiber">Fiber</option>
+                        <option value="calcium">Calcium</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="cauliflower-result">
+                <span class="result-value">95</span><span class="result-unit">mg Sulforaphane</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="option-group">
+                    <label class="option-label">Quantity</label>
+                    <select class="product-select" id="cauliflower-cart-quantity" onchange="updatePrice('cauliflower')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100" selected>100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+            </div>
+            <div class="price-display">
+                <span class="price-amount" id="cauliflower-price">₹85</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('cauliflower', 'Cauliflower Microgreens')">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Chia Microgreens -->
+    <div class="product-card">
+        <img src="images/products/chia-microgreens.jpg" alt="Fresh Chia Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🌿</div>
+        <h3>Chia Microgreens</h3>
+        <p>Delicate, mild flavor with incredible nutritional density. Rich in omega-3 fatty acids.</p>
+        <ul class="product-features">
+            <li>High in Omega-3</li>
+            <li>Delicate, mild taste</li>
+            <li>Super nutrient dense</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Quantity</label>
+                    <select class="calculator-select" id="chia-quantity" onchange="calculateNutrition('chia')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100">100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="chia-mineral" onchange="calculateNutrition('chia')">
+                        <option value="omega-3">Omega-3</option>
+                        <option value="protein">Protein</option>
+                        <option value="calcium">Calcium</option>
+                        <option value="magnesium">Magnesium</option>
+                        <option value="fiber">Fiber</option>
+                        <option value="phosphorus">Phosphorus</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="chia-result">
+                <span class="result-value">5.8</span><span class="result-unit">g Omega-3</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="option-group">
+                    <label class="option-label">Quantity</label>
+                    <select class="product-select" id="chia-cart-quantity" onchange="updatePrice('chia')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100" selected>100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+            </div>
+            <div class="price-display">
+                <span class="price-amount" id="chia-price">₹120</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('chia', 'Chia Microgreens')">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Flax Microgreens -->
+    <div class="product-card">
+        <img src="images/products/flax-microgreens.jpg" alt="Fresh Flax Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🌾</div>
+        <h3>Flax Microgreens</h3>
+        <p>Nutty, slightly bitter flavor. Exceptional source of lignans and alpha-linolenic acid.</p>
+        <ul class="product-features">
+            <li>Rich in lignans</li>
+            <li>High in ALA</li>
+            <li>Nutty, unique flavor</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Quantity</label>
+                    <select class="calculator-select" id="flax-quantity" onchange="calculateNutrition('flax')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100">100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="flax-mineral" onchange="calculateNutrition('flax')">
+                        <option value="lignans">Lignans</option>
+                        <option value="ala">ALA (Omega-3)</option>
+                        <option value="fiber">Fiber</option>
+                        <option value="protein">Protein</option>
+                        <option value="magnesium">Magnesium</option>
+                        <option value="thiamine">Thiamine</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="flax-result">
+                <span class="result-value">294</span><span class="result-unit">mg Lignans</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="option-group">
+                    <label class="option-label">Quantity</label>
+                    <select class="product-select" id="flax-cart-quantity" onchange="updatePrice('flax')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100" selected>100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+            </div>
+            <div class="price-display">
+                <span class="price-amount" id="flax-price">₹110</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('flax', 'Flax Microgreens')">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Mustard Microgreens -->
+    <div class="product-card">
+        <img src="images/products/mustard-microgreens.jpg" alt="Fresh Mustard Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🌶️</div>
+        <h3>Mustard Microgreens</h3>
+        <p>Spicy, peppery kick with bold flavor. Excellent source of vitamins A, C, and K.</p>
+        <ul class="product-features">
+            <li>Bold, spicy flavor</li>
+            <li>High in vitamins A, C, K</li>
+            <li>Great for Asian dishes</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Quantity</label>
+                    <select class="calculator-select" id="mustard-quantity" onchange="calculateNutrition('mustard')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100">100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="mustard-mineral" onchange="calculateNutrition('mustard')">
+                        <option value="vitamin-a">Vitamin A</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="calcium">Calcium</option>
+                        <option value="iron">Iron</option>
+                        <option value="folate">Folate</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="mustard-result">
+                <span class="result-value">924</span><span class="result-unit">mcg Vitamin A</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="option-group">
+                    <label class="option-label">Quantity</label>
+                    <select class="product-select" id="mustard-cart-quantity" onchange="updatePrice('mustard')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100" selected>100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+            </div>
+            <div class="price-display">
+                <span class="price-amount" id="mustard-price">₹80</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('mustard', 'Mustard Microgreens')">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Pink Radish Microgreens -->
+    <div class="product-card">
+        <img src="images/products/pink-radish-microgreens.jpg" alt="Fresh Pink Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🌸</div>
+        <h3>Pink Radish Microgreens</h3>
+        <p>Beautiful pink stems with spicy radish flavor. Stunning visual appeal with great nutrition.</p>
+        <ul class="product-features">
+            <li>Beautiful pink color</li>
+            <li>Spicy radish taste</li>
+            <li>Perfect for garnishing</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Quantity</label>
+                    <select class="calculator-select" id="pinkradish-quantity" onchange="calculateNutrition('pinkradish')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100">100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="pinkradish-mineral" onchange="calculateNutrition('pinkradish')">
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="anthocyanins">Anthocyanins</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="folate">Folate</option>
+                        <option value="potassium">Potassium</option>
+                        <option value="fiber">Fiber</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="pinkradish-result">
+                <span class="result-value">320</span><span class="result-unit">mg Vitamin C</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="option-group">
+                    <label class="option-label">Quantity</label>
+                    <select class="product-select" id="pinkradish-cart-quantity" onchange="updatePrice('pinkradish')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100" selected>100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+            </div>
+            <div class="price-display">
+                <span class="price-amount" id="pinkradish-price">₹95</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('pinkradish', 'Pink Radish Microgreens')">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Sunflower Microgreens -->
     <div class="product-card">
         <img src="images/products/sunflower-microgreens.jpg" alt="Fresh Sunflower Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
         <div class="product-icon" style="display: none;">🌻</div>
         <h3>Sunflower Microgreens</h3>
-        <p>Nutty flavor with a satisfying crunch. Packed with healthy fats and protein.</p>
+        <p>Nutty flavor with satisfying crunch. Packed with healthy fats, protein, and vitamin E.</p>
         <ul class="product-features">
             <li>High in healthy fats</li>
             <li>Nutty, satisfying taste</li>
@@ -3366,7 +3696,7 @@
                 </div>
             </div>
             <div class="nutrition-result" id="sunflower-result">
-                <span class="result-value">3.75</span><span class="result-unit">mg Vitamin E</span>
+                <span class="result-value">15</span><span class="result-unit">mg Vitamin E</span>
             </div>
         </div>
 
@@ -3382,7 +3712,6 @@
                         <option value="200">200g</option>
                     </select>
                 </div>
-                
             </div>
             <div class="price-display">
                 <span class="price-amount" id="sunflower-price">₹70</span>
@@ -3392,79 +3721,17 @@
             </button>
         </div>
     </div>
-    
-    <div class="product-card">
-        <img src="images/products/purple-cabbage.jpg" alt="Fresh Purple Cabbage Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-        <div class="product-icon" style="display: none;">🟣</div>
-        <h3>Purple Cabbage</h3>
-        <p>Vibrant purple color with a mild cabbage flavor and beautiful presentation.</p>
-        <ul class="product-features">
-            <li>High in antioxidants</li>
-            <li>Beautiful purple color</li>
-            <li>Mild, pleasant taste</li>
-        </ul>
-        
-        <div class="nutrition-calculator">
-            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-            <div class="calculator-controls">
-                <div class="control-group">
-                    <label class="control-label">Quantity</label>
-                    <select class="calculator-select" id="purple-quantity" onchange="calculateNutrition('purple')">
-                        <option value="25">25g</option>
-                        <option value="50">50g</option>
-                        <option value="100">100g</option>
-                        <option value="200">200g</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Mineral/Vitamin</label>
-                    <select class="calculator-select" id="purple-mineral" onchange="calculateNutrition('purple')">
-                        <option value="vitamin-c">Vitamin C</option>
-                        <option value="vitamin-k">Vitamin K</option>
-                        <option value="anthocyanins">Anthocyanins</option>
-                        <option value="iron">Iron</option>
-                        <option value="calcium">Calcium</option>
-                        <option value="fiber">Fiber</option>
-                    </select>
-                </div>
-            </div>
-            <div class="nutrition-result" id="purple-result">
-                <span class="result-value">70</span><span class="result-unit">mg Vitamin C</span>
-            </div>
-        </div>
 
-        <div class="product-purchase">
-            <h4 class="purchase-title">🛒 Add to Cart</h4>
-            <div class="purchase-options">
-                <div class="option-group">
-                    <label class="option-label">Quantity</label>
-                    <select class="product-select" id="purple-cart-quantity" onchange="updatePrice('purple')">
-                        <option value="25">25g</option>
-                        <option value="50">50g</option>
-                        <option value="100" selected>100g</option>
-                        <option value="200">200g</option>
-                    </select>
-                </div>
-               
-            </div>
-            <div class="price-display">
-                <span class="price-amount" id="purple-price">₹85</span>
-            </div>
-            <button class="add-to-cart-btn" onclick="addToCart('purple', 'Purple Cabbage')">
-                Add to Cart
-            </button>
-        </div>
-    </div>
-    
+    <!-- White Radish Microgreens -->
     <div class="product-card">
-        <img src="images/products/broccoli-microgreens.jpg" alt="Fresh Broccoli Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-        <div class="product-icon" style="display: none;">🥦</div>
-        <h3>Broccoli Microgreens</h3>
-        <p>Concentrated broccoli flavor with powerful cancer-fighting compounds.</p>
+        <img src="images/products/white-radish-microgreens.jpg" alt="Fresh White Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">⚪</div>
+        <h3>White Radish Microgreens</h3>
+        <p>Clean, crisp flavor with mild spiciness. Classic radish taste with beautiful white stems.</p>
         <ul class="product-features">
-            <li>High in sulforaphane</li>
-            <li>Cancer-fighting properties</li>
-            <li>Mild broccoli flavor</li>
+            <li>Clean, crisp flavor</li>
+            <li>Beautiful white stems</li>
+            <li>Mild spicy kick</li>
         </ul>
         
         <div class="nutrition-calculator">
@@ -3472,7 +3739,7 @@
             <div class="calculator-controls">
                 <div class="control-group">
                     <label class="control-label">Quantity</label>
-                    <select class="calculator-select" id="broccoli-quantity" onchange="calculateNutrition('broccoli')">
+                    <select class="calculator-select" id="whiteradish-quantity" onchange="calculateNutrition('whiteradish')">
                         <option value="25">25g</option>
                         <option value="50">50g</option>
                         <option value="100">100g</option>
@@ -3481,81 +3748,18 @@
                 </div>
                 <div class="control-group">
                     <label class="control-label">Mineral/Vitamin</label>
-                    <select class="calculator-select" id="broccoli-mineral" onchange="calculateNutrition('broccoli')">
-                        <option value="sulforaphane">Sulforaphane</option>
+                    <select class="calculator-select" id="whiteradish-mineral" onchange="calculateNutrition('whiteradish')">
                         <option value="vitamin-c">Vitamin C</option>
-                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="potassium">Potassium</option>
                         <option value="folate">Folate</option>
-                        <option value="iron">Iron</option>
-                        <option value="fiber">Fiber</option>
-                    </select>
-                </div>
-            </div>
-            <div class="nutrition-result" id="broccoli-result">
-                <span class="result-value">30</span><span class="result-unit">mg Sulforaphane</span>
-            </div>
-        </div>
-
-        <div class="product-purchase">
-            <h4 class="purchase-title">🛒 Add to Cart</h4>
-            <div class="purchase-options">
-                <div class="option-group">
-                    <label class="option-label">Quantity</label>
-                    <select class="product-select" id="broccoli-cart-quantity" onchange="updatePrice('broccoli')">
-                        <option value="25">25g</option>
-                        <option value="50">50g</option>
-                        <option value="100" selected>100g</option>
-                        <option value="200">200g</option>
-                    </select>
-                </div>
-                
-            </div>
-            <div class="price-display">
-                <span class="price-amount" id="broccoli-price">₹95</span>
-            </div>
-            <button class="add-to-cart-btn" onclick="addToCart('broccoli', 'Broccoli Microgreens')">
-                Add to Cart
-            </button>
-        </div>
-    </div>
-    
-    <div class="product-card">
-        <img src="images/products/mixed-greens.jpg" alt="Fresh Mixed Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-        <div class="product-icon" style="display: none;">🥬</div>
-        <h3>Mixed Microgreens</h3>
-        <p>Perfect blend of our most popular microgreens for balanced nutrition and flavor.</p>
-        <ul class="product-features">
-            <li>Balanced nutrition</li>
-            <li>Variety of flavors</li>
-            <li>Great for beginners</li>
-        </ul>
-        
-        <div class="nutrition-calculator">
-            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-            <div class="calculator-controls">
-                <div class="control-group">
-                    <label class="control-label">Quantity</label>
-                    <select class="calculator-select" id="mixed-quantity" onchange="calculateNutrition('mixed')">
-                        <option value="25">25g</option>
-                        <option value="50">50g</option>
-                        <option value="100">100g</option>
-                        <option value="200">200g</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Mineral/Vitamin</label>
-                    <select class="calculator-select" id="mixed-mineral" onchange="calculateNutrition('mixed')">
-                        <option value="vitamin-c">Vitamin C</option>
-                        <option value="protein">Protein</option>
-                        <option value="iron">Iron</option>
                         <option value="calcium">Calcium</option>
-                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="phosphorus">Phosphorus</option>
                         <option value="fiber">Fiber</option>
                     </select>
                 </div>
             </div>
-            <div class="nutrition-result" id="mixed-result">
-                <span class="result-value">120</span><span class="result-unit">mg Vitamin C</span>
+            <div class="nutrition-result" id="whiteradish-result">
+                <span class="result-value">280</span><span class="result-unit">mg Vitamin C</span>
             </div>
         </div>
 
@@ -3564,19 +3768,18 @@
             <div class="purchase-options">
                 <div class="option-group">
                     <label class="option-label">Quantity</label>
-                    <select class="product-select" id="mixed-cart-quantity" onchange="updatePrice('mixed')">
+                    <select class="product-select" id="whiteradish-cart-quantity" onchange="updatePrice('whiteradish')">
                         <option value="25">25g</option>
                         <option value="50">50g</option>
                         <option value="100" selected>100g</option>
                         <option value="200">200g</option>
                     </select>
                 </div>
-               
             </div>
             <div class="price-display">
-                <span class="price-amount" id="mixed-price">₹100</span>
+                <span class="price-amount" id="whiteradish-price">₹85</span>
             </div>
-            <button class="add-to-cart-btn" onclick="addToCart('mixed', 'Mixed Microgreens')">
+            <button class="add-to-cart-btn" onclick="addToCart('whiteradish', 'White Radish Microgreens')">
                 Add to Cart
             </button>
         </div>
@@ -3595,38 +3798,108 @@
             <div class="blend-calculator">
                 <div class="blend-controls">
                     <div class="microgreens-selection">
-                        <div class="microgreen-control" id="radish-control">
+                        <div class="microgreen-control" id="alfalfa-control">
                             <div class="microgreen-checkbox">
-                                <input type="checkbox" id="radish-check" onchange="toggleMicrogreen('radish')">
-                                <label for="radish-check">🌶️ Radish Microgreens</label>
+                                <input type="checkbox" id="alfalfa-check" onchange="toggleMicrogreen('alfalfa')">
+                                <label for="alfalfa-check">🌱 Alfalfa</label>
                             </div>
-                            <div class="percentage-slider" id="radish-slider">
+                            <div class="percentage-slider" id="alfalfa-slider">
                                 <div class="slider-label">
                                     <span>Percentage:</span>
-                                    <span id="radish-percent">0%</span>
+                                    <span id="alfalfa-percent">0%</span>
                                 </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="radish-range" oninput="updatePercentage('radish')">
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="alfalfa-range" oninput="updatePercentage('alfalfa')">
                             </div>
                         </div>
                         
-                        <div class="microgreen-control" id="pea-control">
+                        <div class="microgreen-control" id="beetroot-control">
                             <div class="microgreen-checkbox">
-                                <input type="checkbox" id="pea-check" onchange="toggleMicrogreen('pea')">
-                                <label for="pea-check">🟢 Pea Shoots</label>
+                                <input type="checkbox" id="beetroot-check" onchange="toggleMicrogreen('beetroot')">
+                                <label for="beetroot-check">🟣 Beetroot</label>
                             </div>
-                            <div class="percentage-slider" id="pea-slider">
+                            <div class="percentage-slider" id="beetroot-slider">
                                 <div class="slider-label">
                                     <span>Percentage:</span>
-                                    <span id="pea-percent">0%</span>
+                                    <span id="beetroot-percent">0%</span>
                                 </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="pea-range" oninput="updatePercentage('pea')">
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="beetroot-range" oninput="updatePercentage('beetroot')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="cauliflower-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="cauliflower-check" onchange="toggleMicrogreen('cauliflower')">
+                                <label for="cauliflower-check">🥦 Cauliflower</label>
+                            </div>
+                            <div class="percentage-slider" id="cauliflower-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="cauliflower-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="cauliflower-range" oninput="updatePercentage('cauliflower')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="chia-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="chia-check" onchange="toggleMicrogreen('chia')">
+                                <label for="chia-check">🌿 Chia</label>
+                            </div>
+                            <div class="percentage-slider" id="chia-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="chia-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="chia-range" oninput="updatePercentage('chia')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="flax-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="flax-check" onchange="toggleMicrogreen('flax')">
+                                <label for="flax-check">🌾 Flax</label>
+                            </div>
+                            <div class="percentage-slider" id="flax-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="flax-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="flax-range" oninput="updatePercentage('flax')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="mustard-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="mustard-check" onchange="toggleMicrogreen('mustard')">
+                                <label for="mustard-check">🌶️ Mustard</label>
+                            </div>
+                            <div class="percentage-slider" id="mustard-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="mustard-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="mustard-range" oninput="updatePercentage('mustard')">
+                            </div>
+                        </div>
+                        
+                        <div class="microgreen-control" id="pinkradish-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="pinkradish-check" onchange="toggleMicrogreen('pinkradish')">
+                                <label for="pinkradish-check">🌸 Pink Radish</label>
+                            </div>
+                            <div class="percentage-slider" id="pinkradish-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="pinkradish-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="pinkradish-range" oninput="updatePercentage('pinkradish')">
                             </div>
                         </div>
                         
                         <div class="microgreen-control" id="sunflower-control">
                             <div class="microgreen-checkbox">
                                 <input type="checkbox" id="sunflower-check" onchange="toggleMicrogreen('sunflower')">
-                                <label for="sunflower-check">🌻 Sunflower Microgreens</label>
+                                <label for="sunflower-check">🌻 Sunflower</label>
                             </div>
                             <div class="percentage-slider" id="sunflower-slider">
                                 <div class="slider-label">
@@ -3637,31 +3910,17 @@
                             </div>
                         </div>
                         
-                        <div class="microgreen-control" id="purple-control">
+                        <div class="microgreen-control" id="whiteradish-control">
                             <div class="microgreen-checkbox">
-                                <input type="checkbox" id="purple-check" onchange="toggleMicrogreen('purple')">
-                                <label for="purple-check">🟣 Purple Cabbage</label>
+                                <input type="checkbox" id="whiteradish-check" onchange="toggleMicrogreen('whiteradish')">
+                                <label for="whiteradish-check">⚪ White Radish</label>
                             </div>
-                            <div class="percentage-slider" id="purple-slider">
+                            <div class="percentage-slider" id="whiteradish-slider">
                                 <div class="slider-label">
                                     <span>Percentage:</span>
-                                    <span id="purple-percent">0%</span>
+                                    <span id="whiteradish-percent">0%</span>
                                 </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="purple-range" oninput="updatePercentage('purple')">
-                            </div>
-                        </div>
-                        
-                        <div class="microgreen-control" id="broccoli-control">
-                            <div class="microgreen-checkbox">
-                                <input type="checkbox" id="broccoli-check" onchange="toggleMicrogreen('broccoli')">
-                                <label for="broccoli-check">🥦 Broccoli Microgreens</label>
-                            </div>
-                            <div class="percentage-slider" id="broccoli-slider">
-                                <div class="slider-label">
-                                    <span>Percentage:</span>
-                                    <span id="broccoli-percent">0%</span>
-                                </div>
-                                <input type="range" min="0" max="100" value="0" class="slider-input" id="broccoli-range" oninput="updatePercentage('broccoli')">
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="whiteradish-range" oninput="updatePercentage('whiteradish')">
                             </div>
                         </div>
                     </div>
@@ -3853,62 +4112,81 @@
     // =================================== //
     
     // Nutrition data for calculator
-    const nutritionData = {
-        'radish': {
-            'vitamin-c': { value: 300, unit: 'mg' }, 
-            'protein': { value: 3.8, unit: 'g' }, 
-            'iron': { value: 1.8, unit: 'mg' }, 
-            'fiber': { value: 2.2, unit: 'g' },
-            'vitamin-k': { value: 120, unit: 'mcg' }, 
-            'folate': { value: 95, unit: 'mcg' }, 
-            'calcium': { value: 52, unit: 'mg' }
-        },
-        'pea': {
-            'vitamin-c': { value: 250, unit: 'mg' }, 
-            'protein': { value: 8.5, unit: 'g' }, 
-            'iron': { value: 2.1, unit: 'mg' }, 
-            'fiber': { value: 2.8, unit: 'g' },
-            'vitamin-a': { value: 180, unit: 'mcg' }, 
-            'calcium': { value: 48, unit: 'mg' }
-        },
-        'sunflower': {
-            'vitamin-c': { value: 55, unit: 'mg' }, 
-            'protein': { value: 12, unit: 'g' }, 
-            'iron': { value: 2.5, unit: 'mg' }, 
-            'fiber': { value: 3.1, unit: 'g' },
-            'vitamin-e': { value: 15, unit: 'mg' }, 
-            'zinc': { value: 1.5, unit: 'mg' }, 
-            'magnesium': { value: 78, unit: 'mg' }, 
-            'healthy-fats': { value: 4.2, unit: 'g' }
-        },
-        'purple': {
-            'vitamin-c': { value: 280, unit: 'mg' }, 
-            'protein': { value: 2.5, unit: 'g' }, 
-            'iron': { value: 0.8, unit: 'mg' }, 
-            'fiber': { value: 2.0, unit: 'g' },
-            'vitamin-k': { value: 140, unit: 'mcg' }, 
-            'anthocyanins': { value: 150, unit: 'mg' }, 
-            'calcium': { value: 45, unit: 'mg' }
-        },
-        'broccoli': {
-            'vitamin-c': { value: 180, unit: 'mg' }, 
-            'protein': { value: 4.0, unit: 'g' }, 
-            'iron': { value: 1.2, unit: 'mg' }, 
-            'fiber': { value: 2.6, unit: 'g' },
-            'sulforaphane': { value: 120, unit: 'mg' }, 
-            'vitamin-k': { value: 100, unit: 'mcg' }, 
-            'folate': { value: 80, unit: 'mcg' }
-        },
-        'mixed': {
-            'vitamin-c': { value: 200, unit: 'mg' }, 
-            'protein': { value: 5.5, unit: 'g' }, 
-            'iron': { value: 1.8, unit: 'mg' }, 
-            'fiber': { value: 2.5, unit: 'g' },
-            'vitamin-k': { value: 120, unit: 'mcg' }, 
-            'calcium': { value: 50, unit: 'mg' }
-        }
-    };
+   const nutritionData = {
+    'alfalfa': {
+        'protein': { value: 9.2, unit: 'g' },
+        'vitamin-k': { value: 28, unit: 'mcg' },
+        'vitamin-c': { value: 8, unit: 'mg' },
+        'calcium': { value: 32, unit: 'mg' },
+        'iron': { value: 1.2, unit: 'mg' },
+        'fiber': { value: 3.2, unit: 'g' }
+    },
+    'beetroot': {
+        'folate': { value: 280, unit: 'mcg' },
+        'vitamin-c': { value: 12, unit: 'mg' },
+        'potassium': { value: 350, unit: 'mg' },
+        'iron': { value: 2.5, unit: 'mg' },
+        'fiber': { value: 3.8, unit: 'g' },
+        'antioxidants': { value: 850, unit: 'mg' }
+    },
 
+    'cauliflower': {
+        'sulforaphane': { value: 95, unit: 'mg' },
+        'vitamin-k': { value: 85, unit: 'mcg' },
+        'vitamin-c': { value: 48, unit: 'mg' },
+        'folate': { value: 160, unit: 'mcg' },
+        'fiber': { value: 2.8, unit: 'g' },
+        'calcium': { value: 42, unit: 'mg' }
+    },
+    'chia': {
+        'omega-3': { value: 5.8, unit: 'g' },
+        'protein': { value: 17.8, unit: 'g' },
+        'calcium': { value: 630, unit: 'mg' },
+        'magnesium': { value: 335, unit: 'mg' },
+        'fiber': { value: 34.4, unit: 'g' },
+        'phosphorus': { value: 860, unit: 'mg' }
+    },
+    'flax': {
+        'lignans': { value: 294, unit: 'mg' },
+        'ala': { value: 6.4, unit: 'g' },
+        'fiber': { value: 27.3, unit: 'g' },
+        'protein': { value: 18.3, unit: 'g' },
+        'magnesium': { value: 392, unit: 'mg' },
+        'thiamine': { value: 1.64, unit: 'mg' }
+    },
+    'mustard': {
+        'vitamin-a': { value: 924, unit: 'mcg' },
+        'vitamin-c': { value: 70, unit: 'mg' },
+        'vitamin-k': { value: 257, unit: 'mcg' },
+        'calcium': { value: 101, unit: 'mg' },
+        'iron': { value: 1.46, unit: 'mg' },
+        'folate': { value: 12, unit: 'mcg' }
+    },
+    'pinkradish': {
+        'vitamin-c': { value: 320, unit: 'mg' },
+        'anthocyanins': { value: 180, unit: 'mg' },
+        'vitamin-k': { value: 135, unit: 'mcg' },
+        'folate': { value: 110, unit: 'mcg' },
+        'potassium': { value: 280, unit: 'mg' },
+        'fiber': { value: 2.4, unit: 'g' }
+    },
+    'sunflower': {
+        'vitamin-e': { value: 15, unit: 'mg' },
+        'protein': { value: 12, unit: 'g' },
+        'zinc': { value: 1.5, unit: 'mg' },
+        'magnesium': { value: 78, unit: 'mg' },
+        'healthy-fats': { value: 4.2, unit: 'g' },
+        'fiber': { value: 3.1, unit: 'g' }
+    },
+    'whiteradish': {
+        'vitamin-c': { value: 280, unit: 'mg' },
+        'potassium': { value: 320, unit: 'mg' },
+        'folate': { value: 95, unit: 'mcg' },
+        'calcium': { value: 48, unit: 'mg' },
+        'phosphorus': { value: 42, unit: 'mg' },
+        'fiber': { value: 2.2, unit: 'g' }
+    }
+};
     // Calculate nutrition for individual products
     function calculateNutrition(microgreen) {
         const quantity = parseInt(document.getElementById(microgreen + '-quantity').value);
@@ -3937,22 +4215,29 @@
     let isCartOpen = false;
     
     // Product pricing data
-   const productPrices = {
-    'radish': { base: 80 },
-    'pea': { base: 90 },
+  const productPrices = {
+    'alfalfa': { base: 75 },
+    'beetroot': { base: 90 },
+    'cauliflower': { base: 85 },
+    'chia': { base: 120 },
+    'flax': { base: 110 },
+    'mustard': { base: 80 },
+    'pinkradish': { base: 95 },
     'sunflower': { base: 70 },
-    'purple': { base: 85 },
-    'broccoli': { base: 95 },
-    'mixed': { base: 100 }
+    'whiteradish': { base: 85 }
 };
     // Custom blend pricing
-    const blendPrices = {
-        'radish': 0.8,
-        'pea': 0.9,
-        'sunflower': 0.7,
-        'purple': 0.85,
-        'broccoli': 0.95
-    };
+   const blendPrices = {
+    'alfalfa': 0.75,
+    'beetroot': 0.9,
+    'cauliflower': 0.85,
+    'chia': 1.2,
+    'flax': 1.1,
+    'mustard': 0.8,
+    'pinkradish': 0.95,
+    'sunflower': 0.7,
+    'whiteradish': 0.85
+};
 
     // Update product price based on quantity and type
     function updatePrice(productId) {
@@ -4311,7 +4596,345 @@
             total: document.getElementById('checkoutTotal').textContent
         });
     });
+     // =================================== //
+// ======= FIREBASE CONFIGURATION ==== //
+// =================================== //
 
+// Your Firebase config (Get this from Firebase Console → Project Settings → General)
+const firebaseConfig = {
+  apiKey: "AIzaSyB0ZIqieV-Xwiw3wx0CrttO_-226N8ah5Y",
+  authDomain: "leaf-nest.firebaseapp.com",
+  projectId: "leaf-nest",
+  storageBucket: "leaf-nest.firebasestorage.app",
+  messagingSenderId: "1002779883702",
+  appId: "1:1002779883702:web:9e1c66f46697afe6af8e17",
+  measurementId: "G-JH4R6BG3ML"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// =================================== //
+// ===== REAL PHONE AUTHENTICATION === //
+// =================================== //
+
+let confirmationResult = null;
+
+// Setup reCAPTCHA
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+    'size': 'invisible',
+    'callback': (response) => {
+        console.log('reCAPTCHA solved');
+    }
+});
+
+// Send real OTP
+async function sendRealOTP() {
+    const phoneInput = document.getElementById('loginPhone');
+    const phone = phoneInput.value.trim();
+    
+    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+        alert('Please enter a valid 10-digit mobile number');
+        return;
+    }
+    
+    const fullPhoneNumber = '+91' + phone;
+    const appVerifier = window.recaptchaVerifier;
+    
+    try {
+        // Show loading state
+        const sendBtn = document.querySelector('#phoneStep .login-btn');
+        sendBtn.textContent = 'Sending OTP...';
+        sendBtn.disabled = true;
+        
+        confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, appVerifier);
+        
+        // Show OTP step
+        document.getElementById('phoneStep').style.display = 'none';
+        document.getElementById('otpStep').style.display = 'block';
+        document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
+        
+        // Reset button
+        sendBtn.textContent = 'Send OTP';
+        sendBtn.disabled = false;
+        
+        console.log('OTP sent successfully');
+        
+    } catch (error) {
+        console.error('Error sending OTP:', error);
+        alert('Failed to send OTP. Please try again.');
+        
+        // Reset button
+        sendBtn.textContent = 'Send OTP';
+        sendBtn.disabled = false;
+    }
+}
+
+// Verify real OTP
+async function verifyRealOTP() {
+    const otp = document.getElementById('otpInput').value.trim();
+    
+    if (otp.length !== 6) {
+        alert('Please enter a valid 6-digit OTP');
+        return;
+    }
+    
+    if (!confirmationResult) {
+        alert('Please request OTP first');
+        return;
+    }
+    
+    try {
+        // Show loading state
+        const verifyBtn = document.querySelector('#otpStep .login-btn');
+        verifyBtn.textContent = 'Verifying...';
+        verifyBtn.disabled = true;
+        
+        const result = await confirmationResult.confirm(otp);
+        const user = result.user;
+        
+        console.log('Phone number verified:', user.phoneNumber);
+        
+        // Check if user exists in Firestore
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        
+        if (userDoc.exists) {
+            // Existing user
+            currentUser = {
+                uid: user.uid,
+                phone: user.phoneNumber,
+                ...userDoc.data(),
+                isLoggedIn: true
+            };
+        } else {
+            // New user - create profile
+            const newUserData = {
+                phone: user.phoneNumber,
+                firstName: '',
+                lastName: '',
+                email: '',
+                dob: '',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            await db.collection('users').doc(user.uid).set(newUserData);
+            
+            currentUser = {
+                uid: user.uid,
+                ...newUserData,
+                isLoggedIn: true
+            };
+        }
+        
+        await loadUserDataFromFirebase();
+        updateUserUI();
+        closeLoginModal();
+        
+        alert('Login successful! Welcome to Leaf Nest 🌱');
+        
+    } catch (error) {
+        console.error('Error verifying OTP:', error);
+        alert('Invalid OTP. Please try again.');
+        
+        // Reset button
+        verifyBtn.textContent = 'Verify OTP';
+        verifyBtn.disabled = false;
+    }
+}
+
+// =================================== //
+// ===== FIREBASE DATA MANAGEMENT ==== //
+// =================================== //
+
+// Save user profile to Firebase
+async function saveUserProfileToFirebase(profileData) {
+    if (!currentUser || !currentUser.uid) return;
+    
+    try {
+        await db.collection('users').doc(currentUser.uid).update(profileData);
+        console.log('Profile updated successfully');
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        throw error;
+    }
+}
+
+// Load user data from Firebase
+async function loadUserDataFromFirebase() {
+    if (!currentUser || !currentUser.uid) return;
+    
+    try {
+        // Load addresses
+        const addressesSnapshot = await db.collection('users').doc(currentUser.uid)
+            .collection('addresses').get();
+        userAddresses = addressesSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        
+        // Load orders
+        const ordersSnapshot = await db.collection('users').doc(currentUser.uid)
+            .collection('orders').orderBy('createdAt', 'desc').get();
+        userOrders = ordersSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            date: doc.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+        }));
+        
+    } catch (error) {
+        console.error('Error loading user data:', error);
+    }
+}
+
+// Save address to Firebase
+async function saveAddressToFirebase(addressData) {
+    if (!currentUser || !currentUser.uid) return;
+    
+    try {
+        if (editingAddressId && editingAddressId.startsWith('addr_')) {
+            // Update existing address
+            await db.collection('users').doc(currentUser.uid)
+                .collection('addresses').doc(editingAddressId).update(addressData);
+        } else {
+            // Add new address
+            const docRef = await db.collection('users').doc(currentUser.uid)
+                .collection('addresses').add({
+                ...addressData,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            console.log('Address added with ID:', docRef.id);
+        }
+    } catch (error) {
+        console.error('Error saving address:', error);
+        throw error;
+    }
+}
+
+// Delete address from Firebase
+async function deleteAddressFromFirebase(addressId) {
+    if (!currentUser || !currentUser.uid) return;
+    
+    try {
+        await db.collection('users').doc(currentUser.uid)
+            .collection('addresses').doc(addressId).delete();
+        console.log('Address deleted successfully');
+    } catch (error) {
+        console.error('Error deleting address:', error);
+        throw error;
+    }
+}
+
+// =================================== //
+// ======= RAZORPAY INTEGRATION ======= //
+// =================================== //
+
+// Razorpay configuration
+const RAZORPAY_KEY_ID = 'R9bUQAzdGAfN6A'; // Get from Razorpay Dashboard
+
+// Initialize payment
+async function initiatePayment(orderData) {
+    if (!currentUser) {
+        alert('Please login to place order');
+        return;
+    }
+    
+    try {
+        // Create order in Firebase first
+        const orderDoc = await db.collection('orders').add({
+            userId: currentUser.uid,
+            customerInfo: orderData.customer,
+            items: orderData.items,
+            subtotal: orderData.subtotal,
+            deliveryFee: orderData.deliveryFee,
+            total: orderData.total,
+            status: 'pending',
+            paymentStatus: 'pending',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            orderNumber: orderData.orderNumber
+        });
+        
+        const razorpayOptions = {
+            key: RAZORPAY_KEY_ID,
+            amount: orderData.total * 100, // Amount in paise
+            currency: 'INR',
+            name: 'Leaf Nest',
+            description: 'Fresh Microgreens Order',
+            image: 'leafnest-logo.png',
+            order_id: orderDoc.id,
+            handler: async function(response) {
+                await handlePaymentSuccess(response, orderDoc.id, orderData);
+            },
+            prefill: {
+                name: orderData.customer.firstName + ' ' + orderData.customer.lastName,
+                email: orderData.customer.email,
+                contact: orderData.customer.phone
+            },
+            notes: {
+                address: orderData.customer.address,
+                area: orderData.customer.area
+            },
+            theme: {
+                color: '#4a7c59'
+            },
+            modal: {
+                ondismiss: function() {
+                    console.log('Payment cancelled');
+                }
+            }
+        };
+        
+        const razorpayInstance = new Razorpay(razorpayOptions);
+        razorpayInstance.open();
+        
+    } catch (error) {
+        console.error('Error initiating payment:', error);
+        alert('Failed to initiate payment. Please try again.');
+    }
+}
+
+// Handle successful payment
+async function handlePaymentSuccess(paymentResponse, orderId, orderData) {
+    try {
+        // Update order with payment details
+        await db.collection('orders').doc(orderId).update({
+            paymentId: paymentResponse.razorpay_payment_id,
+            paymentStatus: 'completed',
+            status: 'confirmed',
+            paidAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Add to user's order history
+        await db.collection('users').doc(currentUser.uid)
+            .collection('orders').doc(orderId).set({
+            ...orderData,
+            paymentId: paymentResponse.razorpay_payment_id,
+            paymentStatus: 'completed',
+            status: 'confirmed',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Send confirmation email/SMS (you can implement this later)
+        console.log('Order confirmed:', orderId);
+        
+        // Show success message
+        document.getElementById('checkoutForm').style.display = 'none';
+        document.getElementById('orderSuccess').style.display = 'block';
+        document.getElementById('orderNumber').textContent = orderData.orderNumber;
+        
+        // Clear cart
+        cart = [];
+        updateCartUI();
+        closeCart();
+        
+        alert('Payment successful! Your order has been confirmed. 🎉');
+        
+    } catch (error) {
+        console.error('Error handling payment success:', error);
+        alert('Payment successful but order confirmation failed. Please contact support.');
+    }
+}
     // =================================== //
     // ========== GENERAL FUNCTIONS ======= //
     // =================================== //
@@ -4406,7 +5029,7 @@
         });
         
         // Initialize nutrition calculators
-        const microgreens = ['radish', 'pea', 'sunflower', 'purple', 'broccoli', 'mixed'];
+        const microgreens = ['alfalfa', 'beetroot', 'cauliflower', 'chia', 'flax', 'mustard', 'pinkradish', 'sunflower', 'whiteradish'];
         microgreens.forEach(mg => {
             if (document.getElementById(`${mg}-quantity`)) {
                 calculateNutrition(mg);
@@ -4477,62 +5100,14 @@ function closeLoginModal() {
 
 // Send OTP (simulation)
 function sendOTP() {
-    const phone = document.getElementById('loginPhone').value;
-    
-    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-        alert('Please enter a valid 10-digit mobile number');
-        return;
-    }
-    
-    // Show OTP step
-    document.getElementById('phoneStep').style.display = 'none';
-    document.getElementById('otpStep').style.display = 'block';
-    document.getElementById('phoneDisplay').textContent = '+91 ' + phone;
-    
-    // In real app, you would send actual OTP here
-    console.log('OTP sent to +91 ' + phone);
-    alert('OTP sent! For demo, enter: 123456');
+    sendRealOTP();
 }
+    <!-- Add this div for reCAPTCHA -->
+    <div id="recaptcha-container"></div>
 
 // Verify OTP (simulation)
 function verifyOTP() {
-    const otp = document.getElementById('otpInput').value;
-    const phone = document.getElementById('loginPhone').value;
-    
-    if (otp.length !== 6) {
-        alert('Please enter a valid 6-digit OTP');
-        return;
-    }
-    
-    // For demo, accept 123456 as valid OTP
-    if (otp === '123456') {
-        // Login successful - check if user exists
-        const existingUser = localStorage.getItem('leafnest_user_' + phone);
-        
-        if (existingUser) {
-            // Existing user
-            currentUser = JSON.parse(existingUser);
-            loadUserData();
-        } else {
-            // New user - create basic profile
-            currentUser = {
-                phone: '+91 ' + phone,
-                firstName: 'User',
-                lastName: '',
-                email: '',
-                dob: '',
-                isLoggedIn: true,
-                joinDate: new Date().toISOString()
-            };
-            saveUserData();
-        }
-        
-        updateUserUI();
-        closeLoginModal();
-        alert('Login successful! Welcome to Leaf Nest 🌱');
-    } else {
-        alert('Invalid OTP. Please try again.');
-    }
+    verifyRealOTP();
 }
 
 // Save user data to localStorage
@@ -4951,40 +5526,40 @@ function addOrderToHistory(orderData) {
 
 // Update the existing checkout form submission to include order history
 const originalCheckoutSubmit = document.getElementById('checkoutForm').onsubmit;
-document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-   e.preventDefault();
-   
-   // Generate order number
-   const orderNumber = 'LN' + Date.now().toString().substr(-6);
-   const total = document.getElementById('checkoutTotal').textContent.replace('₹', '');
-   
-   // Add to order history if user is logged in
-   if (currentUser) {
-       addOrderToHistory({
-           orderNumber: orderNumber,
-           items: [...cart],
-           total: parseInt(total),
-           customer: {
-               firstName: document.getElementById('firstName').value,
-               lastName: document.getElementById('lastName').value,
-               phone: document.getElementById('phone').value,
-               email: document.getElementById('email').value,
-               address: document.getElementById('address').value,
-               area: document.getElementById('area').value,
-               pincode: document.getElementById('pincode').value
-           }
-       });
-   }
-   
-   // Show success message
-   document.getElementById('checkoutForm').style.display = 'none';
-   document.getElementById('orderSuccess').style.display = 'block';
-   document.getElementById('orderNumber').textContent = orderNumber;
-   
-   // Clear cart
-   cart = [];
-   updateCartUI();
-   closeCart();
+document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+    
+    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const deliveryFee = subtotal > 200 ? 0 : 30;
+    const total = subtotal + deliveryFee;
+    const orderNumber = 'LN' + Date.now().toString().substr(-6);
+    
+    const orderData = {
+        orderNumber: orderNumber,
+        items: [...cart],
+        subtotal: subtotal,
+        deliveryFee: deliveryFee,
+        total: total,
+        customer: {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            address: document.getElementById('address').value,
+            area: document.getElementById('area').value,
+            pincode: document.getElementById('pincode').value,
+            deliveryTime: document.getElementById('deliveryTime').value,
+            notes: document.getElementById('notes').value
+        }
+    };
+    
+    // Initiate payment
+    await initiatePayment(orderData);
 });
 
 // Initialize user UI on page load
