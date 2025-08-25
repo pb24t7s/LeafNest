@@ -4624,12 +4624,19 @@ const db = firebase.firestore();
 let confirmationResult = null;
 
 // Setup reCAPTCHA
-window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-    'size': 'invisible',
-    'callback': (response) => {
-        console.log('reCAPTCHA solved');
+function setupRecaptcha() {
+    if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            'size': 'invisible',
+            'callback': (response) => {
+                console.log('reCAPTCHA solved');
+            },
+            'expired-callback': () => {
+                console.log('reCAPTCHA expired');
+            }
+        });
     }
-});
+}
 
 // Send real OTP
 async function sendRealOTP() {
@@ -4642,7 +4649,6 @@ async function sendRealOTP() {
     }
     
     const fullPhoneNumber = '+91' + phone;
-    const appVerifier = window.recaptchaVerifier;
     
     try {
         // Show loading state
@@ -4650,7 +4656,26 @@ async function sendRealOTP() {
         sendBtn.textContent = 'Sending OTP...';
         sendBtn.disabled = true;
         
-        confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, appVerifier);
+        // Clear any existing reCAPTCHA
+        if (window.recaptchaVerifier) {
+            window.recaptchaVerifier.clear();
+            window.recaptchaVerifier = null;
+        }
+        
+        // Setup new reCAPTCHA
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            'size': 'invisible',
+            'callback': (response) => {
+                console.log('reCAPTCHA solved');
+            },
+            'expired-callback': () => {
+                console.log('reCAPTCHA expired');
+            }
+        });
+        
+        console.log('Attempting to send OTP to:', fullPhoneNumber);
+        confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
+        console.log('OTP sent successfully, confirmationResult:', confirmationResult);
         
         // Show OTP step
         document.getElementById('phoneStep').style.display = 'none';
@@ -4661,13 +4686,45 @@ async function sendRealOTP() {
         sendBtn.textContent = 'Send OTP';
         sendBtn.disabled = false;
         
-        console.log('OTP sent successfully');
-        
     } catch (error) {
         console.error('Error sending OTP:', error);
-        alert('Failed to send OTP. Please try again.');
+        console.error('Error details:', {
+            code: error.code,
+            message: error.message
+        });
+        
+        // Clear failed reCAPTCHA
+        if (window.recaptchaVerifier) {
+            window.recaptchaVerifier.clear();
+            window.recaptchaVerifier = null;
+        }
+        
+        // Reset confirmationResult
+        confirmationResult = null;
+        
+        let errorMessage = 'Failed to send OTP. ';
+        
+        switch(error.code) {
+            case 'auth/invalid-phone-number':
+                errorMessage += 'Invalid phone number format.';
+                break;
+            case 'auth/too-many-requests':
+                errorMessage += 'Too many attempts. Please try again after some time.';
+                break;
+            case 'auth/captcha-check-failed':
+                errorMessage += 'Security verification failed. Please refresh the page and try again.';
+                break;
+            case 'auth/quota-exceeded':
+                errorMessage += 'SMS quota exceeded. Please try again later.';
+                break;
+            default:
+                errorMessage += `Error: ${error.message}`;
+        }
+        
+        alert(errorMessage);
         
         // Reset button
+        const sendBtn = document.querySelector('#phoneStep .login-btn');
         sendBtn.textContent = 'Send OTP';
         sendBtn.disabled = false;
     }
@@ -4683,7 +4740,10 @@ async function verifyRealOTP() {
     }
     
     if (!confirmationResult) {
-        alert('Please request OTP first');
+        alert('OTP session expired. Please request a new OTP.');
+        // Reset to phone step
+        document.getElementById('otpStep').style.display = 'none';
+        document.getElementById('phoneStep').style.display = 'block';
         return;
     }
     
@@ -5105,7 +5165,53 @@ function closeLoginModal() {
 
 // Send OTP (simulation)
 function sendOTP() {
+
+const phone = document.getElementById('loginPhone').value.trim();
+    
+    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+        alert('Please enter a valid 10-digit mobile number');
+        return;
+    }
+    
+    // For development - use demo mode
+    if (phone === '9999999999') {
+        // Show OTP step immediately for test number
+        document.getElementById('phoneStep').style.display = 'none';
+        document.getElementById('otpStep').style.display = 'block';
+        document.getElementById('phoneDisplay').textContent = '+91 ' + phone;
+        alert('Demo mode: Use OTP 123456');
+        return;
+    }
+    
+    // Try real Firebase OTP
     sendRealOTP();
+}
+
+function verifyOTP() {
+    const otp = document.getElementById('otpInput').value.trim();
+    const phone = document.getElementById('loginPhone').value.trim();
+    
+    // Demo mode for test number
+    if (phone === '9999999999' && otp === '123456') {
+        // Demo login successful
+        currentUser = {
+            uid: 'demo-user',
+            phone: '+91 ' + phone,
+            firstName: 'Demo',
+            lastName: 'User',
+            isLoggedIn: true
+        };
+        
+        updateUserUI();
+        closeLoginModal();
+        alert('Demo login successful!');
+        return;
+    }
+    
+    // Try real Firebase verification
+    verifyRealOTP();
+
+    //sendRealOTP();
 }
    
 
