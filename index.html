@@ -2976,6 +2976,7 @@
                             <button class="resend-btn" onclick="sendOTP()">Resend OTP</button>
                         </div>
                     </div>
+                    <div id="recaptcha-container"></div>
                 </div>
             </div>
     <header class="header">
@@ -5102,8 +5103,7 @@ function closeLoginModal() {
 function sendOTP() {
     sendRealOTP();
 }
-    <!-- Add this div for reCAPTCHA -->
-    <div id="recaptcha-container"></div>
+   
 
 // Verify OTP (simulation)
 function verifyOTP() {
@@ -5525,10 +5525,8 @@ function addOrderToHistory(orderData) {
 }
 
 // Update the existing checkout form submission to include order history
-const originalCheckoutSubmit = document.getElementById('checkoutForm').onsubmit;
-document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
+    document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+
     if (cart.length === 0) {
         alert('Your cart is empty!');
         return;
