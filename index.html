@@ -4670,9 +4670,7 @@ async function sendRealOTP() {
             });
         }
         
-        console.log('Attempting to send OTP to:', fullPhoneNumber);
         confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
-        console.log('OTP sent successfully');
         
         // Show OTP step
         document.getElementById('phoneStep').style.display = 'none';
@@ -4686,39 +4684,39 @@ async function sendRealOTP() {
     } catch (error) {
         console.error('Error sending OTP:', error);
         
-        // Only clear reCAPTCHA on specific errors
+        // Reset button first
+        const sendBtn = document.querySelector('#phoneStep .login-btn');
+        sendBtn.textContent = 'Send OTP';
+        sendBtn.disabled = false;
+        
+        // Handle specific errors
+        if (error.code === 'auth/too-many-requests') {
+            // Show cooldown message and temporarily disable the system
+            showCooldownMessage();
+            return;
+        }
+        
+        // Clear reCAPTCHA on certain errors
         if (error.code === 'auth/captcha-check-failed') {
-            if (window.recaptchaVerifier) {
-                window.recaptchaVerifier.clear();
-                window.recaptchaVerifier = null;
-            }
+            clearRecaptcha();
         }
         
         let errorMessage = 'Failed to send OTP. ';
-        
         switch(error.code) {
             case 'auth/invalid-phone-number':
                 errorMessage += 'Invalid phone number format.';
                 break;
-            case 'auth/too-many-requests':
-                errorMessage += 'Too many attempts. Please try again after some time.';
+            case 'auth/quota-exceeded':
+                errorMessage += 'Daily SMS limit reached. Please try again tomorrow.';
                 break;
             case 'auth/captcha-check-failed':
-                errorMessage += 'Security verification failed. Please try again.';
-                break;
-            case 'auth/quota-exceeded':
-                errorMessage += 'SMS quota exceeded. Please try again later.';
+                errorMessage += 'Security verification failed. Please refresh and try again.';
                 break;
             default:
-                errorMessage += `Error: ${error.message}`;
+                errorMessage += error.message;
         }
         
         alert(errorMessage);
-        
-        // Reset button
-        const sendBtn = document.querySelector('#phoneStep .login-btn');
-        sendBtn.textContent = 'Send OTP';
-        sendBtn.disabled = false;
     }
 }
 
@@ -4824,22 +4822,25 @@ async function verifyRealOTP() {
     }
 }
 async function resendOTP() {
-    // Show loading state on resend button
+    if (cooldownActive) {
+        alert('Please wait for the cooldown period to finish.');
+        return;
+    }
+    
     const resendBtn = document.querySelector('#otpStep .resend-btn');
     const originalText = resendBtn.textContent;
     resendBtn.textContent = 'Sending...';
     resendBtn.disabled = true;
     
     try {
-        // Clear previous OTP input
         document.getElementById('otpInput').value = '';
         otpRetryCount = 0;
         
-        // Go back to phone step and send new OTP
+        // Go back to phone step
         document.getElementById('otpStep').style.display = 'none';
         document.getElementById('phoneStep').style.display = 'block';
         
-        // Wait a moment then send new OTP
+        // Wait then send new OTP
         setTimeout(async () => {
             await sendRealOTP();
         }, 500);
@@ -4848,7 +4849,6 @@ async function resendOTP() {
         console.error('Error resending OTP:', error);
         alert('Failed to resend OTP. Please try again.');
         
-        // Reset resend button
         resendBtn.textContent = originalText;
         resendBtn.disabled = false;
     }
@@ -4863,7 +4863,52 @@ function resetToPhoneStep() {
     confirmationResult = null;
     otpRetryCount = 0;
 }
+let cooldownActive = false;
+let cooldownTimer = null;
 
+function showCooldownMessage() {
+    cooldownActive = true;
+    
+    // Disable send button and show countdown
+    const sendBtn = document.querySelector('#phoneStep .login-btn');
+    let countdown = 60; // 60 second cooldown
+    
+    sendBtn.disabled = true;
+    
+    function updateCountdown() {
+        sendBtn.textContent = `Wait ${countdown}s before retry`;
+        countdown--;
+        
+        if (countdown < 0) {
+            sendBtn.textContent = 'Send OTP';
+            sendBtn.disabled = false;
+            cooldownActive = false;
+            clearInterval(cooldownTimer);
+            cooldownTimer = null;
+        }
+    }
+    
+    updateCountdown();
+    cooldownTimer = setInterval(updateCountdown, 1000);
+    
+    alert('Too many OTP requests. Please wait 60 seconds before trying again.');
+}
+
+function clearRecaptcha() {
+    if (window.recaptchaVerifier) {
+        try {
+            window.recaptchaVerifier.clear();
+        } catch (e) {
+            console.log('Error clearing reCAPTCHA:', e);
+        }
+        window.recaptchaVerifier = null;
+    }
+    
+    const container = document.getElementById('recaptcha-container');
+    if (container) {
+        container.innerHTML = '';
+    }
+}
 // =================================== //
 // ===== FIREBASE DATA MANAGEMENT ==== //
 // =================================== //
