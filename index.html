@@ -2802,6 +2802,60 @@
         font-size: 1.5rem;
     }
 }
+
+/* Login Modal Override */
+#loginModal .login-content {
+    background: white !important;
+    border-radius: 24px !important;
+    width: 90% !important;
+    max-width: 440px !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+    margin-bottom: 90px !important;
+    max-height: calc(90vh - 90px) !important;
+}
+
+#loginModal #recaptcha-container {
+    position: fixed !important;
+    bottom: 15px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1006 !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+    backdrop-filter: blur(5px) !important;
+}
+#loginModal .phone-input {
+    display: flex !important;
+    border: 2px solid #e8f0e8 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+#loginModal .country-code {
+    background: #f1f5f1 !important;
+    padding: 12px 15px !important;
+    font-weight: 600 !important;
+    color: #2c5530 !important;
+    border-right: 1px solid #e8f0e8 !important;
+}
+
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    #loginModal .login-content {
+        margin-bottom: 70px !important;
+        max-height: calc(90vh - 70px) !important;
+    }
+    
+    #loginModal #recaptcha-container {
+        bottom: 10px !important;
+        padding: 5px !important;
+        font-size: 0.9em !important;
+    }
     </style>
 </head>
 <body>
