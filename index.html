@@ -4731,6 +4731,9 @@ async function sendRealOTP() {
 }
 
 // Verify real OTP
+let otpRetryCount = 0;
+const MAX_OTP_RETRIES = 3;
+
 async function verifyRealOTP() {
     const otp = document.getElementById('otpInput').value.trim();
     
@@ -4741,28 +4744,30 @@ async function verifyRealOTP() {
     
     if (!confirmationResult) {
         alert('OTP session expired. Please request a new OTP.');
-        // Reset to phone step
-        document.getElementById('otpStep').style.display = 'none';
-        document.getElementById('phoneStep').style.display = 'block';
+        resetToPhoneStep();
         return;
     }
     
     try {
         // Show loading state
         const verifyBtn = document.querySelector('#otpStep .login-btn');
+        const resendBtn = document.querySelector('#otpStep .resend-btn');
         verifyBtn.textContent = 'Verifying...';
         verifyBtn.disabled = true;
+        resendBtn.disabled = true;
         
         const result = await confirmationResult.confirm(otp);
         const user = result.user;
         
+        // Reset retry count on success
+        otpRetryCount = 0;
+        
+        // ... rest of success handling (same as before)
         console.log('Phone number verified:', user.phoneNumber);
         
-        // Check if user exists in Firestore
         const userDoc = await db.collection('users').doc(user.uid).get();
         
         if (userDoc.exists) {
-            // Existing user
             currentUser = {
                 uid: user.uid,
                 phone: user.phoneNumber,
@@ -4770,7 +4775,6 @@ async function verifyRealOTP() {
                 isLoggedIn: true
             };
         } else {
-            // New user - create profile
             const newUserData = {
                 phone: user.phoneNumber,
                 firstName: '',
@@ -4792,17 +4796,49 @@ async function verifyRealOTP() {
         await loadUserDataFromFirebase();
         updateUserUI();
         closeLoginModal();
-        
-        alert('Login successful! Welcome to Leaf Nest 🌱');
+        alert('Login successful! Welcome to Leaf Nest');
         
     } catch (error) {
         console.error('Error verifying OTP:', error);
-        alert('Invalid OTP. Please try again.');
         
-        // Reset button
+        // Increment retry count
+        otpRetryCount++;
+        
+        // Reset button states
+        const verifyBtn = document.querySelector('#otpStep .login-btn');
+        const resendBtn = document.querySelector('#otpStep .resend-btn');
         verifyBtn.textContent = 'Verify OTP';
         verifyBtn.disabled = false;
+        resendBtn.disabled = false;
+        
+        // Handle different error cases
+        if (error.code === 'auth/invalid-verification-code') {
+            if (otpRetryCount >= MAX_OTP_RETRIES) {
+                alert('Too many incorrect attempts. Please request a new OTP.');
+                resetToPhoneStep();
+            } else {
+                alert(`Invalid OTP. ${MAX_OTP_RETRIES - otpRetryCount} attempts remaining.`);
+                document.getElementById('otpInput').value = '';
+                document.getElementById('otpInput').focus();
+            }
+        } else if (error.code === 'auth/code-expired') {
+            alert('OTP expired. Please request a new one.');
+            resetToPhoneStep();
+        } else {
+            alert('Verification failed: ' + error.message);
+            document.getElementById('otpInput').value = '';
+            document.getElementById('otpInput').focus();
+        }
     }
+}
+
+// Helper function to reset to phone step
+function resetToPhoneStep() {
+    document.getElementById('otpStep').style.display = 'none';
+    document.getElementById('phoneStep').style.display = 'block';
+    document.getElementById('otpInput').value = '';
+    confirmationResult = null;
+    otpRetryCount = 0;
 }
 
 // =================================== //
@@ -5104,6 +5140,19 @@ async function handlePaymentSuccess(paymentResponse, orderId, orderData) {
         // Initialize blend price
         updateBlendPrice();
         updateCartUI();
+ 
+        // Add resend OTP functionality
+        const resendBtn = document.querySelector('#otpStep .resend-btn');
+        if (resendBtn) {
+            resendBtn.onclick = function() {
+                resetToPhoneStep();
+                // Auto-trigger sending OTP again
+                setTimeout(() => {
+                    sendRealOTP();
+                }, 100);
+            };
+        }
+        
     });
 
     // WhatsApp contact function (bonus feature)
