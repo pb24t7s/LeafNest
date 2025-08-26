@@ -2973,7 +2973,8 @@
                                 <input type="text" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6">
                             </div>
                             <button class="login-btn" onclick="verifyOTP()">Verify OTP</button>
-                            <button class="resend-btn" onclick="sendOTP()">Resend OTP</button>
+                            <button class="resend-btn" onclick="resendOTP()">Resend OTP</button>
+
                         </div>
                     </div>
                     <div id="recaptcha-container"></div>
@@ -4656,26 +4657,22 @@ async function sendRealOTP() {
         sendBtn.textContent = 'Sending OTP...';
         sendBtn.disabled = true;
         
-        // Clear any existing reCAPTCHA
-        if (window.recaptchaVerifier) {
-            window.recaptchaVerifier.clear();
-            window.recaptchaVerifier = null;
+        // Only create reCAPTCHA if it doesn't exist
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                'size': 'invisible',
+                'callback': (response) => {
+                    console.log('reCAPTCHA solved');
+                },
+                'expired-callback': () => {
+                    console.log('reCAPTCHA expired');
+                }
+            });
         }
-        
-        // Setup new reCAPTCHA
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            'size': 'invisible',
-            'callback': (response) => {
-                console.log('reCAPTCHA solved');
-            },
-            'expired-callback': () => {
-                console.log('reCAPTCHA expired');
-            }
-        });
         
         console.log('Attempting to send OTP to:', fullPhoneNumber);
         confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
-        console.log('OTP sent successfully, confirmationResult:', confirmationResult);
+        console.log('OTP sent successfully');
         
         // Show OTP step
         document.getElementById('phoneStep').style.display = 'none';
@@ -4688,19 +4685,14 @@ async function sendRealOTP() {
         
     } catch (error) {
         console.error('Error sending OTP:', error);
-        console.error('Error details:', {
-            code: error.code,
-            message: error.message
-        });
         
-        // Clear failed reCAPTCHA
-        if (window.recaptchaVerifier) {
-            window.recaptchaVerifier.clear();
-            window.recaptchaVerifier = null;
+        // Only clear reCAPTCHA on specific errors
+        if (error.code === 'auth/captcha-check-failed') {
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.clear();
+                window.recaptchaVerifier = null;
+            }
         }
-        
-        // Reset confirmationResult
-        confirmationResult = null;
         
         let errorMessage = 'Failed to send OTP. ';
         
@@ -4712,7 +4704,7 @@ async function sendRealOTP() {
                 errorMessage += 'Too many attempts. Please try again after some time.';
                 break;
             case 'auth/captcha-check-failed':
-                errorMessage += 'Security verification failed. Please refresh the page and try again.';
+                errorMessage += 'Security verification failed. Please try again.';
                 break;
             case 'auth/quota-exceeded':
                 errorMessage += 'SMS quota exceeded. Please try again later.';
@@ -4831,12 +4823,43 @@ async function verifyRealOTP() {
         }
     }
 }
-
+async function resendOTP() {
+    // Show loading state on resend button
+    const resendBtn = document.querySelector('#otpStep .resend-btn');
+    const originalText = resendBtn.textContent;
+    resendBtn.textContent = 'Sending...';
+    resendBtn.disabled = true;
+    
+    try {
+        // Clear previous OTP input
+        document.getElementById('otpInput').value = '';
+        otpRetryCount = 0;
+        
+        // Go back to phone step and send new OTP
+        document.getElementById('otpStep').style.display = 'none';
+        document.getElementById('phoneStep').style.display = 'block';
+        
+        // Wait a moment then send new OTP
+        setTimeout(async () => {
+            await sendRealOTP();
+        }, 500);
+        
+    } catch (error) {
+        console.error('Error resending OTP:', error);
+        alert('Failed to resend OTP. Please try again.');
+        
+        // Reset resend button
+        resendBtn.textContent = originalText;
+        resendBtn.disabled = false;
+    }
+}
 // Helper function to reset to phone step
 function resetToPhoneStep() {
     document.getElementById('otpStep').style.display = 'none';
     document.getElementById('phoneStep').style.display = 'block';
     document.getElementById('otpInput').value = '';
+    
+    // Don't clear reCAPTCHA verifier - reuse it
     confirmationResult = null;
     otpRetryCount = 0;
 }
@@ -5141,18 +5164,12 @@ async function handlePaymentSuccess(paymentResponse, orderId, orderData) {
         updateBlendPrice();
         updateCartUI();
  
-        // Add resend OTP functionality
-        const resendBtn = document.querySelector('#otpStep .resend-btn');
-        if (resendBtn) {
-            resendBtn.onclick = function() {
-                resetToPhoneStep();
-                // Auto-trigger sending OTP again
-                setTimeout(() => {
-                    sendRealOTP();
-                }, 100);
-            };
-        }
-        
+        // Fix resend button
+         const resendBtn = document.querySelector('#otpStep .resend-btn');
+            if (resendBtn) {
+                resendBtn.onclick = resendOTP;
+            }
+    
     });
 
     // WhatsApp contact function (bonus feature)
