@@ -1748,14 +1748,15 @@
         background: #f8fffe;
     }
 
-    /* Modals */
-    .login-modal, .profile-modal, .address-modal {
+    /* Enhanced Login Modal */
+    .login-modal {
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(4px);
         z-index: 1003;
         display: flex;
         align-items: center;
@@ -1765,153 +1766,322 @@
         transition: all 0.3s ease;
     }
 
-    .login-modal.show, .profile-modal.show, .address-modal.show {
+    .login-modal.show {
         opacity: 1;
         visibility: visible;
     }
 
-    .login-content, .profile-content, .address-content {
+    .login-content {
         background: white;
-        border-radius: 20px;
+        border-radius: 24px;
         width: 90%;
-        max-width: 450px;
+        max-width: 440px;
         max-height: 90vh;
         overflow-y: auto;
-        transform: scale(0.9);
+        transform: scale(0.9) translateY(20px);
         transition: transform 0.3s ease;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        position: relative;
     }
 
-    .profile-content {
-        max-width: 700px;
+    .login-modal.show .login-content {
+        transform: scale(1) translateY(0);
     }
 
-    .address-content {
-        max-width: 500px;
+    .login-header {
+        padding: 2rem 2rem 0;
+        text-align: center;
+        position: relative;
     }
 
-    .login-modal.show .login-content,
-    .profile-modal.show .profile-content,
-    .address-modal.show .address-content {
-        transform: scale(1);
-    }
-
-    .login-header, .profile-header, .address-header {
-        padding: 2rem 2rem 1rem;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .login-header h2, .profile-header h2, .address-header h2 {
+    .login-header h2 {
         color: #2c5530;
-        margin: 0;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         font-weight: 700;
+        margin: 0;
     }
 
-    .close-login, .close-profile, .close-address {
-        background: none;
+    .close-login {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: #f1f5f1;
         border: none;
-        font-size: 1.5rem;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 1.4rem;
         cursor: pointer;
         color: #666;
-        padding: 5px;
-        border-radius: 5px;
-        transition: background 0.3s ease;
-    }
-
-    .close-login:hover, .close-profile:hover, .close-address:hover {
-        background: #eee;
-    }
-
-    /* Login Form */
-    .login-form, .address-form-content {
-        padding: 2rem;
-    }
-
-    .phone-input {
         display: flex;
-        border: 2px solid #e8f5e8;
-        border-radius: 10px;
-        overflow: hidden;
-        transition: border-color 0.3s ease;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
     }
 
-    .phone-input:focus-within {
+    .close-login:hover {
+        background: #e8f0e8;
+        color: #2c5530;
+    }
+
+    .login-form {
+        padding: 1.5rem 2rem 2rem;
+    }
+
+    .login-intro {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .login-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin: 0 auto 1rem;
+        color: white;
+    }
+
+    .login-intro h3 {
+        color: #2c5530;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+    }
+
+    .login-intro p {
+        color: #666;
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    .phone-display {
+        font-weight: 600;
+        color: #4a7c59;
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        color: #2c5530;
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+        font-size: 0.95rem;
+    }
+
+    .phone-input-wrapper {
+        display: flex;
+        border: 2px solid #e8f0e8;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background: #fafcfa;
+    }
+
+    .phone-input-wrapper:focus-within {
         border-color: #4a7c59;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
     }
 
     .country-code {
-        background: #f8fffe;
-        padding: 12px 15px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f1f5f1;
+        padding: 0 1rem;
+        border-right: 1px solid #e8f0e8;
         font-weight: 600;
         color: #2c5530;
-        border-right: 1px solid #e8f5e8;
+        min-width: 80px;
+        justify-content: center;
     }
 
-    .phone-input input {
+    .flag {
+        font-size: 1.2rem;
+    }
+
+    .phone-input-field, .otp-input {
         flex: 1;
-        padding: 12px 15px;
+        padding: 1rem;
         border: none;
         outline: none;
         font-size: 1rem;
+        background: transparent;
+        font-weight: 500;
     }
 
-    .login-btn, .save-btn, .add-btn, .cancel-btn {
+    .otp-input {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e8f0e8;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        text-align: center;
+        letter-spacing: 0.3rem;
+        font-weight: 600;
+        background: #fafcfa;
+        transition: all 0.3s ease;
+    }
+
+    .otp-input:focus {
+        border-color: #4a7c59;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+    }
+
+    .login-btn {
+        width: 100%;
         background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
         color: white;
         border: none;
-        padding: 15px 25px;
-        border-radius: 10px;
+        padding: 1rem;
+        border-radius: 12px;
         font-size: 1rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
 
-    .login-btn, .save-btn {
-        width: 100%;
-        margin-top: 1rem;
+    .login-btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 25px rgba(74, 124, 89, 0.4);
     }
 
-    .add-btn {
-        width: auto;
-        padding: 10px 20px;
-        margin: 0;
+    .login-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .login-btn .btn-text {
+        position: relative;
+        z-index: 2;
+    }
+
+    .resend-section {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .resend-section p {
+        color: #666;
+        margin-bottom: 1rem;
         font-size: 0.9rem;
     }
 
-    .cancel-btn {
-        background: #666;
-        flex: 1;
-        margin-right: 1rem;
-        margin-top: 0;
-    }
-
-    .login-btn:hover, .save-btn:hover, .add-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(74, 124, 89, 0.3);
-    }
-
-    .cancel-btn:hover {
-        background: #555;
-    }
-
-    .resend-btn {
-        width: 100%;
-        background: #666;
-        color: white;
+    .resend-btn, .change-number-btn {
+        background: none;
         border: none;
-        padding: 10px;
-        border-radius: 10px;
+        color: #4a7c59;
+        font-weight: 600;
         cursor: pointer;
-        margin-top: 0.5rem;
-        transition: background 0.3s ease;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        margin: 0 0.5rem;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
     }
 
-    .resend-btn:hover {
-        background: #555;
+    .resend-btn:hover, .change-number-btn:hover {
+        background: #f1f5f1;
+        color: #2c5530;
+    }
+
+    .login-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .login-footer p {
+        font-size: 0.85rem;
+        color: #888;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    /* reCAPTCHA container - properly positioned */
+    .recaptcha-container {
+        position: absolute;
+        bottom: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1004;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 480px) {
+        .login-content {
+            width: 95%;
+            max-width: 95%;
+            margin: 1rem;
+            border-radius: 16px;
+        }
+        
+        .login-form {
+            padding: 1rem 1.5rem 1.5rem;
+        }
+        
+        .login-header {
+            padding: 1.5rem 1.5rem 0;
+        }
+        
+        .login-icon {
+            width: 56px;
+            height: 56px;
+            font-size: 1.6rem;
+        }
+        
+        .country-code {
+            min-width: 70px;
+            padding: 0 0.8rem;
+        }
+        
+        .phone-input-field, .otp-input {
+            padding: 0.9rem;
+        }
+        
+        .login-btn {
+            padding: 0.9rem;
+        }
+        
+        .recaptcha-container {
+            bottom: -40px;
+        }
+    }
+
+    /* Loading animation */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .login-btn:disabled .btn-text::after {
+        content: '';
+        width: 16px;
+        height: 16px;
+        border: 2px solid transparent;
+        border-top: 2px solid white;
+        border-radius: 50%;
+        display: inline-block;
+        margin-left: 0.5rem;
+        animation: spin 1s linear infinite;
     }
 
     /* User Info */
@@ -2943,43 +3113,88 @@
     </div>
 
     <!-- Header -->
-     <!-- Login Modal -->
+            <!-- Login Modal -->
             <div class="login-modal" id="loginModal">
                 <div class="login-content">
                     <div class="login-header">
-                        <h2>📱 Login</h2>
-                        <button class="close-login" onclick="closeLoginModal()">✕</button>
+                        <h2>Welcome to Leaf Nest</h2>
+                        <button class="close-login" onclick="closeLoginModal()">×</button>
                     </div>
                     
-                    <!-- Phone Input -->
+                    <!-- Phone Input Step -->
                     <div class="login-step" id="phoneStep">
                         <div class="login-form">
+                            <div class="login-intro">
+                                <div class="login-icon">📱</div>
+                                <h3>Login with Phone</h3>
+                                <p>We'll send you a verification code</p>
+                            </div>
+                            
                             <div class="form-group">
-                                <label>Mobile Number</label>
-                                <div class="phone-input">
-                                    <span class="country-code">🇮🇳 +91</span>
-                                    <input type="tel" id="loginPhone" placeholder="9876543210" maxlength="10">
+                                <label for="loginPhone">Mobile Number</label>
+                                <div class="phone-input-wrapper">
+                                    <div class="country-code">
+                                        <span class="flag">🇮🇳</span>
+                                        <span>+91</span>
+                                    </div>
+                                    <input type="tel" 
+                                        id="loginPhone" 
+                                        placeholder="Enter 10-digit number" 
+                                        maxlength="10" 
+                                        class="phone-input-field">
                                 </div>
                             </div>
-                            <button class="login-btn" onclick="sendOTP()">Send OTP</button>
+                            
+                            <button class="login-btn primary" onclick="sendOTP()">
+                                <span class="btn-text">Send Verification Code</span>
+                            </button>
+                            
+                            <div class="login-footer">
+                                <p>By continuing, you agree to our Terms & Privacy Policy</p>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- OTP Input -->
+                    <!-- OTP Verification Step -->
                     <div class="login-step" id="otpStep" style="display: none;">
                         <div class="login-form">
-                            <p>Enter OTP sent to <span id="phoneDisplay"></span></p>
-                            <div class="form-group">
-                                <input type="text" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6">
+                            <div class="login-intro">
+                                <div class="login-icon">🔐</div>
+                                <h3>Verify Your Phone</h3>
+                                <p>Enter the 6-digit code sent to</p>
+                                <div class="phone-display" id="phoneDisplay">+91 98765 43210</div>
                             </div>
-                            <button class="login-btn" onclick="verifyOTP()">Verify OTP</button>
-                            <button class="resend-btn" onclick="resendOTP()">Resend OTP</button>
-
+                            
+                            <div class="form-group">
+                                <label for="otpInput">Verification Code</label>
+                                <input type="text" 
+                                    id="otpInput" 
+                                    placeholder="Enter 6-digit code" 
+                                    maxlength="6" 
+                                    class="otp-input">
+                            </div>
+                            
+                            <button class="login-btn primary" onclick="verifyOTP()">
+                                <span class="btn-text">Verify & Continue</span>
+                            </button>
+                            
+                            <div class="resend-section">
+                                <p>Didn't receive the code?</p>
+                                <button type="button" class="resend-btn" onclick="resendOTP()">
+                                    <span>Send again</span>
+                                </button>
+                                <button type="button" class="change-number-btn" onclick="resetToPhoneStep()">
+                                    <span>Change number</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div id="recaptcha-container"></div>
+                    
+                    <!-- reCAPTCHA container - properly positioned -->
+                    <div id="recaptcha-container" class="recaptcha-container"></div>
                 </div>
             </div>
+
     <header class="header">
         <nav class="nav">
             <div class="logo">
