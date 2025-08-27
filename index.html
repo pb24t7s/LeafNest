@@ -3008,6 +3008,8 @@
                                             class="phone-input">
                                     </div>
                                     </div>
+                                            <div id="recaptcha-container"></div>
+
                                     <button class="primary-btn" onclick="sendOTP()">
                                         <span class="btn-text">Send OTP</span>
                                     </button>
@@ -3039,7 +3041,7 @@
                                     </div>
                                     
                                     <!-- reCAPTCHA -->
-                                    <div id="recaptcha-container" class="recaptcha-inline"></div>
+                                  <!--<div id="recaptcha-container" class="recaptcha-inline"></div>-->
                                     
                                     <button class="verify-btn" onclick="verifyOTP()">
                                         <span class="btn-text">VERIFY & LOGIN</span>
@@ -5465,23 +5467,17 @@ function sendOTP() {
     sendBtn.disabled = true;
     sendBtn.classList.add('btn-loading');
     
-    // Initialize reCAPTCHA if needed
     if (!window.recaptchaVerifier) {
-        console.log('reCAPTCHA not initialized, creating...');
-        if (!initializeRecaptcha()) {
-            // Reset button if reCAPTCHA fails
-            sendBtn.textContent = 'Send OTP';
-            sendBtn.disabled = false;
-            sendBtn.classList.remove('btn-loading');
-            return;
-        }
-        
-        // Wait a moment for reCAPTCHA to fully load
-        setTimeout(() => sendRealOTP(phone, sendBtn), 1000);
-    } else {
-        sendRealOTP(phone, sendBtn);
-    }
+  console.log('reCAPTCHA not initialized, creating.');
+  if (!initializeRecaptcha()) { /* reset btn... */ return; }
+  // Ask user to complete the captcha, then click Send OTP again
+  sendBtn.textContent = 'Verify captcha, then Send OTP';
+  sendBtn.disabled = false;
+  sendBtn.classList.remove('btn-loading');
+  return;
 }
+sendRealOTP(phone, sendBtn);
+
 
 
 // SINGLE verifyOTP function
