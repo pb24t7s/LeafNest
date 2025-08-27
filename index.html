@@ -2976,8 +2976,37 @@
 
 /* reCAPTCHA positioning */
 #loginModal #recaptcha-container {
-    margin: 1rem 0 !important;
+    position: absolute !important;
+    bottom: 60px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1004 !important;
+    width: calc(100% - 3rem) !important;
     text-align: center !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 4px !important;
+    padding: 8px !important;
+    /* Prevent movement */
+    transition: none !important;
+    transform-origin: center !important;
+}
+/* Remove any hover effects from reCAPTCHA elements */
+#loginModal #recaptcha-container * {
+    transition: none !important;
+    transform: none !important;
+}
+
+#loginModal #recaptcha-container iframe {
+    pointer-events: auto !important;
+    transition: none !important;
+    transform: none !important;
+}
+
+/* Disable hover effects on reCAPTCHA */
+#loginModal #recaptcha-container:hover,
+#loginModal #recaptcha-container *:hover {
+    transform: translateX(-50%) !important;
+    transition: none !important;
 }
 
 /* Mobile responsiveness */
