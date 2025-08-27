@@ -2810,12 +2810,10 @@
     border-radius: 8px !important;
     width: 90% !important;
     max-width: 400px !important;
-    min-height: 500px !important; /* Increased height */
     max-height: 90vh !important;
     overflow-y: auto !important;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
-    margin-bottom: 20px !important; /* Reduced margin since reCAPTCHA is inside */
-    position: relative !important;
+    margin-bottom: 80px !important;
 }
 
 #loginModal .login-header {
@@ -2976,50 +2974,26 @@
     transform: none !important;
 }
 
-
-/* reCAPTCHA positioning - Fixed under Verify button */
+/* reCAPTCHA positioning */
 #loginModal #recaptcha-container {
-    position: absolute !important;
-    bottom: 60px !important; /* Fixed position from bottom of modal */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 1004 !important;
-    width: calc(100% - 3rem) !important; /* Match form width */
+    margin: 1rem 0 !important;
     text-align: center !important;
-    background: rgba(255, 255, 255, 0.95) !important;
-    border-radius: 4px !important;
-    padding: 8px !important;
-}
-/* Add padding to form content to avoid reCAPTCHA overlap */
-.login-tab-content {
-    display: none;
-    padding: 1.5rem 1.5rem 100px 1.5rem !important; /* Extra bottom padding for reCAPTCHA space */
 }
 
-/* Verify button positioning */
-#loginModal .verify-btn {
-    margin-bottom: 80px !important; /* Space for reCAPTCHA below button */
-}
 /* Mobile responsiveness */
 @media (max-width: 480px) {
     #loginModal .login-content {
-        min-height: 450px !important;
         width: 95% !important;
         margin: 1rem !important;
     }
     
+    .tab-button {
+        font-size: 0.8rem !important;
+        padding: 0.8rem !important;
+    }
+    
     .login-tab-content {
-        padding: 1rem 1rem 90px 1rem !important;
-    }
-    
-    #loginModal #recaptcha-container {
-        bottom: 50px !important;
-        width: calc(100% - 2rem) !important;
-        padding: 5px !important;
-    }
-    
-    #loginModal .verify-btn {
-        margin-bottom: 70px !important;
+        padding: 1rem !important;
     }
 }
 
@@ -4942,11 +4916,12 @@ async function sendRealOTP() {
         confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
         
         // Show OTP step
-         document.getElementById('phoneStep').style.display = 'none';
-         document.getElementById('otpStep').style.display = 'block';
-         document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
+        // Show OTP step
+        document.getElementById('phoneStep').style.display = 'none';
+        document.getElementById('otpStep').style.display = 'block';
+        document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
 
-            // Start the countdown timer
+        // Start the countdown timer
         startTimer();
         
         // Reset button
