@@ -3041,8 +3041,8 @@
                                     </div>
                                     
                                     <!-- reCAPTCHA -->
-                                  <!--<div id="recaptcha-container" class="recaptcha-inline"></div>-->
-                                    
+                                    <div id="recaptcha-container" class="recaptcha-inline"></div>
+
                                     <button class="verify-btn" onclick="verifyOTP()">
                                         <span class="btn-text">VERIFY & LOGIN</span>
                                     </button>
@@ -5467,7 +5467,7 @@ function sendOTP() {
     sendBtn.disabled = true;
     sendBtn.classList.add('btn-loading');
     
-    if (!window.recaptchaVerifier) {
+ if (!window.recaptchaVerifier) {
   console.log('reCAPTCHA not initialized, creating.');
   if (!initializeRecaptcha()) { /* reset btn... */ return; }
   // Ask user to complete the captcha, then click Send OTP again
@@ -5478,8 +5478,7 @@ function sendOTP() {
 }
 sendRealOTP(phone, sendBtn);
 
-
-
+}
 // SINGLE verifyOTP function
 function verifyOTP() {
     console.log('=== verifyOTP called ===');
@@ -6098,5 +6097,4 @@ document.addEventListener('keydown', function(e) {
 
     </script>
 </body>
-</html> 
-  
+</html>
