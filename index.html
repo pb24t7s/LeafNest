@@ -2996,11 +2996,17 @@
                                 <div class="step-content">
                                     <label class="input-label">Enter Mobile Number</label>
                                     <div class="phone-input-container">
+                                        <div style="display: flex; align-items: center; border: 1px solid #d1d5db; border-radius: 6px; overflow: hidden;">
+                                        <div style="padding: 14px 12px; background: #f9fafb; border-right: 1px solid #d1d5db; color: #666; font-weight: 500;">
+                                                    +91
+                                        </div>
                                         <input type="tel" 
                                             id="loginPhone" 
                                             placeholder="Enter 10-digit mobile number" 
                                             maxlength="10" 
+                                            style="flex: 1; border: none; padding: 14px 16px; outline: none;"
                                             class="phone-input">
+                                    </div>
                                     </div>
                                     <button class="primary-btn" onclick="sendOTP()">
                                         <span class="btn-text">Send OTP</span>
@@ -4728,100 +4734,59 @@ function setupRecaptcha() {
 }
 
 // Send real OTP
+// Add this to your sendRealOTP function
 async function sendRealOTP() {
-    if (cooldownActive) {
-        alert('Please wait for the cooldown period to finish.');
-        return;
-    }
-    console.log('Firebase auth object:', firebase.auth());
-    console.log('reCAPTCHA verifier:', window.recaptchaVerifier);
     const phoneInput = document.getElementById('loginPhone');
     const phone = phoneInput.value.trim();
     
-    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-        alert('Please enter a valid 10-digit mobile number');
+    // Show full number to user for confirmation
+    const fullPhoneNumber = '+91' + phone;
+    
+    if (!confirm(`Send OTP to ${fullPhoneNumber}?`)) {
         return;
     }
     
-    const fullPhoneNumber = '+91' + phone;
-    console.log('Sending to:', fullPhoneNumber); // Check this in console
-
+    console.log('Phone number:', fullPhoneNumber);
+    console.log('reCAPTCHA verifier exists:', !!window.recaptchaVerifier);
+    
+    if (!window.recaptchaVerifier) {
+        console.log('Creating reCAPTCHA verifier...');
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            'size': 'normal',
+            'callback': (response) => {
+                console.log('reCAPTCHA solved:', response);
+            },
+            'expired-callback': () => {
+                console.log('reCAPTCHA expired');
+            }
+        });
+    }
     
     try {
-        // Show loading state
-        const sendBtn = document.querySelector('#phoneStep .primary-btn');
-
-        sendBtn.textContent = 'Sending OTP...';
-        sendBtn.disabled = true;
-        sendBtn.classList.add('btn-loading');
+        console.log('Attempting to send SMS...');
+        const result = await firebase.auth().signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
+        console.log('SMS send result:', result);
+        console.log('Confirmation result exists:', !!result);
+        confirmationResult = result;
         
-        // Ensure reCAPTCHA is set up
-        if (!window.recaptchaVerifier) {
-            setupRecaptcha();
-            // Wait a bit for reCAPTCHA to initialize
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-        
-        // Send OTP
-        confirmationResult = await firebase.auth().signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
-        console.log('SMS sent successfully:', confirmationResult);
-        
-        // Switch to OTP verification step
+        // Success - switch to OTP step
         document.getElementById('phoneStep').style.display = 'none';
         document.getElementById('otpStep').style.display = 'block';
-        
-        // Start countdown
         startCountdown();
         
-        // Focus first OTP input
-        const firstOtpBox = document.querySelector('.otp-box');
-        if (firstOtpBox) firstOtpBox.focus();
-        
-        // Reset button state
-        sendBtn.textContent = 'Send OTP';
-        sendBtn.disabled = false;
-        sendBtn.classList.remove('btn-loading');
-        
     } catch (error) {
-        console.error('Error sending OTP:', error);
+        console.error('=== SMS Send Error ===');
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        console.error('Full error:', error);
         
-        // Reset button state
+        // Reset button
         const sendBtn = document.querySelector('#phoneStep .primary-btn');
         sendBtn.textContent = 'Send OTP';
         sendBtn.disabled = false;
         sendBtn.classList.remove('btn-loading');
         
-        // Handle specific Firebase errors
-        if (error.code === 'auth/too-many-requests') {
-            showCooldownMessage();
-            return;
-        }
-        
-        if (error.code === 'auth/captcha-check-failed') {
-            clearRecaptcha();
-            setupRecaptcha();
-        }
-        
-        // Show user-friendly error messages
-        let errorMessage = 'Failed to send OTP. ';
-        switch(error.code) {
-            case 'auth/invalid-phone-number':
-                errorMessage += 'Invalid phone number format.';
-                break;
-            case 'auth/quota-exceeded':
-                errorMessage += 'Daily SMS limit reached. Please try again tomorrow.';
-                break;
-            case 'auth/captcha-check-failed':
-                errorMessage += 'Please complete the security verification and try again.';
-                break;
-            case 'auth/web-context-cancelled':
-                errorMessage += 'Request was cancelled. Please try again.';
-                break;
-            default:
-                errorMessage += 'Please check your internet connection and try again.';
-        }
-        
-        alert(errorMessage);
+        alert(`SMS failed: ${error.message}`);
     }
 }
 
