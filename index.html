@@ -2976,54 +2976,36 @@
     transform: none !important;
 }
 
-/* reCAPTCHA positioning - Fixed and stable */
+
+/* reCAPTCHA positioning - Fixed under Verify button */
 #loginModal #recaptcha-container {
     position: absolute !important;
-    bottom: 60px !important;
+    bottom: 60px !important; /* Fixed position from bottom of modal */
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 1004 !important;
-    width: calc(100% - 3rem) !important;
+    width: calc(100% - 3rem) !important; /* Match form width */
     text-align: center !important;
     background: rgba(255, 255, 255, 0.95) !important;
     border-radius: 4px !important;
     padding: 8px !important;
-    /* Remove all animations and transitions */
-    transition: none !important;
-    animation: none !important;
+}
+/* Add padding to form content to avoid reCAPTCHA overlap */
+.login-tab-content {
+    display: none;
+    padding: 1.5rem 1.5rem 100px 1.5rem !important; /* Extra bottom padding for reCAPTCHA space */
 }
 
-/* Force all reCAPTCHA elements to stay centered */
-#loginModal #recaptcha-container * {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
+/* Verify button positioning */
+#loginModal .verify-btn {
+    margin-bottom: 80px !important; /* Space for reCAPTCHA below button */
 }
-
-/* Prevent any hover effects on reCAPTCHA */
-#loginModal #recaptcha-container:hover {
-    transform: translateX(-50%) !important;
-    transition: none !important;
-}
-
-/* Target Google reCAPTCHA iframe specifically */
-#loginModal #recaptcha-container iframe {
-    display: block !important;
-    margin: 0 auto !important;
-    transform: none !important;
-    transition: none !important;
-    position: static !important;
-}
-/* Mobile adjustments */
-/* Mobile adjustments - keep stable */
+/* Mobile responsiveness */
 @media (max-width: 480px) {
-    #loginModal #recaptcha-container {
-        bottom: 50px !important;
-        width: calc(100% - 2rem) !important;
-        padding: 5px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        transition: none !important;
+    #loginModal .login-content {
+        min-height: 450px !important;
+        width: 95% !important;
+        margin: 1rem !important;
     }
     
     .login-tab-content {
