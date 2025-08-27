@@ -2804,59 +2804,201 @@
 }
 
 /* Login Modal Override */
+/* Clean Login Modal Design */
 #loginModal .login-content {
     background: white !important;
-    border-radius: 24px !important;
+    border-radius: 8px !important;
     width: 90% !important;
-    max-width: 440px !important;
+    max-width: 400px !important;
     max-height: 90vh !important;
     overflow-y: auto !important;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
-    margin-bottom: 90px !important;
-    max-height: calc(90vh - 90px) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+    margin-bottom: 80px !important;
 }
 
-#loginModal #recaptcha-container {
-    position: fixed !important;
-    bottom: 15px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 1006 !important;
-    background: rgba(255, 255, 255, 0.95) !important;
-    border-radius: 8px !important;
-    padding: 8px !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
-    backdrop-filter: blur(5px) !important;
-}
-#loginModal .phone-input {
-    display: flex !important;
-    border: 2px solid #e8f0e8 !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
+#loginModal .login-header {
+    padding: 1.5rem 1.5rem 1rem !important;
+    text-align: center !important;
+    border-bottom: 1px solid #eee !important;
 }
 
-#loginModal .country-code {
-    background: #f1f5f1 !important;
-    padding: 12px 15px !important;
+#loginModal .login-header h2 {
+    color: #333 !important;
+    font-size: 1.4rem !important;
     font-weight: 600 !important;
-    color: #2c5530 !important;
-    border-right: 1px solid #e8f0e8 !important;
+    margin: 0 !important;
 }
 
+#loginModal .close-login {
+    position: absolute !important;
+    top: 15px !important;
+    right: 15px !important;
+    background: none !important;
+    border: none !important;
+    font-size: 1.5rem !important;
+    color: #666 !important;
+    cursor: pointer !important;
+}
 
-/* Mobile adjustments */
+/* Login Tabs */
+.login-tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 1rem;
+    background: #f8f9fa;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    background: #17a2b8;
+    color: white;
+}
+
+.tab-button:first-child {
+    border-top-left-radius: 4px;
+}
+
+.tab-button:last-child {
+    border-top-right-radius: 4px;
+}
+
+/* Tab Content */
+.login-tab-content {
+    display: none;
+    padding: 1.5rem;
+}
+
+.login-tab-content.active {
+    display: block;
+}
+
+/* Form Elements */
+#loginModal .form-group {
+    margin-bottom: 1.5rem !important;
+}
+
+#loginModal .form-group label {
+    display: block !important;
+    color: #333 !important;
+    font-weight: 500 !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 0.9rem !important;
+}
+
+.login-input, .otp-input-field {
+    width: 100% !important;
+    padding: 12px 15px !important;
+    border: 2px solid #ddd !important;
+    border-radius: 4px !important;
+    font-size: 1rem !important;
+    transition: border-color 0.3s ease !important;
+    box-sizing: border-box !important;
+}
+
+.login-input:focus, .otp-input-field:focus {
+    outline: none !important;
+    border-color: #17a2b8 !important;
+}
+
+/* OTP Section */
+.otp-section h3 {
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.otp-description {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+}
+
+.otp-input-container {
+    margin-bottom: 1rem;
+}
+
+.otp-input-field {
+    text-align: center !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 0.2rem !important;
+    font-weight: 600 !important;
+}
+
+/* Resend Timer */
+.resend-timer {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+#timer {
+    font-weight: 600;
+    color: #17a2b8;
+}
+
+/* Login Button */
+#loginModal .login-btn {
+    width: 100% !important;
+    background: #17a2b8 !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 20px !important;
+    border-radius: 4px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+}
+
+#loginModal .login-btn:hover:not(:disabled) {
+    background: #138496 !important;
+    transform: translateY(-1px) !important;
+}
+
+#loginModal .login-btn:disabled {
+    background: #ccc !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+/* reCAPTCHA positioning */
+#loginModal #recaptcha-container {
+    margin: 1rem 0 !important;
+    text-align: center !important;
+}
+
+/* Mobile responsiveness */
 @media (max-width: 480px) {
     #loginModal .login-content {
-        margin-bottom: 70px !important;
-        max-height: calc(90vh - 70px) !important;
+        width: 95% !important;
+        margin: 1rem !important;
     }
     
-    #loginModal #recaptcha-container {
-        bottom: 10px !important;
-        padding: 5px !important;
-        font-size: 0.9em !important;
+    .tab-button {
+        font-size: 0.8rem !important;
+        padding: 0.8rem !important;
     }
-    </style>
+    
+    .login-tab-content {
+        padding: 1rem !important;
+    }
+}
+
+</style>
+
 </head>
 <body>
     <!-- Cart Overlay -->
@@ -2998,86 +3140,88 @@
 
     <!-- Header -->
             <!-- Login Modal -->
-            <div class="login-modal" id="loginModal">
-                <div class="login-content">
-                    <div class="login-header">
-                        <h2>Welcome to Leaf Nest</h2>
-                        <button class="close-login" onclick="closeLoginModal()">×</button>
-                    </div>
-                    
-                    <!-- Phone Input Step -->
-                    <div class="login-step" id="phoneStep">
-                        <div class="login-form">
-                            <div class="login-intro">
-                                <div class="login-icon">📱</div>
-                                <h3>Login with Phone</h3>
-                                <p>We'll send you a verification code</p>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="loginPhone">Mobile Number</label>
-                                <div class="phone-input-wrapper">
-                                    <div class="country-code">
-                                        <span class="flag">🇮🇳</span>
-                                        <span>+91</span>
+                <div class="login-modal" id="loginModal">
+                    <div class="login-content">
+                        <div class="login-header">
+                            <h2>LOGIN</h2>
+                            <button class="close-login" onclick="closeLoginModal()">×</button>
+                        </div>
+                        
+                        <!-- Tab Navigation -->
+                        <div class="login-tabs">
+                            <button class="tab-button active" id="otpTab" onclick="switchLoginTab('otp')">LOGIN WITH OTP</button>
+                            <button class="tab-button" id="passwordTab" onclick="switchLoginTab('password')">LOGIN WITH PASSWORD</button>
+                        </div>
+                        
+                        <!-- OTP Login Tab -->
+                        <div class="login-tab-content active" id="otpLoginContent">
+                            <!-- Phone Input Step -->
+                            <div class="login-step" id="phoneStep">
+                                <div class="login-form">
+                                    <div class="form-group">
+                                        <label>Mobile Number</label>
+                                        <input type="tel" 
+                                            id="loginPhone" 
+                                            placeholder="Enter mobile number" 
+                                            maxlength="10" 
+                                            class="login-input">
                                     </div>
-                                    <input type="tel" 
-                                        id="loginPhone" 
-                                        placeholder="Enter 10-digit number" 
-                                        maxlength="10" 
-                                        class="phone-input-field">
+                                    
+                                    <button class="login-btn" onclick="sendOTP()">
+                                        SEND OTP
+                                    </button>
                                 </div>
                             </div>
                             
-                            <button class="login-btn primary" onclick="sendOTP()">
-                                <span class="btn-text">Send Verification Code</span>
-                            </button>
-                            
-                            <div class="login-footer">
-                                <p>By continuing, you agree to our Terms & Privacy Policy</p>
+                            <!-- OTP Verification Step -->
+                            <div class="login-step" id="otpStep" style="display: none;">
+                                <div class="login-form">
+                                    <div class="otp-section">
+                                        <h3>Enter One Time Password</h3>
+                                        <p class="otp-description">
+                                            One Time Password (OTP) has been sent to your mobile, please enter the same here to login.
+                                        </p>
+                                        
+                                        <div class="otp-input-container">
+                                            <input type="text" 
+                                                id="otpInput" 
+                                                maxlength="6" 
+                                                class="otp-input-field"
+                                                placeholder="Enter OTP">
+                                        </div>
+                                        
+                                        <div class="resend-timer">
+                                            <span>Resend OTP in: </span>
+                                            <span id="timer">00:59</span>
+                                        </div>
+                                        
+                                        <button class="login-btn verify-btn" onclick="verifyOTP()">
+                                            VERIFY & LOGIN
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- OTP Verification Step -->
-                    <div class="login-step" id="otpStep" style="display: none;">
-                        <div class="login-form">
-                            <div class="login-intro">
-                                <div class="login-icon">🔐</div>
-                                <h3>Verify Your Phone</h3>
-                                <p>Enter the 6-digit code sent to</p>
-                                <div class="phone-display" id="phoneDisplay">+91 98765 43210</div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="otpInput">Verification Code</label>
-                                <input type="text" 
-                                    id="otpInput" 
-                                    placeholder="Enter 6-digit code" 
-                                    maxlength="6" 
-                                    class="otp-input">
-                            </div>
-                            
-                            <button class="login-btn primary" onclick="verifyOTP()">
-                                <span class="btn-text">Verify & Continue</span>
-                            </button>
-                            
-                            <div class="resend-section">
-                                <p>Didn't receive the code?</p>
-                                <button type="button" class="resend-btn" onclick="resendOTP()">
-                                    <span>Send again</span>
-                                </button>
-                                <button type="button" class="change-number-btn" onclick="resetToPhoneStep()">
-                                    <span>Change number</span>
-                                </button>
+                        
+                        <!-- Password Login Tab (Optional) -->
+                        <div class="login-tab-content" id="passwordLoginContent">
+                            <div class="login-form">
+                                <div class="form-group">
+                                    <label>Mobile Number</label>
+                                    <input type="tel" placeholder="Enter mobile number" class="login-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" placeholder="Enter password" class="login-input">
+                                </div>
+                                <button class="login-btn">LOGIN</button>
                             </div>
                         </div>
+                        
+                        <!-- reCAPTCHA container -->
+                        <div id="recaptcha-container"></div>
                     </div>
-                    
-                    <!-- reCAPTCHA container - properly positioned -->
-                    <div id="recaptcha-container" class="recaptcha-container"></div>
                 </div>
-            </div>
             
     <header class="header">
         <nav class="nav">
@@ -4772,9 +4916,12 @@ async function sendRealOTP() {
         confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
         
         // Show OTP step
-        document.getElementById('phoneStep').style.display = 'none';
-        document.getElementById('otpStep').style.display = 'block';
-        document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
+         document.getElementById('phoneStep').style.display = 'none';
+         document.getElementById('otpStep').style.display = 'block';
+         document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
+
+            // Start the countdown timer
+        startTimer();
         
         // Reset button
         sendBtn.textContent = 'Send OTP';
@@ -5381,7 +5528,44 @@ function sendOTP() {
 function verifyOTP() {
     verifyRealOTP();
 }
-   
+// Tab switching function
+function switchLoginTab(tabType) {
+    // Remove active class from all tabs
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.login-tab-content').forEach(content => content.classList.remove('active'));
+    
+    // Add active class to selected tab
+    if (tabType === 'otp') {
+        document.getElementById('otpTab').classList.add('active');
+        document.getElementById('otpLoginContent').classList.add('active');
+    } else {
+        document.getElementById('passwordTab').classList.add('active');
+        document.getElementById('passwordLoginContent').classList.add('active');
+    }
+}
+
+// Timer functionality
+let timerInterval;
+function startTimer() {
+    let seconds = 59;
+    const timerElement = document.getElementById('timer');
+    
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    
+    timerInterval = setInterval(() => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        
+        if (seconds <= 0) {
+            clearInterval(timerInterval);
+            timerElement.textContent = '00:00';
+        }
+        seconds--;
+    }, 1000);
+}  
 // Save user data to localStorage
 function saveUserData() {
     if (currentUser) {
