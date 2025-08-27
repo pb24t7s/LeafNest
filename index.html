@@ -4733,7 +4733,8 @@ async function sendRealOTP() {
         alert('Please wait for the cooldown period to finish.');
         return;
     }
-
+    console.log('Firebase auth object:', firebase.auth());
+    console.log('reCAPTCHA verifier:', window.recaptchaVerifier);
     const phoneInput = document.getElementById('loginPhone');
     const phone = phoneInput.value.trim();
     
@@ -4743,10 +4744,13 @@ async function sendRealOTP() {
     }
     
     const fullPhoneNumber = '+91' + phone;
+    console.log('Sending to:', fullPhoneNumber); // Check this in console
+
     
     try {
         // Show loading state
         const sendBtn = document.querySelector('#phoneStep .primary-btn');
+
         sendBtn.textContent = 'Sending OTP...';
         sendBtn.disabled = true;
         sendBtn.classList.add('btn-loading');
@@ -4760,8 +4764,7 @@ async function sendRealOTP() {
         
         // Send OTP
         confirmationResult = await firebase.auth().signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
-        
-        console.log('OTP sent successfully');
+        console.log('SMS sent successfully:', confirmationResult);
         
         // Switch to OTP verification step
         document.getElementById('phoneStep').style.display = 'none';
