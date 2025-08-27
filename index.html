@@ -3023,7 +3023,7 @@
                                         <input type="text" class="otp-box" maxlength="1" oninput="moveToNext(this, 4)">
                                         <input type="text" class="otp-box" maxlength="1" oninput="moveToNext(this, 5)">
                                     </div>
-                                    
+
                                     <!-- ADD THE HIDDEN INPUT HERE -->
                                     <input type="hidden" id="otpInput">
 
@@ -5427,13 +5427,69 @@ function closeLoginModal() {
     document.getElementById('otpInput').value = '';
 }
 
-// Send OTP (simulation)
 function sendOTP() {
-    sendRealOTP();
+    const phoneInput = document.getElementById('loginPhone');
+    const phone = phoneInput.value.trim();
+    
+    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+        alert('Please enter a valid 10-digit mobile number');
+        return;
+    }
+    
+    // Show loading state
+    const sendBtn = document.querySelector('#phoneStep .primary-btn');
+    sendBtn.disabled = true;
+    sendBtn.classList.add('btn-loading');
+    
+    // Call Firebase OTP function
+    sendRealOTP().then(() => {
+        // Switch to OTP step
+        document.getElementById('phoneStep').style.display = 'none';
+        document.getElementById('otpStep').style.display = 'block';
+        
+        // Start countdown
+        startCountdown();
+        
+        // Focus first OTP box
+        document.querySelector('.otp-box').focus();
+        
+        // Reset button
+        sendBtn.disabled = false;
+        sendBtn.classList.remove('btn-loading');
+        
+    }).catch(() => {
+        // Reset button on error
+        sendBtn.disabled = false;
+        sendBtn.classList.remove('btn-loading');
+    });
 }
 
 function verifyOTP() {
-    verifyRealOTP();
+    const otp = getOTPValue();
+    
+    if (otp.length !== 6) {
+        alert('Please enter complete 6-digit OTP');
+        clearOTPBoxes();
+        return;
+    }
+    
+    // Set the OTP value for Firebase
+    if (document.getElementById('otpInput')) {
+        document.getElementById('otpInput').value = otp;
+    }
+    
+    // Show loading state
+    const verifyBtn = document.querySelector('.verify-btn');
+    verifyBtn.disabled = true;
+    verifyBtn.classList.add('btn-loading');
+    
+    // Call Firebase verify function
+    verifyRealOTP().catch(() => {
+        // Reset button on error
+        verifyBtn.disabled = false;
+        verifyBtn.classList.remove('btn-loading');
+        clearOTPBoxes();
+    });
 }
    
 // Save user data to localStorage
