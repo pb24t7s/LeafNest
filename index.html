@@ -3024,6 +3024,9 @@
                                         <input type="text" class="otp-box" maxlength="1" oninput="moveToNext(this, 5)">
                                     </div>
                                     
+                                    <!-- ADD THE HIDDEN INPUT HERE -->
+                                    <input type="hidden" id="otpInput">
+
                                     <div class="resend-section">
                                         <span class="resend-text">Resend OTP in : </span>
                                         <span class="countdown" id="countdown">00:59</span>
@@ -4696,23 +4699,41 @@ const db = firebase.firestore();
 
 let confirmationResult = null;
 
-// Setup reCAPTCHA
+
+
+// Setup reCAPTCHA - call this once when page loads
 function setupRecaptcha() {
     if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            'size': 'invisible',
+            'size': 'normal', // Changed from 'invisible' to 'normal' for better reliability
             'callback': (response) => {
                 console.log('reCAPTCHA solved');
+                // Enable send button after reCAPTCHA is solved
+                const sendBtn = document.querySelector('#phoneStep .primary-btn');
+                if (sendBtn) sendBtn.disabled = false;
             },
             'expired-callback': () => {
                 console.log('reCAPTCHA expired');
+                // Disable send button if reCAPTCHA expires
+                const sendBtn = document.querySelector('#phoneStep .primary-btn');
+                if (sendBtn) sendBtn.disabled = true;
             }
+        });
+        
+        // Render the reCAPTCHA
+        window.recaptchaVerifier.render().then((widgetId) => {
+            window.recaptchaWidgetId = widgetId;
         });
     }
 }
 
 // Send real OTP
 async function sendRealOTP() {
+    if (cooldownActive) {
+        alert('Please wait for the cooldown period to finish.');
+        return;
+    }
+
     const phoneInput = document.getElementById('loginPhone');
     const phone = phoneInput.value.trim();
     
@@ -4725,54 +4746,60 @@ async function sendRealOTP() {
     
     try {
         // Show loading state
-        const sendBtn = document.querySelector('#phoneStep .login-btn');
+        const sendBtn = document.querySelector('#phoneStep .primary-btn');
         sendBtn.textContent = 'Sending OTP...';
         sendBtn.disabled = true;
+        sendBtn.classList.add('btn-loading');
         
-        // Only create reCAPTCHA if it doesn't exist
+        // Ensure reCAPTCHA is set up
         if (!window.recaptchaVerifier) {
-            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                'size': 'invisible',
-                'callback': (response) => {
-                    console.log('reCAPTCHA solved');
-                },
-                'expired-callback': () => {
-                    console.log('reCAPTCHA expired');
-                }
-            });
+            setupRecaptcha();
+            // Wait a bit for reCAPTCHA to initialize
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
         
-        confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
+        // Send OTP
+        confirmationResult = await firebase.auth().signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
         
-        // Show OTP step
+        console.log('OTP sent successfully');
+        
+        // Switch to OTP verification step
         document.getElementById('phoneStep').style.display = 'none';
         document.getElementById('otpStep').style.display = 'block';
-        document.getElementById('phoneDisplay').textContent = fullPhoneNumber;
         
-        // Reset button
+        // Start countdown
+        startCountdown();
+        
+        // Focus first OTP input
+        const firstOtpBox = document.querySelector('.otp-box');
+        if (firstOtpBox) firstOtpBox.focus();
+        
+        // Reset button state
         sendBtn.textContent = 'Send OTP';
         sendBtn.disabled = false;
+        sendBtn.classList.remove('btn-loading');
         
     } catch (error) {
         console.error('Error sending OTP:', error);
         
-        // Reset button first
-        const sendBtn = document.querySelector('#phoneStep .login-btn');
+        // Reset button state
+        const sendBtn = document.querySelector('#phoneStep .primary-btn');
         sendBtn.textContent = 'Send OTP';
         sendBtn.disabled = false;
+        sendBtn.classList.remove('btn-loading');
         
-        // Handle specific errors
+        // Handle specific Firebase errors
         if (error.code === 'auth/too-many-requests') {
-            // Show cooldown message and temporarily disable the system
             showCooldownMessage();
             return;
         }
         
-        // Clear reCAPTCHA on certain errors
         if (error.code === 'auth/captcha-check-failed') {
             clearRecaptcha();
+            setupRecaptcha();
         }
         
+        // Show user-friendly error messages
         let errorMessage = 'Failed to send OTP. ';
         switch(error.code) {
             case 'auth/invalid-phone-number':
@@ -4782,10 +4809,13 @@ async function sendRealOTP() {
                 errorMessage += 'Daily SMS limit reached. Please try again tomorrow.';
                 break;
             case 'auth/captcha-check-failed':
-                errorMessage += 'Security verification failed. Please refresh and try again.';
+                errorMessage += 'Please complete the security verification and try again.';
+                break;
+            case 'auth/web-context-cancelled':
+                errorMessage += 'Request was cancelled. Please try again.';
                 break;
             default:
-                errorMessage += error.message;
+                errorMessage += 'Please check your internet connection and try again.';
         }
         
         alert(errorMessage);
@@ -4796,11 +4826,14 @@ async function sendRealOTP() {
 let otpRetryCount = 0;
 const MAX_OTP_RETRIES = 3;
 
+
+// Verify real OTP
 async function verifyRealOTP() {
-    const otp = document.getElementById('otpInput').value.trim();
+    const otp = getOTPValue();
     
-    if (otp.length !== 6) {
+    if (otp.length !== 6 || !/^\d+$/.test(otp)) {
         alert('Please enter a valid 6-digit OTP');
+        clearOTPBoxes();
         return;
     }
     
@@ -4812,24 +4845,31 @@ async function verifyRealOTP() {
     
     try {
         // Show loading state
-        const verifyBtn = document.querySelector('#otpStep .login-btn');
-        const resendBtn = document.querySelector('#otpStep .resend-btn');
+        const verifyBtn = document.querySelector('.verify-btn');
         verifyBtn.textContent = 'Verifying...';
         verifyBtn.disabled = true;
-        resendBtn.disabled = true;
+        verifyBtn.classList.add('btn-loading');
         
+        // Verify OTP with Firebase
         const result = await confirmationResult.confirm(otp);
         const user = result.user;
+        
+        console.log('Phone number verified:', user.phoneNumber);
         
         // Reset retry count on success
         otpRetryCount = 0;
         
-        // ... rest of success handling (same as before)
-        console.log('Phone number verified:', user.phoneNumber);
+        // Check if user exists in Firestore
+        let userDoc;
+        try {
+            userDoc = await db.collection('users').doc(user.uid).get();
+        } catch (firestoreError) {
+            console.error('Firestore error:', firestoreError);
+            // Continue with local storage fallback
+        }
         
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        
-        if (userDoc.exists) {
+        if (userDoc && userDoc.exists) {
+            // Existing user
             currentUser = {
                 uid: user.uid,
                 phone: user.phoneNumber,
@@ -4837,6 +4877,7 @@ async function verifyRealOTP() {
                 isLoggedIn: true
             };
         } else {
+            // New user - create profile
             const newUserData = {
                 phone: user.phoneNumber,
                 firstName: '',
@@ -4846,7 +4887,12 @@ async function verifyRealOTP() {
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
             
-            await db.collection('users').doc(user.uid).set(newUserData);
+            try {
+                await db.collection('users').doc(user.uid).set(newUserData);
+            } catch (firestoreError) {
+                console.error('Failed to save user to Firestore:', firestoreError);
+                // Continue with local user data
+            }
             
             currentUser = {
                 uid: user.uid,
@@ -4855,10 +4901,23 @@ async function verifyRealOTP() {
             };
         }
         
-        await loadUserDataFromFirebase();
+        // Load additional user data
+        try {
+            await loadUserDataFromFirebase();
+        } catch (loadError) {
+            console.error('Failed to load user data:', loadError);
+            // Continue with empty data
+            userAddresses = [];
+            userOrders = [];
+        }
+        
+        // Update UI
         updateUserUI();
         closeLoginModal();
-        alert('Login successful! Welcome to Leaf Nest');
+        
+        // Show success message
+        const userName = currentUser.firstName || 'User';
+        alert(`Welcome back, ${userName}! Login successful.`);
         
     } catch (error) {
         console.error('Error verifying OTP:', error);
@@ -4866,111 +4925,105 @@ async function verifyRealOTP() {
         // Increment retry count
         otpRetryCount++;
         
-        // Reset button states
-        const verifyBtn = document.querySelector('#otpStep .login-btn');
-        const resendBtn = document.querySelector('#otpStep .resend-btn');
-        verifyBtn.textContent = 'Verify OTP';
+        // Reset button state
+        const verifyBtn = document.querySelector('.verify-btn');
+        verifyBtn.textContent = 'VERIFY & LOGIN';
         verifyBtn.disabled = false;
-        resendBtn.disabled = false;
+        verifyBtn.classList.remove('btn-loading');
         
-        // Handle different error cases
+        // Handle verification errors
         if (error.code === 'auth/invalid-verification-code') {
             if (otpRetryCount >= MAX_OTP_RETRIES) {
                 alert('Too many incorrect attempts. Please request a new OTP.');
                 resetToPhoneStep();
             } else {
-                alert(`Invalid OTP. ${MAX_OTP_RETRIES - otpRetryCount} attempts remaining.`);
-                document.getElementById('otpInput').value = '';
-                document.getElementById('otpInput').focus();
+                const attemptsLeft = MAX_OTP_RETRIES - otpRetryCount;
+                alert(`Incorrect OTP. ${attemptsLeft} attempt${attemptsLeft > 1 ? 's' : ''} remaining.`);
+                clearOTPBoxes();
             }
         } else if (error.code === 'auth/code-expired') {
-            alert('OTP expired. Please request a new one.');
+            alert('OTP has expired. Please request a new one.');
+            resetToPhoneStep();
+        } else if (error.code === 'auth/session-expired') {
+            alert('Session expired. Please start over.');
             resetToPhoneStep();
         } else {
-            alert('Verification failed: ' + error.message);
-            document.getElementById('otpInput').value = '';
-            document.getElementById('otpInput').focus();
+            alert('Verification failed. Please try again or request a new OTP.');
+            clearOTPBoxes();
         }
     }
 }
+// Resend OTP function
 async function resendOTP() {
     if (cooldownActive) {
         alert('Please wait for the cooldown period to finish.');
         return;
     }
     
-    const resendBtn = document.querySelector('#otpStep .resend-btn');
-    const originalText = resendBtn.textContent;
-    resendBtn.textContent = 'Sending...';
-    resendBtn.disabled = true;
+    // Clear current OTP and reset to phone step
+    clearOTPBoxes();
+    resetToPhoneStep();
     
-    try {
-        document.getElementById('otpInput').value = '';
-        otpRetryCount = 0;
-        
-        // Go back to phone step
-        document.getElementById('otpStep').style.display = 'none';
-        document.getElementById('phoneStep').style.display = 'block';
-        
-        // Wait then send new OTP
-        setTimeout(async () => {
-            await sendRealOTP();
-        }, 500);
-        
-    } catch (error) {
-        console.error('Error resending OTP:', error);
-        alert('Failed to resend OTP. Please try again.');
-        
-        resendBtn.textContent = originalText;
-        resendBtn.disabled = false;
-    }
+    // Wait a moment then send new OTP
+    setTimeout(async () => {
+        await sendRealOTP();
+    }, 500);
 }
-// Helper function to reset to phone step
+// Reset to phone input step
 function resetToPhoneStep() {
     document.getElementById('otpStep').style.display = 'none';
     document.getElementById('phoneStep').style.display = 'block';
     clearOTPBoxes();
     
-    // Clear countdown
+    // Clear countdown timer
     if (countdownTimer) {
         clearInterval(countdownTimer);
         countdownTimer = null;
     }
     
+    // Clear confirmation result
     confirmationResult = null;
     otpRetryCount = 0;
+    
+    // Focus phone input
+    const phoneInput = document.getElementById('loginPhone');
+    if (phoneInput) phoneInput.focus();
 }
 let cooldownActive = false;
 let cooldownTimer = null;
 
+
+// Show cooldown message and disable sending
 function showCooldownMessage() {
     cooldownActive = true;
     
-    // Disable send button and show countdown
-    const sendBtn = document.querySelector('#phoneStep .login-btn');
+    const sendBtn = document.querySelector('#phoneStep .primary-btn');
     let countdown = 60; // 60 second cooldown
     
     sendBtn.disabled = true;
     
     function updateCountdown() {
-        sendBtn.textContent = `Wait ${countdown}s before retry`;
+        sendBtn.textContent = `Wait ${countdown}s`;
         countdown--;
         
         if (countdown < 0) {
             sendBtn.textContent = 'Send OTP';
             sendBtn.disabled = false;
             cooldownActive = false;
-            clearInterval(cooldownTimer);
-            cooldownTimer = null;
+            if (cooldownTimer) {
+                clearInterval(cooldownTimer);
+                cooldownTimer = null;
+            }
         }
     }
     
     updateCountdown();
     cooldownTimer = setInterval(updateCountdown, 1000);
     
-    alert('Too many OTP requests. Please wait 60 seconds before trying again.');
+    alert('Too many requests. Please wait 60 seconds before trying again.');
 }
 
+// Clear reCAPTCHA and reinitialize
 function clearRecaptcha() {
     if (window.recaptchaVerifier) {
         try {
@@ -5264,6 +5317,29 @@ async function handlePaymentSuccess(paymentResponse, orderId, orderData) {
             closeMobileMenu();
         }
     });
+    // Initialize reCAPTCHA when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Setup reCAPTCHA when login modal is opened
+        const originalOpenLogin = openLoginModal;
+        window.openLoginModal = function() {
+            originalOpenLogin();
+            // Setup reCAPTCHA after modal is shown
+            setTimeout(setupRecaptcha, 100);
+        };
+    });
+
+    // Clean up on page unload
+    window.addEventListener('beforeunload', function() {
+        if (countdownTimer) clearInterval(countdownTimer);
+        if (cooldownTimer) clearInterval(cooldownTimer);
+        if (window.recaptchaVerifier) {
+            try {
+                window.recaptchaVerifier.clear();
+            } catch (e) {
+                console.log('Error clearing reCAPTCHA on unload:', e);
+            }
+        }
+    });
 
     // Initialize prices and nutrition calculators on page load
     document.addEventListener('DOMContentLoaded', function() {
@@ -5350,79 +5426,15 @@ function closeLoginModal() {
     document.getElementById('loginPhone').value = '';
     document.getElementById('otpInput').value = '';
 }
-// Replace your existing sendOTP function with this:
-function sendOTP() {
-    const phoneInput = document.getElementById('loginPhone');
-    const phone = phoneInput.value.trim();
-    
-    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-        alert('Please enter a valid 10-digit mobile number');
-        return;
-    }
-    
-    // Show loading state
-    const sendBtn = document.querySelector('#phoneStep .primary-btn');
-    sendBtn.disabled = true;
-    sendBtn.classList.add('btn-loading');
-    
-    // Call your existing Firebase OTP function
-    sendRealOTP().then(() => {
-        // Switch to OTP step
-        document.getElementById('phoneStep').style.display = 'none';
-        document.getElementById('otpStep').style.display = 'block';
-        
-        // Start countdown
-        startCountdown();
-        
-        // Focus first OTP box
-        document.querySelector('.otp-box').focus();
-        
-        // Reset button
-        sendBtn.disabled = false;
-        sendBtn.classList.remove('btn-loading');
-        
-    }).catch(() => {
-        // Reset button on error
-        sendBtn.disabled = false;
-        sendBtn.classList.remove('btn-loading');
-    });
-}
-// Replace your existing verifyOTP function with this:
-function verifyOTP() {
-    const otp = getOTPValue();
-    
-    if (otp.length !== 6) {
-        alert('Please enter complete 6-digit OTP');
-        clearOTPBoxes();
-        return;
-    }
-    
-    // Set the OTP value in your existing hidden input field for Firebase
-    if (document.getElementById('otpInput')) {
-        document.getElementById('otpInput').value = otp;
-    }
-    
-    // Show loading state
-    const verifyBtn = document.querySelector('.verify-btn');
-    verifyBtn.disabled = true;
-    verifyBtn.classList.add('btn-loading');
-    
-    // Call your existing Firebase verify function
-    verifyRealOTP().catch(() => {
-        // Reset button and clear boxes on error
-        verifyBtn.disabled = false;
-        verifyBtn.classList.remove('btn-loading');
-        clearOTPBoxes();
-    });
-}
-// Send OTP (simulation)
-//function sendOTP() {
-//    sendRealOTP();
-//}
 
-//function verifyOTP() {
-  //  verifyRealOTP();
-//}
+// Send OTP (simulation)
+function sendOTP() {
+    sendRealOTP();
+}
+
+function verifyOTP() {
+    verifyRealOTP();
+}
    
 // Save user data to localStorage
 function saveUserData() {
@@ -5869,39 +5881,51 @@ function moveToNext(current, index) {
         // verifyOTP();
     }
 }
-
-// Get OTP value from boxes
+// Helper function to get OTP from input boxes
 function getOTPValue() {
     const otpBoxes = document.querySelectorAll('.otp-box');
-    return Array.from(otpBoxes).map(box => box.value).join('');
+    return Array.from(otpBoxes).map(box => box.value.trim()).join('');
 }
 
-// Clear OTP boxes
+// Clear OTP input boxes
 function clearOTPBoxes() {
     const otpBoxes = document.querySelectorAll('.otp-box');
     otpBoxes.forEach(box => box.value = '');
-    otpBoxes[0].focus();
+    if (otpBoxes[0]) otpBoxes[0].focus();
 }
 
 // Countdown timer
 let countdownTimer;
+// Start countdown timer for OTP expiration
 function startCountdown() {
-    let timeLeft = 59;
+    let timeLeft = 59; // 59 seconds
     const countdownElement = document.getElementById('countdown');
+    
+    if (countdownTimer) {
+        clearInterval(countdownTimer);
+    }
     
     countdownTimer = setInterval(() => {
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
-        countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (countdownElement) {
+            countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
         
         if (timeLeft <= 0) {
             clearInterval(countdownTimer);
-            countdownElement.textContent = '00:00';
-            // Enable resend button here
+            countdownTimer = null;
+            if (countdownElement) {
+                countdownElement.textContent = '00:00';
+            }
+            // Optionally auto-expire the OTP session
+            // resetToPhoneStep();
         }
         timeLeft--;
     }, 1000);
 }
+
 // Update checkout form submission
 document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
     e.preventDefault();
