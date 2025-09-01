@@ -4771,14 +4771,10 @@ let confirmationResult = null;
 function initializeRecaptcha() {
     console.log('Initializing reCAPTCHA...');
     
+    // Don't recreate if it already exists
     if (window.recaptchaVerifier) {
-        console.log('reCAPTCHA already exists, clearing first...');
-        try {
-            window.recaptchaVerifier.clear();
-        } catch (e) {
-            console.log('Error clearing existing reCAPTCHA:', e);
-        }
-        window.recaptchaVerifier = null;
+        console.log('reCAPTCHA already initialized');
+        return true;
     }
 
     const container = document.getElementById('recaptcha-container');
@@ -4787,40 +4783,17 @@ function initializeRecaptcha() {
         return false;
     }
 
-    container.innerHTML = ''; // Clear container
-
     try {
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
             'size': 'normal',
             'callback': (response) => {
                 console.log('reCAPTCHA solved successfully');
-                const sendBtn = document.querySelector('#phoneStep .primary-btn');
-                if (sendBtn) sendBtn.disabled = false;
-            },
-            'expired-callback': () => {
-                console.log('reCAPTCHA expired');
-                const sendBtn = document.querySelector('#phoneStep .primary-btn');
-                if (sendBtn) sendBtn.disabled = true;
-            },
-            'error-callback': (error) => {
-                console.error('reCAPTCHA error:', error);
-                alert('reCAPTCHA failed to load. Please refresh the page and try again.');
             }
-        });
-
-        // Render the reCAPTCHA
-        window.recaptchaVerifier.render().then((widgetId) => {
-            console.log('reCAPTCHA rendered successfully with ID:', widgetId);
-            window.recaptchaWidgetId = widgetId;
-        }).catch((error) => {
-            console.error('Error rendering reCAPTCHA:', error);
-            alert('Failed to load security verification. Please refresh the page.');
         });
 
         return true;
     } catch (error) {
         console.error('Error creating reCAPTCHA:', error);
-        alert('Security verification failed to initialize. Please refresh the page.');
         return false;
     }
 }
@@ -5057,31 +5030,8 @@ async function resendOTP() {
             countdownTimer = null;
         }
         
-        // IMPORTANT: Clear and reinitialize reCAPTCHA
-        if (window.recaptchaVerifier) {
-            try {
-                await window.recaptchaVerifier.clear();
-            } catch (e) {
-                console.log('Error clearing reCAPTCHA:', e);
-            }
-            window.recaptchaVerifier = null;
-        }
-        
-        // Reinitialize reCAPTCHA
-        const container = document.getElementById('recaptcha-container');
-        if (container) {
-            container.innerHTML = '';
-            
-            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                'size': 'normal',
-                'callback': (response) => {
-                    console.log('reCAPTCHA solved for resend');
-                }
-            });
-            
-            await window.recaptchaVerifier.render();
-        }
-        
+       
+               
         // Send OTP
         const fullPhoneNumber = '+91' + phone;
         console.log('Resending OTP to:', fullPhoneNumber);
