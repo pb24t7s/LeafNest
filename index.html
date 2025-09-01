@@ -3036,6 +3036,7 @@
                                     <div class="resend-section">
                                         <span class="resend-text">Resend OTP in : </span>
                                         <span class="countdown" id="countdown">00:59</span>
+                                        <button type="button" id="resendBtn" onclick="resendOTP()" style="display: none; background: none; border: none; color: #0ea5e9; cursor: pointer; text-decoration: underline;">Resend OTP</button>
                                     </div>
                                     
                                     
@@ -4963,20 +4964,45 @@ async function handleSuccessfulLogin(user) {
     alert(`Welcome, ${userName}! Login successful.`);
 }
 // Resend OTP function
+// Update your resendOTP function
 async function resendOTP() {
     if (cooldownActive) {
         alert('Please wait for the cooldown period to finish.');
         return;
     }
     
-    // Clear current OTP and reset to phone step
-    clearOTPBoxes();
-    resetToPhoneStep();
+    const phoneInput = document.getElementById('loginPhone');
+    const phone = phoneInput.value.trim();
     
-    // Wait a moment then send new OTP
-    setTimeout(async () => {
-        await sendRealOTP();
-    }, 500);
+    if (!phone || phone.length !== 10) {
+        alert('Please enter a valid phone number first.');
+        resetToPhoneStep();
+        return;
+    }
+    
+    // Clear current state
+    clearOTPBoxes();
+    confirmationResult = null;
+    
+    // Reinitialize reCAPTCHA if needed
+    if (!window.recaptchaVerifier) {
+        initializeRecaptcha();
+        alert('Please complete the security check and try again.');
+        resetToPhoneStep();
+        return;
+    }
+    
+    // Send new OTP
+    const sendBtn = document.querySelector('.verify-btn');
+    sendBtn.textContent = 'Sending...';
+    sendBtn.disabled = true;
+    
+    try {
+        await sendRealOTP(phone, sendBtn);
+    } catch (error) {
+        console.error('Resend failed:', error);
+        resetToPhoneStep();
+    }
 }
 // Reset to phone input step
 function resetToPhoneStep() {
@@ -5973,6 +5999,9 @@ let countdownTimer;
 function startCountdown() {
     let timeLeft = 59;
     const countdownElement = document.getElementById('countdown');
+    const resendBtn = document.getElementById('resendBtn');
+    
+    if (resendBtn) resendBtn.style.display = 'none';
     
     if (countdownTimer) clearInterval(countdownTimer);
     
@@ -5987,7 +6016,13 @@ function startCountdown() {
         if (timeLeft <= 0) {
             clearInterval(countdownTimer);
             countdownTimer = null;
-            if (countdownElement) countdownElement.textContent = '00:00';
+            if (countdownElement) {
+                countdownElement.textContent = '';
+                countdownElement.style.display = 'none';
+            }
+            if (resendBtn) {
+                resendBtn.style.display = 'inline-block';
+            }
         }
         timeLeft--;
     }, 1000);
@@ -6094,3 +6129,4 @@ document.addEventListener('keydown', function(e) {
     </script>
 </body>
 </html>
+
