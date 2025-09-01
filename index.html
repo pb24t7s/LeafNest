@@ -5191,12 +5191,27 @@ function clearRecaptcha() {
 // =================================== //
 
 // Save user profile to Firebase
+// Update your saveUserProfileToFirebase function
 async function saveUserProfileToFirebase(profileData) {
-    if (!currentUser || !currentUser.uid) return;
+    if (!currentUser || !currentUser.uid) {
+        throw new Error('No authenticated user');
+    }
     
     try {
-        await db.collection('users').doc(currentUser.uid).update(profileData);
+        // Validate data before saving
+        const validatedData = {
+            firstName: profileData.firstName?.trim() || '',
+            lastName: profileData.lastName?.trim() || '',
+            email: profileData.email?.trim() || '',
+            dob: profileData.dob || '',
+            phone: currentUser.phone, // Keep phone from auth
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        await db.collection('users').doc(currentUser.uid).update(validatedData);
         console.log('Profile updated successfully');
+        return true;
+        
     } catch (error) {
         console.error('Error updating profile:', error);
         throw error;
@@ -5204,13 +5219,22 @@ async function saveUserProfileToFirebase(profileData) {
 }
 
 // Load user data from Firebase
+// Update loadUserDataFromFirebase function
 async function loadUserDataFromFirebase() {
     if (!currentUser || !currentUser.uid) return;
     
     try {
-        // Load addresses
+        // Load user profile
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            Object.assign(currentUser, userData);
+        }
+        
+        // Load addresses with proper error handling
         const addressesSnapshot = await db.collection('users').doc(currentUser.uid)
-            .collection('addresses').get();
+            .collection('addresses').orderBy('createdAt', 'desc').get();
+            
         userAddresses = addressesSnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
@@ -5218,42 +5242,101 @@ async function loadUserDataFromFirebase() {
         
         // Load orders
         const ordersSnapshot = await db.collection('users').doc(currentUser.uid)
-            .collection('orders').orderBy('createdAt', 'desc').get();
-        userOrders = ordersSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            date: doc.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
-        }));
+            .collection('orders').orderBy('createdAt', 'desc').limit(20).get();
+            
+        userOrders = ordersSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                date: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+            };
+        });
+        
+        console.log('User data loaded:', { 
+            addresses: userAddresses.length, 
+            orders: userOrders.length 
+        });
         
     } catch (error) {
         console.error('Error loading user data:', error);
+        // Don't throw - allow app to continue with empty data
+        userAddresses = [];
+        userOrders = [];
     }
 }
 
 // Save address to Firebase
+// Update saveAddressToFirebase function
 async function saveAddressToFirebase(addressData) {
-    if (!currentUser || !currentUser.uid) return;
+    if (!currentUser || !currentUser.uid) {
+        throw new Error('No authenticated user');
+    }
     
     try {
+        const validatedAddress = {
+            label: addressData.label,
+            name: addressData.name.trim(),
+            phone: addressData.phone.trim(),
+            fullAddress: addressData.fullAddress.trim(),
+            area: addressData.area,
+            pincode: addressData.pincode.trim(),
+            isDefault: addressData.isDefault || false,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
         if (editingAddressId && editingAddressId.startsWith('addr_')) {
             // Update existing address
             await db.collection('users').doc(currentUser.uid)
-                .collection('addresses').doc(editingAddressId).update(addressData);
+                .collection('addresses').doc(editingAddressId).update(validatedAddress);
         } else {
             // Add new address
-            const docRef = await db.collection('users').doc(currentUser.uid)
-                .collection('addresses').add({
-                ...addressData,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            console.log('Address added with ID:', docRef.id);
+            validatedAddress.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            await db.collection('users').doc(currentUser.uid)
+                .collection('addresses').add(validatedAddress);
         }
+        
+        return true;
+        
     } catch (error) {
         console.error('Error saving address:', error);
         throw error;
     }
 }
-
+// Add this new function for saving orders
+async function saveOrderToFirebase(orderData) {
+    if (!currentUser || !currentUser.uid) {
+        throw new Error('No authenticated user');
+    }
+    
+    try {
+        const orderDoc = {
+            orderNumber: orderData.orderNumber,
+            userId: currentUser.uid,
+            customerInfo: orderData.customer,
+            items: orderData.items,
+            subtotal: orderData.subtotal,
+            deliveryFee: orderData.deliveryFee,
+            total: orderData.total,
+            status: 'pending',
+            paymentStatus: 'pending',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        // Save to main orders collection
+        const mainOrderRef = await db.collection('orders').add(orderDoc);
+        
+        // Also save to user's personal orders subcollection
+        await db.collection('users').doc(currentUser.uid)
+            .collection('orders').doc(mainOrderRef.id).set(orderDoc);
+        
+        return mainOrderRef.id;
+        
+    } catch (error) {
+        console.error('Error saving order:', error);
+        throw error;
+    }
+}
 // Delete address from Firebase
 async function deleteAddressFromFirebase(addressId) {
     if (!currentUser || !currentUser.uid) return;
