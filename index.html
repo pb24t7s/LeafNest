@@ -3034,10 +3034,9 @@
                                     <input type="hidden" id="otpInput">
 
                                     <div class="resend-section">
-                                        <span class="resend-text">Didn't receive OTP? </span>
-                                        <button type="button" onclick="resetToPhoneStep()" style="background: none; border: none; color: #0ea5e9; cursor: pointer; text-decoration: underline;">
-                                            Start Over
-                                        </button>
+                                        <span class="resend-text">Resend OTP in : </span>
+                                        <span class="countdown" id="countdown">00:59</span>
+                                        <button type="button" id="resendBtn" onclick="resendOTP()" style="display: none; background: none; border: none; color: #0ea5e9; cursor: pointer; text-decoration: underline;">Resend OTP</button>
                                     </div>
                                     
                                     
@@ -4965,8 +4964,9 @@ async function handleSuccessfulLogin(user) {
     alert(`Welcome, ${userName}! Login successful.`);
 }
 // Resend OTP function
-// Update your resendOTP function
 async function resendOTP() {
+    console.log('=== Resend OTP clicked ===');
+    
     if (cooldownActive) {
         alert('Please wait for the cooldown period to finish.');
         return;
@@ -4974,60 +4974,90 @@ async function resendOTP() {
     
     const phoneInput = document.getElementById('loginPhone');
     const phone = phoneInput.value.trim();
+    const resendBtn = document.getElementById('resendBtn');
     
     if (!phone || phone.length !== 10) {
-        alert('Please enter a valid phone number first.');
+        alert('Phone number not found. Please start over.');
         resetToPhoneStep();
         return;
     }
     
-    // Get the correct button - create a temporary one or use resend button
-    const resendBtn = document.getElementById('resendBtn');
+    // Show loading state
     if (resendBtn) {
         resendBtn.textContent = 'Sending...';
         resendBtn.disabled = true;
     }
     
-    // Clear current state
-    clearOTPBoxes();
-    confirmationResult = null;
-    otpRetryCount = 0;
-    
-    // Clear existing timer
-    if (countdownTimer) {
-        clearInterval(countdownTimer);
-        countdownTimer = null;
-    }
-    
     try {
-        // Reinitialize reCAPTCHA
-        if (!window.recaptchaVerifier) {
-            initializeRecaptcha();
-            // Wait a bit for reCAPTCHA to load
-            await new Promise(resolve => setTimeout(resolve, 1000));
+        // Clear previous state
+        clearOTPBoxes();
+        confirmationResult = null;
+        otpRetryCount = 0;
+        
+        // Clear existing timer
+        if (countdownTimer) {
+            clearInterval(countdownTimer);
+            countdownTimer = null;
         }
         
+        // IMPORTANT: Clear and reinitialize reCAPTCHA
+        if (window.recaptchaVerifier) {
+            try {
+                await window.recaptchaVerifier.clear();
+            } catch (e) {
+                console.log('Error clearing reCAPTCHA:', e);
+            }
+            window.recaptchaVerifier = null;
+        }
+        
+        // Reinitialize reCAPTCHA
+        const container = document.getElementById('recaptcha-container');
+        if (container) {
+            container.innerHTML = '';
+            
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                'size': 'normal',
+                'callback': (response) => {
+                    console.log('reCAPTCHA solved for resend');
+                }
+            });
+            
+            await window.recaptchaVerifier.render();
+        }
+        
+        // Send OTP
         const fullPhoneNumber = '+91' + phone;
         console.log('Resending OTP to:', fullPhoneNumber);
         
-        // Send OTP
         confirmationResult = await firebase.auth().signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
-        console.log('Resend OTP sent successfully');
+        console.log('Resend successful');
         
-        // Start new countdown
+        // Start countdown
         startCountdown();
         
-        // Focus first OTP box
+        // Focus first OTP input
         const firstOtpBox = document.querySelector('.otp-box');
         if (firstOtpBox) firstOtpBox.focus();
         
         alert('New OTP sent successfully!');
         
     } catch (error) {
-        console.error('Resend OTP error:', error);
-        handleOTPSendError(error, resendBtn);
+        console.error('Resend OTP failed:', error);
+        
+        let message = 'Failed to resend OTP. ';
+        if (error.code === 'auth/too-many-requests') {
+            showCooldownMessage();
+            return;
+        } else if (error.code === 'auth/invalid-phone-number') {
+            message += 'Invalid phone number.';
+        } else {
+            message += 'Please try again.';
+        }
+        
+        alert(message);
+        
     } finally {
-        // Reset button
+        // ALWAYS reset button state
         if (resendBtn) {
             resendBtn.textContent = 'Resend OTP';
             resendBtn.disabled = false;
