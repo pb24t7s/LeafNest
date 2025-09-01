@@ -5088,18 +5088,24 @@ let cooldownTimer = null;
 // Show cooldown message and disable sending
 function showCooldownMessage() {
     cooldownActive = true;
-    const sendBtn = document.querySelector('#phoneStep .primary-btn');
-    let countdown = 60;
+    const resendBtn = document.getElementById('resendBtn');
     
-    sendBtn.disabled = true;
+    if (!resendBtn) return;
+    
+    // Check if we're actually rate-limited by Firebase (longer cooldown)
+    let countdown = 300; // 5 minutes instead of 60 seconds for rate limits
+    
+    resendBtn.disabled = true;
     
     function updateCooldown() {
-        sendBtn.textContent = `Wait ${countdown}s`;
+        const minutes = Math.floor(countdown / 60);
+        const seconds = countdown % 60;
+        resendBtn.textContent = `Wait ${minutes}m ${seconds}s`;
         countdown--;
         
         if (countdown < 0) {
-            sendBtn.textContent = 'Send OTP';
-            sendBtn.disabled = false;
+            resendBtn.textContent = 'Resend OTP';
+            resendBtn.disabled = false;
             cooldownActive = false;
             if (cooldownTimer) {
                 clearInterval(cooldownTimer);
@@ -5111,7 +5117,7 @@ function showCooldownMessage() {
     updateCooldown();
     cooldownTimer = setInterval(updateCooldown, 1000);
     
-    alert('Too many requests. Please wait 60 seconds.');
+    alert('Too many requests. Firebase has blocked SMS for this number. Please wait 5 minutes or try tomorrow.');
 }
 // Clear reCAPTCHA and reinitialize
 function clearRecaptcha() {
