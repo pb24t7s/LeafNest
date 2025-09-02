@@ -5515,16 +5515,18 @@ async function deleteAddressFromFirebase(addressId) {
 const RAZORPAY_KEY_ID = 'rzp_live_R9fd094wC0kFUG'; // Get from Razorpay Dashboard
 
 // Initialize payment
-async function initiatePayment(orderData) {
-    if (!currentUser) {
-        alert('Please login to place order');
-        return;
-    }
-    
+async function initiateRazorpayPayment(orderData) {
     try {
-        // Create order in Firebase first
+        // Show loading state
+        const submitBtn = document.querySelector('.place-order-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Processing...';
+        submitBtn.disabled = true;
+        
+        // First save order to Firebase with pending status
         const orderDoc = await db.collection('orders').add({
             userId: currentUser.uid,
+            orderNumber: orderData.orderNumber,
             customerInfo: orderData.customer,
             items: orderData.items,
             subtotal: orderData.subtotal,
@@ -5533,75 +5535,98 @@ async function initiatePayment(orderData) {
             status: 'pending',
             paymentStatus: 'pending',
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            orderNumber: orderData.orderNumber
+            paymentMethod: 'razorpay'
         });
         
+        console.log('Order created in Firebase:', orderDoc.id);
+        
+        // Configure Razorpay options
         const razorpayOptions = {
-            key: RAZORPAY_KEY_ID,
+            key: 'rzp_live_R9fd094wC0kFUG', // Your Razorpay key
             amount: orderData.total * 100, // Amount in paise
             currency: 'INR',
             name: 'Leaf Nest',
-            description: 'Fresh Microgreens Order',
+            description: 'Fresh Microgreens Delivery',
             image: 'leafnest-logo.png',
-            order_id: orderDoc.id,
+            order_id: orderDoc.id, // Use Firebase doc ID
             handler: async function(response) {
-                await handlePaymentSuccess(response, orderDoc.id, orderData);
+                await handleRazorpaySuccess(response, orderDoc.id, orderData);
             },
             prefill: {
-                name: orderData.customer.firstName + ' ' + orderData.customer.lastName,
-                email: orderData.customer.email,
-                contact: orderData.customer.phone
+                name: orderData.customer.firstName + ' ' + (orderData.customer.lastName || ''),
+                email: orderData.customer.email || '',
+                contact: '+91' + orderData.customer.phone
             },
             notes: {
                 address: orderData.customer.address,
-                area: orderData.customer.area
+                area: orderData.customer.area,
+                delivery_time: orderData.customer.deliveryTime,
+                special_notes: orderData.customer.notes
             },
             theme: {
                 color: '#4a7c59'
             },
             modal: {
                 ondismiss: function() {
-                    console.log('Payment cancelled');
-                }
+                    console.log('Payment modal closed');
+                    // Reset button
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                },
+                confirm_close: true,
+                escape: true,
+                backdropclose: false
             }
         };
         
+        // Create and open Razorpay instance
         const razorpayInstance = new Razorpay(razorpayOptions);
+        
+        razorpayInstance.on('payment.failed', function(response) {
+            console.error('Payment failed:', response.error);
+            handleRazorpayFailure(response.error, orderDoc.id);
+            // Reset button
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        });
+        
+        // Open payment modal
         razorpayInstance.open();
-        razorpayInstance.on('payment.failed', function (response) {
-        console.error('Payment failed:', response.error);
-        alert('Payment failed. Please try again.');
-});
         
     } catch (error) {
         console.error('Error initiating payment:', error);
         alert('Failed to initiate payment. Please try again.');
+        
+        // Reset button
+        const submitBtn = document.querySelector('.place-order-btn');
+        submitBtn.textContent = 'Place Order';
+        submitBtn.disabled = false;
     }
 }
-
-// Handle successful payment
-async function handlePaymentSuccess(paymentResponse, orderId, orderData) {
+async function handleRazorpaySuccess(paymentResponse, orderId, orderData) {
     try {
-        // Update order with payment details
+        console.log('Payment successful:', paymentResponse);
+        
+        // Update order in Firebase with payment details
         await db.collection('orders').doc(orderId).update({
             paymentId: paymentResponse.razorpay_payment_id,
+            paymentSignature: paymentResponse.razorpay_signature,
             paymentStatus: 'completed',
             status: 'confirmed',
             paidAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
         // Add to user's order history
-        await db.collection('users').doc(currentUser.uid)
-            .collection('orders').doc(orderId).set({
-            ...orderData,
-            paymentId: paymentResponse.razorpay_payment_id,
-            paymentStatus: 'completed',
-            status: 'confirmed',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        // Send confirmation email/SMS (you can implement this later)
-        console.log('Order confirmed:', orderId);
+        if (currentUser && currentUser.uid) {
+            await db.collection('users').doc(currentUser.uid)
+                .collection('orders').doc(orderId).set({
+                ...orderData,
+                paymentId: paymentResponse.razorpay_payment_id,
+                paymentStatus: 'completed',
+                status: 'confirmed',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
         
         // Show success message
         document.getElementById('checkoutForm').style.display = 'none';
@@ -5609,18 +5634,51 @@ async function handlePaymentSuccess(paymentResponse, orderId, orderData) {
         document.getElementById('orderNumber').textContent = orderData.orderNumber;
         
         // Clear cart
-        cart = [];
-        updateCartUI();
         clearCart();
         closeCart();
         
-        alert('Payment successful! Your order has been confirmed. 🎉');
+        console.log('Order confirmed successfully:', orderId);
         
     } catch (error) {
         console.error('Error handling payment success:', error);
-        alert('Payment successful but order confirmation failed. Please contact support.');
+        alert('Payment was successful but there was an issue confirming your order. Please contact support with order ID: ' + orderData.orderNumber);
     }
 }
+async function handleRazorpayFailure(error, orderId) {
+    try {
+        console.error('Payment failed:', error);
+        
+        // Update order status to failed
+        await db.collection('orders').doc(orderId).update({
+            paymentStatus: 'failed',
+            status: 'cancelled',
+            paymentError: error.description || error.reason || 'Payment failed',
+            failedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Show user-friendly error message
+        let errorMessage = 'Payment failed. ';
+        switch(error.code) {
+            case 'BAD_REQUEST_ERROR':
+                errorMessage += 'Please check your payment details and try again.';
+                break;
+            case 'GATEWAY_ERROR':
+                errorMessage += 'Payment gateway error. Please try again.';
+                break;
+            case 'NETWORK_ERROR':
+                errorMessage += 'Network error. Please check your connection.';
+                break;
+            default:
+                errorMessage += 'Please try again or contact support.';
+        }
+        
+        alert(errorMessage);
+        
+    } catch (dbError) {
+        console.error('Error updating failed payment:', dbError);
+    }
+}
+
     // =================================== //
     // ========== GENERAL FUNCTIONS ======= //
     // =================================== //
@@ -6421,13 +6479,29 @@ function startCountdown() {
         timeLeft--;
     }, 1000);
 }
-// Update checkout form submission
 document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
     if (cart.length === 0) {
         alert('Your cart is empty!');
         return;
+    }
+    
+    // Double-check user is still logged in
+    if (!currentUser || !currentUser.isLoggedIn) {
+        alert('Please login to complete your order');
+        closeCheckout();
+        openLoginModal();
+        return;
+    }
+    
+    // Validate required fields
+    const requiredFields = ['firstName', 'phone', 'address', 'area', 'pincode'];
+    for (let field of requiredFields) {
+        if (!document.getElementById(field).value.trim()) {
+            alert(`Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+            return;
+        }
     }
     
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
@@ -6442,27 +6516,20 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         deliveryFee: deliveryFee,
         total: total,
         customer: {
-            firstName: document.getElementById('firstName').value,
-            lastName: document.getElementById('lastName').value,
-            phone: document.getElementById('phone').value,
-            email: document.getElementById('email').value,
-            address: document.getElementById('address').value,
+            firstName: document.getElementById('firstName').value.trim(),
+            lastName: document.getElementById('lastName').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            address: document.getElementById('address').value.trim(),
             area: document.getElementById('area').value,
-            pincode: document.getElementById('pincode').value,
+            pincode: document.getElementById('pincode').value.trim(),
             deliveryTime: document.getElementById('deliveryTime').value,
-            notes: document.getElementById('notes').value
+            notes: document.getElementById('notes').value.trim()
         }
     };
     
-    // Check if user is logged in for payment
-    if (currentUser && currentUser.isLoggedIn) {
-        // Initiate Razorpay payment
-        await initiatePayment(orderData);
-    } else {
-        // For non-logged users, show login prompt
-        alert('Please login to complete payment');
-        openLoginModal();
-    }
+    // Initiate Razorpay payment
+    await initiateRazorpayPayment(orderData);
 });
 
 // Initialize user UI on page load
