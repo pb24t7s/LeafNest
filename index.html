@@ -3270,11 +3270,23 @@
                     <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
                     <li><a href="#products" onclick="closeMobileMenu()">Products</a></li>
                     <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
-                    <li style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1rem 2rem;">
+                    
+                    <!-- Mobile Profile Section -->
+                    <li id="mobileProfileSection" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1rem 2rem;">
                         <button class="mobile-profile-btn" onclick="handleMobileProfile(); closeMobileMenu();" id="mobileProfileBtn">
                             👤 <span id="mobileProfileText">Login</span>
                         </button>
                     </li>
+                    
+                    <!-- Mobile User Options (hidden by default) -->
+                    <li id="mobileUserOptions" style="display: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <a href="#" onclick="showProfile(); closeMobileMenu();" style="padding: 0.8rem 2rem;">⚙️ Profile</a>
+                    </li>
+                    <li id="mobileLogoutOption" style="display: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <a href="#" onclick="logout(); closeMobileMenu();" style="padding: 0.8rem 2rem;">🚪 Logout</a>
+                    </li>
+                    
+                    <!-- Cart -->
                     <li style="border: none; padding: 1rem 2rem;">
                         <button class="cart-button" onclick="openCart(); closeMobileMenu();" style="width: 100%; justify-content: center;">
                             🛒 Cart (<span id="mobileCartCount">0</span>)
@@ -5725,12 +5737,16 @@ function updateUserUI() {
     const profileLink = document.getElementById('profileLink');
     const logoutLink = document.getElementById('logoutLink');
     const loginLink = document.getElementById('loginLink');
+    const mobileUserOptions = document.getElementById('mobileUserOptions');
+    const mobileLogoutOption = document.getElementById('mobileLogoutOption');
     
     if (currentUser && currentUser.isLoggedIn) {
         // Show logged in state
         const displayName = currentUser.firstName || 'User';
         profileText.textContent = displayName;
         if (mobileProfileText) mobileProfileText.textContent = displayName;
+        if (mobileUserOptions) mobileUserOptions.style.display = 'block';
+        if (mobileLogoutOption) mobileLogoutOption.style.display = 'block';
         userName.textContent = displayName + (currentUser.lastName ? ' ' + currentUser.lastName : '');
         userPhone.textContent = currentUser.phone;
         
@@ -5743,6 +5759,9 @@ function updateUserUI() {
         // Show logged out state
         profileText.textContent = 'Login';
         if (mobileProfileText) mobileProfileText.textContent = 'Login';
+        // Hide mobile user options
+        if (mobileUserOptions) mobileUserOptions.style.display = 'none';
+        if (mobileLogoutOption) mobileLogoutOption.style.display = 'none';
         userInfo.style.display = 'none';
         userDivider.style.display = 'none';
         profileLink.style.display = 'none';
