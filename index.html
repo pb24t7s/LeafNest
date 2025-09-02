@@ -2950,6 +2950,9 @@
                     <h3>Order Summary</h3>
                     <div id="checkoutItems"></div>
                     
+                    </div>
+                </div>
+                
                 <button type="submit" class="place-order-btn">
                     💳 Place Order (Cash on Delivery)
                 </button>
@@ -4684,54 +4687,97 @@ function proceedToCheckoutForm() {
     }
 
     function updateCheckoutSummary() {
-        const checkoutItems = document.getElementById('checkoutItems');
-        const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-        const deliveryFee = subtotal > 200 ? 0 : 30;
-        const total = subtotal + deliveryFee;
-        
-        // Create complete summary in one place
-        checkoutItems.innerHTML = `
-            ${cart.map(item => `
-                <div class="summary-item">
-                    <span class="item-name">${item.name} (${item.quantity}g)</span>
-                    <span class="item-price">₹${item.price}</span>
-                </div>
-            `).join('')}
-            
+    const checkoutItems = document.getElementById('checkoutItems');
+    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const deliveryFee = subtotal > 200 ? 0 : 30;
+    const total = subtotal + deliveryFee;
+    
+    if (!checkoutItems) {
+        console.error('checkoutItems element not found');
+        return;
+    }
+    
+    // Create complete order summary HTML
+    let summaryHTML = '';
+    
+    // Add cart items
+    cart.forEach(item => {
+        summaryHTML += `
             <div class="summary-item">
-                <span class="item-name">Subtotal:</span>
-                <span class="item-price">₹${subtotal}</span>
-            </div>
-            
-            <div class="summary-item">
-                <span class="item-name">Delivery Fee:</span>
-                <span class="item-price">${deliveryFee === 0 ? 'FREE' : '₹' + deliveryFee}</span>
-            </div>
-            
-            <div class="summary-total">
-                <span>Total:</span>
-                <span>₹${total}</span>
+                <span class="item-name">${item.name} (${item.quantity}g)</span>
+                <span class="item-price">₹${item.price}</span>
             </div>
         `;
+    });
+    
+    // Add subtotal
+    summaryHTML += `
+        <div class="summary-item">
+            <span class="item-name">Subtotal:</span>
+            <span class="item-price">₹${subtotal}</span>
+        </div>
+    `;
+    
+    // Add delivery fee
+    summaryHTML += `
+        <div class="summary-item">
+            <span class="item-name">Delivery Fee:</span>
+            <span class="item-price">${deliveryFee === 0 ? 'FREE' : '₹' + deliveryFee}</span>
+        </div>
+    `;
+    
+    // Add total
+    summaryHTML += `
+        <div class="summary-total">
+            <span>Total:</span>
+            <span>₹${total}</span>
+        </div>
+    `;
+    
+    // Set the complete HTML
+    checkoutItems.innerHTML = summaryHTML;
+    
+    // Handle saved addresses for logged-in users
+    if (currentUser && currentUser.isLoggedIn && userAddresses && userAddresses.length > 0) {
+        const savedAddressGroup = document.getElementById('savedAddressGroup');
+        const savedAddressSelect = document.getElementById('savedAddress');
         
-        // Handle saved addresses for logged-in users
-        if (currentUser && userAddresses && userAddresses.length > 0) {
-            const savedAddressGroup = document.getElementById('savedAddressGroup');
-            if (savedAddressGroup) {
-                savedAddressGroup.style.display = 'block';
-                const savedAddressSelect = document.getElementById('savedAddress');
-                if (savedAddressSelect) {
-                    savedAddressSelect.innerHTML = '<option value="">Select a saved address...</option>';
-                    userAddresses.forEach(address => {
-                        const option = document.createElement('option');
-                        option.value = address.id;
-                        option.textContent = `${address.label} - ${address.name} (${address.area})`;
-                        savedAddressSelect.appendChild(option);
-                    });
-                }
+        if (savedAddressGroup) {
+            savedAddressGroup.style.display = 'block';
+            
+            if (savedAddressSelect) {
+                // Clear existing options
+                savedAddressSelect.innerHTML = '<option value="">Select a saved address...</option>';
+                
+                // Add user's saved addresses
+                userAddresses.forEach(address => {
+                    const option = document.createElement('option');
+                    option.value = address.id;
+                    
+                    // Create readable address label
+                    const addressLabel = address.label ? address.label.charAt(0).toUpperCase() + address.label.slice(1) : 'Address';
+                    const addressText = `${addressLabel} - ${address.name || 'Unknown'} (${address.area || 'Area'})`;
+                    
+                    option.textContent = addressText;
+                    savedAddressSelect.appendChild(option);
+                });
             }
         }
+    } else {
+        // Hide saved address section if user not logged in or no addresses
+        const savedAddressGroup = document.getElementById('savedAddressGroup');
+        if (savedAddressGroup) {
+            savedAddressGroup.style.display = 'none';
+        }
     }
+    
+    console.log('Checkout summary updated:', {
+        items: cart.length,
+        subtotal: subtotal,
+        deliveryFee: deliveryFee,
+        total: total
+    });
+}
 
     function fillAddressFromSaved() {
         const selectedId = document.getElementById('savedAddress').value;
