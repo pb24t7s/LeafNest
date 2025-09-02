@@ -2949,20 +2949,7 @@
                 <div class="order-summary">
                     <h3>Order Summary</h3>
                     <div id="checkoutItems"></div>
-                    <div class="summary-item">
-                        <span>Subtotal:</span>
-                        <span id="checkoutSubtotal">₹0</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Delivery Fee:</span>
-                        <span id="deliveryFee">₹30</span>
-                    </div>
-                    <div class="summary-total">
-                        <span>Total:</span>
-                        <span id="checkoutTotal">₹30</span>
-                    </div>
-                </div>
-                
+                    
                 <button type="submit" class="place-order-btn">
                     💳 Place Order (Cash on Delivery)
                 </button>
@@ -4697,53 +4684,54 @@ function proceedToCheckoutForm() {
     }
 
     function updateCheckoutSummary() {
-    const checkoutItems = document.getElementById('checkoutItems');
-    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-    const deliveryFee = subtotal > 200 ? 0 : 30;
-    const total = subtotal + deliveryFee;
-    
-    // Better HTML structure for items - each item on separate line
-    checkoutItems.innerHTML = cart.map(item => `
-        <div class="summary-item">
-            <span class="item-name">${item.name} (${item.quantity}g)</span>
-            <span class="item-price">₹${item.price}</span>
-        </div>
-    `).join('');
-    
-    // Add subtotal, delivery, and total as separate rows
-    checkoutItems.innerHTML += `
-        <div class="summary-item">
-            <span class="item-name">Subtotal:</span>
-            <span class="item-price">₹${subtotal}</span>
-        </div>
-        <div class="summary-item">
-            <span class="item-name">Delivery Fee:</span>
-            <span class="item-price">${deliveryFee === 0 ? 'FREE' : '₹' + deliveryFee}</span>
-        </div>
-    `;
-    
-    document.getElementById('checkoutSubtotal').textContent = `₹${subtotal}`;
-    document.getElementById('deliveryFee').textContent = deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`;
-    document.getElementById('checkoutTotal').textContent = `₹${total}`;
-    
-    // Show saved addresses if user is logged in
-    if (currentUser && userAddresses.length > 0) {
-        const savedAddressGroup = document.getElementById('savedAddressGroup');
-        const savedAddressSelect = document.getElementById('savedAddress');
+        const checkoutItems = document.getElementById('checkoutItems');
+        const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+        const deliveryFee = subtotal > 200 ? 0 : 30;
+        const total = subtotal + deliveryFee;
         
-        if (savedAddressGroup && savedAddressSelect) {
-            savedAddressGroup.style.display = 'block';
+        // Create complete summary in one place
+        checkoutItems.innerHTML = `
+            ${cart.map(item => `
+                <div class="summary-item">
+                    <span class="item-name">${item.name} (${item.quantity}g)</span>
+                    <span class="item-price">₹${item.price}</span>
+                </div>
+            `).join('')}
             
-            savedAddressSelect.innerHTML = '<option value="">Select a saved address...</option>';
-            userAddresses.forEach(address => {
-                const option = document.createElement('option');
-                option.value = address.id;
-                option.textContent = `${address.label} - ${address.name} (${address.area})`;
-                savedAddressSelect.appendChild(option);
-            });
+            <div class="summary-item">
+                <span class="item-name">Subtotal:</span>
+                <span class="item-price">₹${subtotal}</span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="item-name">Delivery Fee:</span>
+                <span class="item-price">${deliveryFee === 0 ? 'FREE' : '₹' + deliveryFee}</span>
+            </div>
+            
+            <div class="summary-total">
+                <span>Total:</span>
+                <span>₹${total}</span>
+            </div>
+        `;
+        
+        // Handle saved addresses for logged-in users
+        if (currentUser && userAddresses && userAddresses.length > 0) {
+            const savedAddressGroup = document.getElementById('savedAddressGroup');
+            if (savedAddressGroup) {
+                savedAddressGroup.style.display = 'block';
+                const savedAddressSelect = document.getElementById('savedAddress');
+                if (savedAddressSelect) {
+                    savedAddressSelect.innerHTML = '<option value="">Select a saved address...</option>';
+                    userAddresses.forEach(address => {
+                        const option = document.createElement('option');
+                        option.value = address.id;
+                        option.textContent = `${address.label} - ${address.name} (${address.area})`;
+                        savedAddressSelect.appendChild(option);
+                    });
+                }
+            }
         }
     }
-}
 
     function fillAddressFromSaved() {
         const selectedId = document.getElementById('savedAddress').value;
