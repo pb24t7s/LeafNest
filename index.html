@@ -2905,7 +2905,12 @@
                     <label for="address">Full Address *</label>
                     <textarea id="address" name="address" rows="3" required placeholder="House/Flat No, Street, Area, Landmark"></textarea>
                 </div>
-                
+                <div class="form-group" id="savedAddressGroup" style="display: none;">
+                    <label for="savedAddress">Or choose from saved addresses:</label>
+                    <select id="savedAddress" onchange="fillAddressFromSaved()">
+                        <option value="">Select a saved address...</option>
+                    </select>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="area">Area *</label>
@@ -4629,16 +4634,47 @@
     }
 
     // Checkout functions
-    function openCheckout() {
-        if (cart.length === 0) {
-            alert('Your cart is empty!');
-            return;
-        }
-        
-        updateCheckoutSummary();
-        document.getElementById('checkoutModal').classList.add('show');
-        document.getElementById('cartOverlay').classList.add('show');
+   function openCheckout() {
+    if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
     }
+    
+    // Check if user is logged in
+    if (!currentUser || !currentUser.isLoggedIn) {
+        // User not logged in - show login modal first
+        alert('Please login to proceed with checkout');
+        openLoginModal();
+        return;
+    }
+    
+    // User is logged in - proceed directly to delivery form
+    proceedToCheckoutForm();
+}
+
+// New function to handle logged-in checkout
+function proceedToCheckoutForm() {
+    updateCheckoutSummary();
+    
+    // Pre-fill form if user data exists
+    if (currentUser) {
+        document.getElementById('firstName').value = currentUser.firstName || '';
+        document.getElementById('lastName').value = currentUser.lastName || '';
+        document.getElementById('phone').value = currentUser.phone ? currentUser.phone.replace('+91', '') : '';
+        document.getElementById('email').value = currentUser.email || '';
+        
+        // Pre-fill with default address if available
+        const defaultAddress = userAddresses.find(addr => addr.isDefault);
+        if (defaultAddress) {
+            document.getElementById('address').value = defaultAddress.fullAddress || '';
+            document.getElementById('area').value = defaultAddress.area || '';
+            document.getElementById('pincode').value = defaultAddress.pincode || '';
+        }
+    }
+    
+    document.getElementById('checkoutModal').classList.add('show');
+    document.getElementById('cartOverlay').classList.add('show');
+}
 
     function closeCheckout() {
         document.getElementById('checkoutModal').classList.remove('show');
@@ -4665,6 +4701,40 @@
     document.getElementById('checkoutSubtotal').textContent = `₹${subtotal}`;
     document.getElementById('deliveryFee').textContent = deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`;
     document.getElementById('checkoutTotal').textContent = `₹${total}`;
+
+    // Show saved addresses if user is logged in
+    if (currentUser && userAddresses.length > 0) {
+        const savedAddressGroup = document.getElementById('savedAddressGroup');
+        const savedAddressSelect = document.getElementById('savedAddress');
+        
+        if (savedAddressGroup && savedAddressSelect) {
+            savedAddressGroup.style.display = 'block';
+            
+            // Populate address options
+            savedAddressSelect.innerHTML = '<option value="">Select a saved address...</option>';
+            userAddresses.forEach(address => {
+                const option = document.createElement('option');
+                option.value = address.id;
+                option.textContent = `${address.label} - ${address.name} (${address.area})`;
+                savedAddressSelect.appendChild(option);
+            });
+        }
+     }
+    }
+
+    function fillAddressFromSaved() {
+        const selectedId = document.getElementById('savedAddress').value;
+        if (!selectedId) return;
+        
+        const address = userAddresses.find(addr => addr.id === selectedId);
+        if (address) {
+            document.getElementById('firstName').value = address.name.split(' ')[0] || '';
+            document.getElementById('lastName').value = address.name.split(' ').slice(1).join(' ') || '';
+            document.getElementById('phone').value = address.phone || '';
+            document.getElementById('address').value = address.fullAddress || '';
+            document.getElementById('area').value = address.area || '';
+            document.getElementById('pincode').value = address.pincode || '';
+        }
     }
     // Form submission
     document.getElementById('checkoutForm').addEventListener('submit', function(e) {
@@ -4701,6 +4771,9 @@
             total: document.getElementById('checkoutTotal').textContent
         });
     });
+
+
+
 // =================================== //
 // ======= FIREBASE CONFIGURATION ==== //
 // =================================== //
@@ -4964,18 +5037,23 @@ function handleOTPSendError(error, sendBtn) {
 
 async function handleSuccessfulLogin(user) {
     try {
+        console.log('Handling successful login for:', user.phoneNumber);
+        
         // Try to get user data from Firestore
         const userDoc = await db.collection('users').doc(user.uid).get();
         
         if (userDoc.exists) {
+            // Existing user - load their data
+            const userData = userDoc.data();
             currentUser = {
                 uid: user.uid,
                 phone: user.phoneNumber,
-                ...userDoc.data(),
+                ...userData,
                 isLoggedIn: true
             };
+            console.log('Existing user loaded:', currentUser);
         } else {
-            // New user
+            // New user - create basic profile
             const newUserData = {
                 phone: user.phoneNumber,
                 firstName: '',
@@ -4985,20 +5063,59 @@ async function handleSuccessfulLogin(user) {
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
             
+            // Save new user to Firestore
             await db.collection('users').doc(user.uid).set(newUserData);
+            
             currentUser = {
                 uid: user.uid,
                 ...newUserData,
                 isLoggedIn: true
             };
+            console.log('New user created:', currentUser);
         }
         
-        // Load additional data
+        // Load user's additional data (addresses, orders)
         await loadUserDataFromFirebase();
         
+        // Update UI to reflect logged-in state
+        updateUserUI();
+        
+        // Close login modal
+        closeLoginModal();
+        
+        // Get display name
+        const userName = currentUser.firstName || 'User';
+        
+        // Check if user was trying to checkout
+        const wasCheckingOut = cart.length > 0;
+        
+        if (wasCheckingOut) {
+            // User was in checkout flow - continue to checkout
+            alert(`Welcome back, ${userName}! Continuing to checkout...`);
+            
+            // Small delay to let UI update, then proceed to checkout
+            setTimeout(() => {
+                proceedToCheckoutForm();
+            }, 500);
+        } else {
+            // Regular login - just show welcome message
+            if (currentUser.firstName) {
+                alert(`Welcome back, ${userName}!`);
+            } else {
+                alert(`Welcome! Please complete your profile for a better experience.`);
+                // Optionally open profile modal for new users
+                setTimeout(() => {
+                    if (confirm('Would you like to complete your profile now?')) {
+                        showProfile();
+                    }
+                }, 1000);
+            }
+        }
+        
     } catch (error) {
-        console.error('Error handling user data:', error);
-        // Continue with basic user info
+        console.error('Error handling successful login:', error);
+        
+        // Still set basic user info even if Firestore fails
         currentUser = {
             uid: user.uid,
             phone: user.phoneNumber,
@@ -5007,14 +5124,22 @@ async function handleSuccessfulLogin(user) {
             email: '',
             isLoggedIn: true
         };
+        
+        updateUserUI();
+        closeLoginModal();
+        
+        // Show error but don't block user
+        alert('Login successful! There was an issue loading your profile data, but you can still place orders.');
+        
+        // Continue to checkout if that's what they were doing
+        if (cart.length > 0) {
+            setTimeout(() => {
+                if (confirm('Continue to checkout?')) {
+                    proceedToCheckoutForm();
+                }
+            }, 1000);
+        }
     }
-    
-    // Update UI and close modal
-    updateUserUI();
-    closeLoginModal();
-    
-    const userName = currentUser.firstName || 'User';
-    alert(`Welcome, ${userName}! Login successful.`);
 }
 // Resend OTP function
 async function resendOTP() {
@@ -5619,6 +5744,14 @@ function openLoginModal() {
     document.getElementById('loginModal').classList.add('show');
     document.getElementById('cartOverlay').classList.add('show');
     toggleUserMenu();
+    
+    // Update login modal title if user is trying to checkout
+    const loginHeader = document.querySelector('.login-header h2');
+    if (cart.length > 0) {
+        loginHeader.textContent = 'LOGIN TO CHECKOUT';
+    } else {
+        loginHeader.textContent = 'LOGIN';
+    }
     
     // Initialize reCAPTCHA after modal is visible
     setTimeout(() => {
