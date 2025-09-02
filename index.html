@@ -4600,8 +4600,27 @@
             cartFooter.style.display = 'block';
             cartTotal.textContent = `₹${totalPrice}`;
         }
-    }
+      localStorage.setItem('leafnest_cart', JSON.stringify(cart));
 
+    }
+    function clearCart() {
+        cart = [];
+        localStorage.removeItem('leafnest_cart');
+        updateCartUI();
+    }
+    function loadCartFromStorage() {
+        try {
+            const savedCart = localStorage.getItem('leafnest_cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                console.log('Cart loaded from storage:', cart.length, 'items');
+            }
+        } catch (error) {
+            console.error('Error loading cart from storage:', error);
+            cart = []; // Reset to empty cart if there's an error
+        }
+    }
+    
     function removeFromCart(itemId) {
         cart = cart.filter(item => item.id !== itemId);
         updateCartUI();
@@ -4751,6 +4770,7 @@ function proceedToCheckoutForm() {
         // Clear cart
         cart = [];
         updateCartUI();
+        clearCart();
         closeCart();
         
         // In a real implementation, you would send the order data to your backend
@@ -5553,6 +5573,7 @@ async function handlePaymentSuccess(paymentResponse, orderId, orderData) {
         // Clear cart
         cart = [];
         updateCartUI();
+        clearCart();
         closeCart();
         
         alert('Payment successful! Your order has been confirmed. 🎉');
@@ -5647,6 +5668,8 @@ async function handlePaymentSuccess(paymentResponse, orderId, orderData) {
     });
     // Initialize reCAPTCHA when page loads
     document.addEventListener('DOMContentLoaded', function() {
+
+        loadCartFromStorage();
         // Setup reCAPTCHA when login modal is opened
         const originalOpenLogin = openLoginModal;
         window.openLoginModal = function() {
@@ -5654,6 +5677,7 @@ async function handlePaymentSuccess(paymentResponse, orderId, orderData) {
             // Setup reCAPTCHA after modal is shown
             setTimeout(setupRecaptcha, 100);
         };
+         updateCartUI(); // This will reflect the loaded cart
     });
     
 // Cleanup on page unload
