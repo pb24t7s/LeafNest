@@ -5598,15 +5598,15 @@ async function deleteAddressFromFirebase(addressId) {
 const RAZORPAY_KEY_ID = 'rzp_live_R9fd094wC0kFUG'; // Get from Razorpay Dashboard
 
 // Initialize payment
+// Updated Razorpay function for production
 async function initiateRazorpayPayment(orderData) {
     try {
-        // Show loading state
         const submitBtn = document.querySelector('.place-order-btn');
         const originalText = submitBtn.textContent;
         submitBtn.textContent = 'Processing...';
         submitBtn.disabled = true;
         
-        // First save order to Firebase with pending status
+        // Create order in Firebase FIRST
         const orderDoc = await db.collection('orders').add({
             userId: currentUser.uid,
             orderNumber: orderData.orderNumber,
@@ -5617,116 +5617,101 @@ async function initiateRazorpayPayment(orderData) {
             total: orderData.total,
             status: 'pending',
             paymentStatus: 'pending',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            paymentMethod: 'razorpay'
+            paymentMethod: 'razorpay',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        console.log('Order created in Firebase:', orderDoc.id);
-        
-        // Configure Razorpay options
+        // Razorpay options for production
         const razorpayOptions = {
-            key: 'rzp_live_R9fd094wC0kFUG', // Your Razorpay key
-            amount: orderData.total * 100, // Amount in paise
+            key: 'rzp_live_R9fd094wC0kFUG', // Your LIVE key
+            amount: orderData.total * 100,
             currency: 'INR',
             name: 'Leaf Nest',
-            description: 'Fresh Microgreens Delivery',
-            image: 'leafnest-logo.png',
-            order_id: orderDoc.id, // Use Firebase doc ID
-            handler: async function(response) {
-                await handleRazorpaySuccess(response, orderDoc.id, orderData);
+            description: 'Fresh Microgreens - Order #' + orderData.orderNumber,
+            image: 'https://leaf-nest.com/leafnest-logo.png', // Full URL for production
+            order_id: orderDoc.id,
+            handler: function(response) {
+                handleRazorpaySuccess(response, orderDoc.id, orderData);
             },
             prefill: {
                 name: orderData.customer.firstName + ' ' + (orderData.customer.lastName || ''),
                 email: orderData.customer.email || '',
-                contact: '+91' + orderData.customer.phone
+                contact: orderData.customer.phone
             },
             notes: {
                 address: orderData.customer.address,
-                area: orderData.customer.area,
-                delivery_time: orderData.customer.deliveryTime,
-                special_notes: orderData.customer.notes
+                area: orderData.customer.area
             },
             theme: {
                 color: '#4a7c59'
             },
             modal: {
                 ondismiss: function() {
-                    console.log('Payment modal closed');
-                    // Reset button
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
-                },
-                confirm_close: true,
-                escape: true,
-                backdropclose: false
+                    console.log('Payment cancelled by user');
+                }
             }
         };
         
-        // Create and open Razorpay instance
         const razorpayInstance = new Razorpay(razorpayOptions);
         
         razorpayInstance.on('payment.failed', function(response) {
-            console.error('Payment failed:', response.error);
             handleRazorpayFailure(response.error, orderDoc.id);
-            // Reset button
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
         });
         
-        // Open payment modal
         razorpayInstance.open();
         
     } catch (error) {
-        console.error('Error initiating payment:', error);
+        console.error('Payment initiation error:', error);
         alert('Failed to initiate payment. Please try again.');
         
-        // Reset button
         const submitBtn = document.querySelector('.place-order-btn');
-        submitBtn.textContent = 'Place Order';
+        submitBtn.textContent = 'Pay Online';
         submitBtn.disabled = false;
     }
 }
+// Clear cart ONLY after successful payment
 async function handleRazorpaySuccess(paymentResponse, orderId, orderData) {
     try {
-        console.log('Payment successful:', paymentResponse);
-        
-        // Update order in Firebase with payment details
+        // Update order with payment details
         await db.collection('orders').doc(orderId).update({
-            paymentId: paymentResponse.razorpay_payment_id,
-            paymentSignature: paymentResponse.razorpay_signature,
+            razorpayPaymentId: paymentResponse.razorpay_payment_id,
+            razorpayOrderId: paymentResponse.razorpay_order_id || '',
+            razorpaySignature: paymentResponse.razorpay_signature || '',
             paymentStatus: 'completed',
             status: 'confirmed',
             paidAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // Add to user's order history
-        if (currentUser && currentUser.uid) {
-            await db.collection('users').doc(currentUser.uid)
-                .collection('orders').doc(orderId).set({
-                ...orderData,
-                paymentId: paymentResponse.razorpay_payment_id,
-                paymentStatus: 'completed',
-                status: 'confirmed',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-        }
+        // Add to user's orders
+        await db.collection('users').doc(currentUser.uid)
+            .collection('orders').doc(orderId).set({
+            ...orderData,
+            razorpayPaymentId: paymentResponse.razorpay_payment_id,
+            paymentStatus: 'completed',
+            status: 'confirmed',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
         
-        // Show success message
+        // Show success ONLY after Firebase update
         document.getElementById('checkoutForm').style.display = 'none';
         document.getElementById('orderSuccess').style.display = 'block';
         document.getElementById('orderNumber').textContent = orderData.orderNumber;
         
-        // Clear cart
+        // Clear cart ONLY after successful payment
         clearCart();
-        closeCart();
         
-        console.log('Order confirmed successfully:', orderId);
+        console.log('Payment successful:', paymentResponse.razorpay_payment_id);
         
     } catch (error) {
-        console.error('Error handling payment success:', error);
-        alert('Payment was successful but there was an issue confirming your order. Please contact support with order ID: ' + orderData.orderNumber);
+        console.error('Error updating order:', error);
+        alert('Payment successful but order update failed. Please contact support.');
     }
 }
+
 async function handleRazorpayFailure(error, orderId) {
     try {
         console.error('Payment failed:', error);
@@ -6585,6 +6570,7 @@ function startCountdown() {
         timeLeft--;
     }, 1000);
 }
+// Fixed cart clearing issue - don't clear until payment success
 document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -6593,13 +6579,21 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         return;
     }
     
-    // Check if user is logged in
     if (!currentUser || !currentUser.isLoggedIn) {
         alert('Please login to complete your order');
         closeCheckout();
         openLoginModal();
         return;
     }
+    
+    // Get payment method BEFORE processing
+    const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
+    if (!paymentMethodElement) {
+        alert('Please select a payment method');
+        return;
+    }
+    
+    const selectedPaymentMethod = paymentMethodElement.value;
     
     // Validate required fields
     const requiredFields = ['firstName', 'phone', 'address', 'area', 'pincode'];
@@ -6610,9 +6604,7 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         }
     }
     
-    // Get selected payment method
-    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-    
+    // Create order data with current cart (BEFORE clearing)
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
     const deliveryFee = subtotal > 200 ? 0 : 30;
     const total = subtotal + deliveryFee;
@@ -6620,7 +6612,7 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     
     const orderData = {
         orderNumber: orderNumber,
-        items: [...cart],
+        items: [...cart], // Copy cart items
         subtotal: subtotal,
         deliveryFee: deliveryFee,
         total: total,
@@ -6638,21 +6630,20 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         }
     };
     
-    // Handle payment based on selected method
+    // Handle payment - DON'T clear cart here
     if (selectedPaymentMethod === 'razorpay') {
         await initiateRazorpayPayment(orderData);
     } else {
         await handleCashOnDelivery(orderData);
     }
 });
+// Similar fix for Cash on Delivery
 async function handleCashOnDelivery(orderData) {
     try {
         const submitBtn = document.querySelector('.place-order-btn');
-        const originalText = submitBtn.textContent;
         submitBtn.textContent = 'Placing Order...';
         submitBtn.disabled = true;
         
-        // Save order to Firebase
         const orderDoc = await db.collection('orders').add({
             userId: currentUser.uid,
             orderNumber: orderData.orderNumber,
@@ -6667,7 +6658,6 @@ async function handleCashOnDelivery(orderData) {
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // Add to user's order history
         await db.collection('users').doc(currentUser.uid)
             .collection('orders').doc(orderDoc.id).set({
             ...orderData,
@@ -6676,19 +6666,16 @@ async function handleCashOnDelivery(orderData) {
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // Show success message
+        // Show success
         document.getElementById('checkoutForm').style.display = 'none';
         document.getElementById('orderSuccess').style.display = 'block';
         document.getElementById('orderNumber').textContent = orderData.orderNumber;
         
-        // Clear cart
+        // Clear cart ONLY after successful order placement
         clearCart();
-        closeCart();
-        
-        console.log('COD Order placed successfully:', orderDoc.id);
         
     } catch (error) {
-        console.error('Error placing COD order:', error);
+        console.error('COD order error:', error);
         alert('Failed to place order. Please try again.');
         
         const submitBtn = document.querySelector('.place-order-btn');
