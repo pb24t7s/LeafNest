@@ -2803,6 +2803,65 @@
             height: 42px;
             font-size: 16px;
         }
+
+        .payment-methods {
+            margin: 1.5rem 0;
+            background: #f8fffe;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid #e8f5e8;
+        }
+
+        .payment-option {
+            margin-bottom: 1rem;
+        }
+
+        .payment-option:last-child {
+            margin-bottom: 0;
+        }
+
+        .payment-label {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e8f5e8;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-label:hover {
+            border-color: #a8e6a3;
+            background: rgba(168, 230, 163, 0.05);
+        }
+
+        .payment-option input[type="radio"] {
+            margin-right: 1rem;
+            width: 18px;
+            height: 18px;
+            accent-color: #4a7c59;
+        }
+
+        .payment-option input[type="radio"]:checked + .payment-label {
+            border-color: #4a7c59;
+            background: rgba(74, 124, 89, 0.05);
+        }
+
+        .payment-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-info strong {
+            color: #2c5530;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .payment-info span {
+            color: #666;
+            font-size: 0.9rem;
+        }
     }
 
     /* Extra small screens */
@@ -2952,7 +3011,34 @@
                     
                     </div>
                 </div>
-                
+                <h3 style="color: #2c5530; margin: 2rem 0 1rem 0;">Payment Method</h3>
+
+                <div class="payment-methods">
+                    <div class="payment-option">
+                        <input type="radio" id="razorpay" name="paymentMethod" value="razorpay" checked>
+                        <label for="razorpay" class="payment-label">
+                            <div class="payment-info">
+                                <strong>💳 Pay Online</strong>
+                                <span>Credit/Debit Card, UPI, Net Banking</span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="payment-option">
+                        <input type="radio" id="cod" name="paymentMethod" value="cod">
+                        <label for="cod" class="payment-label">
+                            <div class="payment-info">
+                                <strong>💰 Cash on Delivery</strong>
+                                <span>Pay when your order arrives</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="place-order-btn" id="placeOrderBtn">
+                    💳 Pay Online
+                </button>
+
                 <button type="submit" class="place-order-btn">
                     💳 Place Order (Cash on Delivery)
                 </button>
@@ -5858,6 +5944,29 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// Add this function to handle payment method selection
+function handlePaymentMethodChange() {
+    const razorpayRadio = document.getElementById('razorpay');
+    const codRadio = document.getElementById('cod');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    
+    if (razorpayRadio && codRadio && placeOrderBtn) {
+        razorpayRadio.addEventListener('change', function() {
+            if (this.checked) {
+                placeOrderBtn.textContent = '💳 Pay Online';
+                placeOrderBtn.style.background = 'linear-gradient(135deg, #4a7c59 0%, #2c5530 100%)';
+            }
+        });
+        
+        codRadio.addEventListener('change', function() {
+            if (this.checked) {
+                placeOrderBtn.textContent = '📦 Place Order (Cash on Delivery)';
+                placeOrderBtn.style.background = 'linear-gradient(135deg, #ff8c00 0%, #ff6600 100%)';
+            }
+        });
+    }
+}
+
 
 // Initialize when login modal opens
 function openLoginModal() {
@@ -6487,7 +6596,7 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         return;
     }
     
-    // Double-check user is still logged in
+    // Check if user is logged in
     if (!currentUser || !currentUser.isLoggedIn) {
         alert('Please login to complete your order');
         closeCheckout();
@@ -6504,6 +6613,9 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         }
     }
     
+    // Get selected payment method
+    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
     const deliveryFee = subtotal > 200 ? 0 : 30;
     const total = subtotal + deliveryFee;
@@ -6515,6 +6627,7 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         subtotal: subtotal,
         deliveryFee: deliveryFee,
         total: total,
+        paymentMethod: selectedPaymentMethod,
         customer: {
             firstName: document.getElementById('firstName').value.trim(),
             lastName: document.getElementById('lastName').value.trim(),
@@ -6528,10 +6641,64 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         }
     };
     
-    // Initiate Razorpay payment
-    await initiateRazorpayPayment(orderData);
+    // Handle payment based on selected method
+    if (selectedPaymentMethod === 'razorpay') {
+        await initiateRazorpayPayment(orderData);
+    } else {
+        await handleCashOnDelivery(orderData);
+    }
 });
-
+async function handleCashOnDelivery(orderData) {
+    try {
+        const submitBtn = document.querySelector('.place-order-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Placing Order...';
+        submitBtn.disabled = true;
+        
+        // Save order to Firebase
+        const orderDoc = await db.collection('orders').add({
+            userId: currentUser.uid,
+            orderNumber: orderData.orderNumber,
+            customerInfo: orderData.customer,
+            items: orderData.items,
+            subtotal: orderData.subtotal,
+            deliveryFee: orderData.deliveryFee,
+            total: orderData.total,
+            status: 'confirmed',
+            paymentStatus: 'pending',
+            paymentMethod: 'cash_on_delivery',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Add to user's order history
+        await db.collection('users').doc(currentUser.uid)
+            .collection('orders').doc(orderDoc.id).set({
+            ...orderData,
+            status: 'confirmed',
+            paymentStatus: 'pending',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Show success message
+        document.getElementById('checkoutForm').style.display = 'none';
+        document.getElementById('orderSuccess').style.display = 'block';
+        document.getElementById('orderNumber').textContent = orderData.orderNumber;
+        
+        // Clear cart
+        clearCart();
+        closeCart();
+        
+        console.log('COD Order placed successfully:', orderDoc.id);
+        
+    } catch (error) {
+        console.error('Error placing COD order:', error);
+        alert('Failed to place order. Please try again.');
+        
+        const submitBtn = document.querySelector('.place-order-btn');
+        submitBtn.textContent = 'Place Order (Cash on Delivery)';
+        submitBtn.disabled = false;
+    }
+}
 // Initialize user UI on page load
 document.addEventListener('DOMContentLoaded', function() {
    updateUserUI();
@@ -6541,6 +6708,8 @@ document.addEventListener('DOMContentLoaded', function() {
    if (savedUsers.length > 0) {
        
    }
+       handlePaymentMethodChange();
+
 });
 
 // Close modals when clicking outside
