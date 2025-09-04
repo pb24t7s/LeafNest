@@ -4621,6 +4621,9 @@
 
     // Cart UI functions
     function updateCartUI() {
+
+        debugCart('updateCartUI start');
+
         const cartCount = document.getElementById('cartCount');
         const mobileCartCount = document.getElementById('mobileCartCount');
         const cartItems = document.getElementById('cartItems');
@@ -4670,18 +4673,20 @@
         }
       localStorage.setItem('leafnest_cart', JSON.stringify(cart));
 
+        
+    // Save cart to localStorage ONLY if cart has items or is intentionally empty
+    if (cart.length >= 0) { // Allow saving empty cart too
+        localStorage.setItem('leafnest_cart', JSON.stringify(cart));
     }
-   function clearCart() {
-    debugCart('clearCart called - before clearing');
-    
-    // Add stack trace to see what called this function
-    console.trace('clearCart() was called from:');
-    
-    cart = [];
-    localStorage.removeItem('leafnest_cart');
-    updateCartUI();
-    debugCart('clearCart called - after clearing');
-}
+    }
+
+    function clearCart() {
+        console.log('clearCart() called - cart had', cart.length, 'items');
+        cart = [];
+        localStorage.removeItem('leafnest_cart');
+        updateCartUI();
+        }
+
     function loadCartFromStorage() {
         try {
             const savedCart = localStorage.getItem('leafnest_cart');
@@ -6599,94 +6604,82 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     e.preventDefault();
     
     debugCart('form submission start');
+    
+    // Preserve cart state in case of errors
+    const cartBackup = [...cart];
+    
     try {
-    if (cart.length === 0) {
-        alert('Your cart is empty!');
-        debugCart('cart empty check');
-        return;
-    }
-    // Add null check for submit button
-        const submitBtn = document.querySelector('.place-order-btn');
-        if (!submitBtn) {
-            console.error('Submit button not found');
-            alert('Form error. Please refresh the page.');
+        if (cart.length === 0) {
+            alert('Your cart is empty!');
             return;
         }
         
-        // Add null check for payment method
+        if (!currentUser || !currentUser.isLoggedIn) {
+            alert('Please login to complete your order');
+            closeCheckout();
+            openLoginModal();
+            return;
+        }
+        
+        // Get payment method safely
         const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
         if (!paymentMethodElement) {
-            console.error('Payment method not selected');
             alert('Please select a payment method');
             return;
         }
-    
-    console.log('Payment method found:', paymentMethodElement.value);
-    
-    if (!currentUser || !currentUser.isLoggedIn) {
-        alert('Please login to complete your order');
-        closeCheckout();
-        openLoginModal();
-        return;
-    }
-    
-    // Validate required fields
-    const requiredFields = ['firstName', 'phone', 'address', 'area', 'pincode'];
-    for (let field of requiredFields) {
-        const fieldValue = document.getElementById(field).value.trim();
-        if (!fieldValue) {
-            alert(`Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
-            return;
-        }
-    }
-    
-       
-    const selectedPaymentMethod = paymentMethodElement.value;
-    console.log('Selected payment method:', selectedPaymentMethod);
-    
-    // Create order data
-    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-    const deliveryFee = subtotal > 200 ? 0 : 30;
-    const total = subtotal + deliveryFee;
-    const orderNumber = 'LN' + Date.now().toString().substr(-6);
-    
-    const orderData = {
-        orderNumber: orderNumber,
-        items: [...cart],
-        subtotal: subtotal,
-        deliveryFee: deliveryFee,
-        total: total,
-        paymentMethod: selectedPaymentMethod,
-        customer: {
-            firstName: document.getElementById('firstName').value.trim(),
-            lastName: document.getElementById('lastName').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            address: document.getElementById('address').value.trim(),
-            area: document.getElementById('area').value,
-            pincode: document.getElementById('pincode').value.trim(),
-            deliveryTime: document.getElementById('deliveryTime').value,
-            notes: document.getElementById('notes').value.trim()
-        }
-    };
-    
-    // CRITICAL: Handle payment based on method - DO NOT clear cart here
-    console.log('Processing payment method:', selectedPaymentMethod);
-    
-    if (selectedPaymentMethod === 'razorpay') {
-        console.log('Initiating Razorpay payment...');
-        await initiateRazorpayPayment(orderData);
-        // DO NOT clear cart here - only clear in payment success
-    } else if (selectedPaymentMethod === 'cod') {
-        console.log('Processing Cash on Delivery...');
-        await handleCashOnDelivery(orderData);
-        // DO NOT clear cart here - only clear in COD success
-    } else {
-        alert('Invalid payment method selected');
-    }
         
-   } catch (error) {
+        // Validate fields
+        const requiredFields = ['firstName', 'phone', 'address', 'area', 'pincode'];
+        for (let field of requiredFields) {
+            const element = document.getElementById(field);
+            if (!element || !element.value.trim()) {
+                alert(`Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                return;
+            }
+        }
+        
+        const selectedPaymentMethod = paymentMethodElement.value;
+        
+        // Create order data (don't modify cart here)
+        const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+        const deliveryFee = subtotal > 200 ? 0 : 30;
+        const total = subtotal + deliveryFee;
+        const orderNumber = 'LN' + Date.now().toString().substr(-6);
+        
+        const orderData = {
+            orderNumber: orderNumber,
+            items: [...cart], // Use spread to avoid reference issues
+            subtotal: subtotal,
+            deliveryFee: deliveryFee,
+            total: total,
+            paymentMethod: selectedPaymentMethod,
+            customer: {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                address: document.getElementById('address').value.trim(),
+                area: document.getElementById('area').value,
+                pincode: document.getElementById('pincode').value.trim(),
+                deliveryTime: document.getElementById('deliveryTime').value,
+                notes: document.getElementById('notes').value.trim()
+            }
+        };
+        
+        // Process payment (cart should NOT be cleared here)
+        if (selectedPaymentMethod === 'razorpay') {
+            await initiateRazorpayPayment(orderData);
+        } else if (selectedPaymentMethod === 'cod') {
+            await handleCashOnDelivery(orderData);
+        } else {
+            alert('Invalid payment method selected');
+        }
+        
+    } catch (error) {
         console.error('Form submission error:', error);
+        // Restore cart if there was an error
+        cart = cartBackup;
+        updateCartUI();
         alert('An error occurred. Please try again.');
     }
 });
