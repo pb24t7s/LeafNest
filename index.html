@@ -4388,6 +4388,10 @@
     // =================================== //
     
     let cart = [];
+    // Add this debugging function here
+function debugCart(location) {
+    console.log(`Cart at ${location}:`, cart.length, 'items:', cart);
+}
     let isCartOpen = false;
     
     // Product pricing data
@@ -6573,9 +6577,12 @@ function startCountdown() {
 // Fixed cart clearing issue - don't clear until payment success
 document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    
+        debugCart('form submission start');
+
     if (cart.length === 0) {
         alert('Your cart is empty!');
+        debugCart('cart empty check'); // Add this too
+
         return;
     }
     
