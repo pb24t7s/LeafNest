@@ -5674,58 +5674,7 @@ async function initiateRazorpayPayment(orderData) {
         }
     }
 }
-// Clear cart ONLY after successful payment
-async function initiateRazorpayPayment(orderData) {
-    try {
-        // Validate orderData before saving
-        if (!orderData.items || orderData.items.length === 0) {
-            throw new Error('No items in cart');
-        }
-        
-        if (!orderData.customer.firstName || !orderData.customer.phone) {
-            throw new Error('Missing required customer information');
-        }
-        
-        // Create validated order document
-        const validatedOrder = {
-            userId: currentUser.uid,
-            orderNumber: orderData.orderNumber,
-            customerInfo: {
-                firstName: orderData.customer.firstName.trim(),
-                lastName: orderData.customer.lastName.trim(),
-                phone: orderData.customer.phone.trim(),
-                email: orderData.customer.email.trim(),
-                address: orderData.customer.address.trim(),
-                area: orderData.customer.area,
-                pincode: orderData.customer.pincode.trim(),
-                deliveryTime: orderData.customer.deliveryTime,
-                notes: orderData.customer.notes.trim()
-            },
-            items: orderData.items.map(item => ({
-                id: item.id,
-                productId: item.productId,
-                name: item.name,
-                quantity: item.quantity,
-                price: item.price
-            })),
-            subtotal: orderData.subtotal,
-            deliveryFee: orderData.deliveryFee,
-            total: orderData.total,
-            status: 'pending',
-            paymentStatus: 'pending',
-            paymentMethod: 'razorpay',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        
-        const orderDoc = await db.collection('orders').add(validatedOrder);
-        
-        // Continue with Razorpay...
-    } catch (error) {
-        console.error('Validation error:', error);
-        alert('Order validation failed: ' + error.message);
-        return;
-    }
-}
+
 async function handleRazorpaySuccess(paymentResponse, orderId, orderData) {
     try {
         console.log('=== PAYMENT SUCCESS HANDLER ===');
