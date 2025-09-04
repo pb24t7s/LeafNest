@@ -4925,7 +4925,6 @@ function proceedToCheckoutForm() {
                 notes: document.getElementById('notes').value
             },
             items: cart,
-            total: document.getElementById('checkoutTotal').textContent
         });
     });
 
@@ -5621,8 +5620,10 @@ async function initiateRazorpayPayment(orderData) {
         
         const submitBtn = document.querySelector('.place-order-btn');
         const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Processing...';
-        submitBtn.disabled = true;
+       if (submitBtn) {
+                submitBtn.textContent = 'Processing...';
+                submitBtn.disabled = true;
+            }
         
         // Create order in Firebase with PENDING status
         const orderDoc = await db.collection('orders').add({
@@ -6588,30 +6589,10 @@ function startCountdown() {
 document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    debugCart('form submission start');
-    try {
     if (cart.length === 0) {
         alert('Your cart is empty!');
-        debugCart('cart empty check');
         return;
     }
-    // Add null check for submit button
-        const submitBtn = document.querySelector('.place-order-btn');
-        if (!submitBtn) {
-            console.error('Submit button not found');
-            alert('Form error. Please refresh the page.');
-            return;
-        }
-        
-        // Add null check for payment method
-        const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
-        if (!paymentMethodElement) {
-            console.error('Payment method not selected');
-            alert('Please select a payment method');
-            return;
-        }
-    
-    console.log('Payment method found:', paymentMethodElement.value);
     
     if (!currentUser || !currentUser.isLoggedIn) {
         alert('Please login to complete your order');
@@ -6630,9 +6611,14 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         }
     }
     
-       
+    // Get payment method with null check
+    const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
+    if (!paymentMethodElement) {
+        alert('Please select a payment method');
+        return;
+    }
+    
     const selectedPaymentMethod = paymentMethodElement.value;
-    console.log('Selected payment method:', selectedPaymentMethod);
     
     // Create order data
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
@@ -6660,24 +6646,13 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         }
     };
     
-    // CRITICAL: Handle payment based on method - DO NOT clear cart here
-    console.log('Processing payment method:', selectedPaymentMethod);
-    
+    // Handle payment
     if (selectedPaymentMethod === 'razorpay') {
         console.log('Initiating Razorpay payment...');
         await initiateRazorpayPayment(orderData);
-        // DO NOT clear cart here - only clear in payment success
     } else if (selectedPaymentMethod === 'cod') {
         console.log('Processing Cash on Delivery...');
         await handleCashOnDelivery(orderData);
-        // DO NOT clear cart here - only clear in COD success
-    } else {
-        alert('Invalid payment method selected');
-    }
-        
-   } catch (error) {
-        console.error('Form submission error:', error);
-        alert('An error occurred. Please try again.');
     }
 });
 // Similar fix for Cash on Delivery
