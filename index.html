@@ -3016,6 +3016,8 @@
                 <div class="payment-methods">
                     <div class="payment-option">
                         <input type="radio" id="razorpay" name="paymentMethod" value="razorpay" checked>
+                        <input type="radio" id="cod" name="paymentMethod" value="cod">
+
                         <label for="razorpay" class="payment-label">
                             <div class="payment-info">
                                 <strong>💳 Pay Online</strong>
@@ -6610,6 +6612,15 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         debugCart('cart empty check');
         return;
     }
+     // Add error handling for payment method
+    const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
+    if (!paymentMethodElement) {
+        console.error('Payment method element not found');
+        alert('Payment method selection error. Please refresh and try again.');
+        return;
+    }
+    
+    console.log('Payment method found:', paymentMethodElement.value);
     
     if (!currentUser || !currentUser.isLoggedIn) {
         alert('Please login to complete your order');
@@ -6628,13 +6639,7 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         }
     }
     
-    // CRITICAL: Get the selected payment method
-    const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
-    if (!paymentMethodElement) {
-        alert('Please select a payment method');
-        return;
-    }
-    
+       
     const selectedPaymentMethod = paymentMethodElement.value;
     console.log('Selected payment method:', selectedPaymentMethod);
     
