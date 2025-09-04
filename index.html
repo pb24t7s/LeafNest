@@ -4893,42 +4893,7 @@ function proceedToCheckoutForm() {
             document.getElementById('pincode').value = address.pincode || '';
         }
     }
-    // Form submission
-    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Generate order number
-        const orderNumber = 'LN' + Date.now().toString().substr(-6);
-        
-        // Show success message
-        document.getElementById('checkoutForm').style.display = 'none';
-        document.getElementById('orderSuccess').style.display = 'block';
-        document.getElementById('orderNumber').textContent = orderNumber;
-        
-        // Clear cart
-        cart = [];
-        updateCartUI();
-        closeCart();
-        
-        // In a real implementation, you would send the order data to your backend
-        console.log('Order placed:', {
-            orderNumber: orderNumber,
-            customer: {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value,
-                address: document.getElementById('address').value,
-                area: document.getElementById('area').value,
-                pincode: document.getElementById('pincode').value,
-                deliveryTime: document.getElementById('deliveryTime').value,
-                notes: document.getElementById('notes').value
-            },
-            items: cart,
-        });
-    });
-
-
+    
 
 // =================================== //
 // ======= FIREBASE CONFIGURATION ==== //
