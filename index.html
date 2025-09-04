@@ -4780,7 +4780,6 @@ function proceedToCheckoutForm() {
     }
 
     function updateCheckoutSummary() {
-    debugCart('updateCheckoutSummary start');
     
     const checkoutItems = document.getElementById('checkoutItems');
     
@@ -4789,13 +4788,11 @@ function proceedToCheckoutForm() {
         return;
     }
     
-    debugCart('updateCheckoutSummary before cart operations');
     
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
     const deliveryFee = subtotal > 200 ? 0 : 30;
     const total = subtotal + deliveryFee;
     
-    debugCart('updateCheckoutSummary after calculations');
     
     // Create complete order summary HTML
     let summaryHTML = '';
@@ -4838,7 +4835,6 @@ function proceedToCheckoutForm() {
     // Set the complete HTML
     checkoutItems.innerHTML = summaryHTML;
     
-    debugCart('updateCheckoutSummary after setting HTML');
     
     // Handle saved addresses for logged-in users
     if (currentUser && currentUser.isLoggedIn && userAddresses && userAddresses.length > 0) {
@@ -4874,7 +4870,6 @@ function proceedToCheckoutForm() {
         }
     }
     
-    debugCart('updateCheckoutSummary end');
     
     console.log('Checkout summary updated:', {
         items: cart.length,
