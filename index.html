@@ -4675,6 +4675,10 @@ function debugCart(location) {
     }
    function clearCart() {
     debugCart('clearCart called - before clearing');
+    
+    // Add stack trace to see what called this function
+    console.trace('clearCart() was called from:');
+    
     cart = [];
     localStorage.removeItem('leafnest_cart');
     updateCartUI();
