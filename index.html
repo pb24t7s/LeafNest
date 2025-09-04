@@ -5616,7 +5616,8 @@ async function initiateRazorpayPayment(orderData) {
             status: 'pending',
             paymentStatus: 'pending',
             paymentMethod: 'razorpay',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp() // Add this
         });
         
         console.log('Firebase order created with ID:', orderDoc.id);
@@ -5716,38 +5717,43 @@ async function initiateRazorpayPayment(orderData) {
 // Clear cart ONLY after successful payment
 async function handleRazorpaySuccess(paymentResponse, orderId, orderData) {
     try {
-        // Update order with payment details
+        console.log('=== PAYMENT SUCCESS HANDLER ===');
+        console.log('Payment response:', paymentResponse);
+        console.log('Order ID:', orderId);
+        
+        // Update order with payment details - include updatedAt field
         await db.collection('orders').doc(orderId).update({
             razorpayPaymentId: paymentResponse.razorpay_payment_id,
             razorpaySignature: paymentResponse.razorpay_signature || '',
             paymentStatus: 'completed',
             status: 'confirmed',
-            paidAt: firebase.firestore.FieldValue.serverTimestamp()
+            paidAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp() // Required by security rules
         });
         
-        // Add to user's orders
-        await db.collection('users').doc(currentUser.uid)
-            .collection('orders').doc(orderId).set({
-            ...orderData,
-            razorpayPaymentId: paymentResponse.razorpay_payment_id,
-            paymentStatus: 'completed',
-            status: 'confirmed',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        console.log('Order updated successfully');
         
-        // Show success ONLY after Firebase update
+        // Show success
         document.getElementById('checkoutForm').style.display = 'none';
         document.getElementById('orderSuccess').style.display = 'block';
         document.getElementById('orderNumber').textContent = orderData.orderNumber;
         
-        // Clear cart ONLY after successful payment
+        // Clear cart
         clearCart();
         
-        console.log('Payment successful:', paymentResponse.razorpay_payment_id);
-        
     } catch (error) {
-        console.error('Error updating order:', error);
-        alert('Payment successful but order update failed. Please contact support.');
+        console.error('Firebase update error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        
+        // Payment succeeded but update failed - still show success to user
+        document.getElementById('checkoutForm').style.display = 'none';
+        document.getElementById('orderSuccess').style.display = 'block';
+        document.getElementById('orderNumber').textContent = orderData.orderNumber;
+        clearCart();
+        
+        // Log the issue but don't alarm the customer
+        console.error('Order update failed but payment successful:', orderId);
     }
 }
 
@@ -5756,11 +5762,12 @@ async function handleRazorpayFailure(error, orderId) {
         console.error('Payment failed:', error);
         
         // Update order status to failed
-        await db.collection('orders').doc(orderId).update({
+         await db.collection('orders').doc(orderId).update({
             paymentStatus: 'failed',
             status: 'cancelled',
             paymentError: error.description || error.reason || 'Payment failed',
-            failedAt: firebase.firestore.FieldValue.serverTimestamp()
+            failedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
         // Show user-friendly error message
