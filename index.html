@@ -4673,11 +4673,13 @@ function debugCart(location) {
       localStorage.setItem('leafnest_cart', JSON.stringify(cart));
 
     }
-    function clearCart() {
-        cart = [];
-        localStorage.removeItem('leafnest_cart');
-        updateCartUI();
-    }
+   function clearCart() {
+    debugCart('clearCart called - before clearing');
+    cart = [];
+    localStorage.removeItem('leafnest_cart');
+    updateCartUI();
+    debugCart('clearCart called - after clearing');
+}
     function loadCartFromStorage() {
         try {
             const savedCart = localStorage.getItem('leafnest_cart');
@@ -4724,6 +4726,8 @@ function debugCart(location) {
 
     // Checkout functions
    function openCheckout() {
+    debugCart('openCheckout start');
+    
     if (cart.length === 0) {
         alert('Your cart is empty!');
         return;
@@ -4738,12 +4742,16 @@ function debugCart(location) {
     }
     
     // User is logged in - proceed directly to delivery form
+    debugCart('openCheckout before proceedToCheckoutForm');
     proceedToCheckoutForm();
 }
 
-// New function to handle logged-in checkout
 function proceedToCheckoutForm() {
+    debugCart('proceedToCheckoutForm start');
+    
     updateCheckoutSummary();
+    
+    debugCart('proceedToCheckoutForm after updateCheckoutSummary');
     
     // Pre-fill form if user data exists
     if (currentUser) {
@@ -4761,6 +4769,7 @@ function proceedToCheckoutForm() {
         }
     }
     
+    debugCart('proceedToCheckoutForm before showing modal');
     document.getElementById('checkoutModal').classList.add('show');
     document.getElementById('cartOverlay').classList.add('show');
 }
@@ -4774,27 +4783,35 @@ function proceedToCheckoutForm() {
     }
 
     function updateCheckoutSummary() {
+    debugCart('updateCheckoutSummary start');
+    
     const checkoutItems = document.getElementById('checkoutItems');
-    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-    const deliveryFee = subtotal > 200 ? 0 : 30;
-    const total = subtotal + deliveryFee;
     
     if (!checkoutItems) {
         console.error('checkoutItems element not found');
         return;
     }
     
+    debugCart('updateCheckoutSummary before cart operations');
+    
+    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const deliveryFee = subtotal > 200 ? 0 : 30;
+    const total = subtotal + deliveryFee;
+    
+    debugCart('updateCheckoutSummary after calculations');
+    
     // Create complete order summary HTML
     let summaryHTML = '';
     
     // Add cart items
-    cart.forEach(item => {
+    cart.forEach((item, index) => {
         summaryHTML += `
             <div class="summary-item">
                 <span class="item-name">${item.name} (${item.quantity}g)</span>
                 <span class="item-price">₹${item.price}</span>
             </div>
         `;
+        console.log(`Processing item ${index}:`, item.name, item.price);
     });
     
     // Add subtotal
@@ -4823,6 +4840,8 @@ function proceedToCheckoutForm() {
     
     // Set the complete HTML
     checkoutItems.innerHTML = summaryHTML;
+    
+    debugCart('updateCheckoutSummary after setting HTML');
     
     // Handle saved addresses for logged-in users
     if (currentUser && currentUser.isLoggedIn && userAddresses && userAddresses.length > 0) {
@@ -4857,6 +4876,8 @@ function proceedToCheckoutForm() {
             savedAddressGroup.style.display = 'none';
         }
     }
+    
+    debugCart('updateCheckoutSummary end');
     
     console.log('Checkout summary updated:', {
         items: cart.length,
