@@ -5604,19 +5604,20 @@ async function initiateRazorpayPayment(orderData) {
         console.log('Creating Firebase order...');
         
         // Create order in Firebase with PENDING status
-        const orderDoc = await db.collection('orders').add({
-            userId: currentUser.uid,
-            orderNumber: orderData.orderNumber,
-            customerInfo: orderData.customer,
-            items: orderData.items,
-            subtotal: orderData.subtotal,
-            deliveryFee: orderData.deliveryFee,
-            total: orderData.total,
-            status: 'pending',
-            paymentStatus: 'pending',
-            paymentMethod: 'razorpay',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+       const orderDoc = await db.collection('orders').add({
+        userId: currentUser.uid,
+        orderNumber: orderData.orderNumber,
+        customerInfo: orderData.customer,
+        items: orderData.items,
+        subtotal: orderData.subtotal,
+        deliveryFee: orderData.deliveryFee,
+        total: orderData.total,
+        status: 'pending',
+        paymentStatus: 'pending',
+        paymentMethod: 'razorpay',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp() // Add this
+    });
         
         console.log('Firebase order created with ID:', orderDoc.id);
         
@@ -5713,43 +5714,96 @@ async function initiateRazorpayPayment(orderData) {
     console.log('=== RAZORPAY PAYMENT INITIATION END ===');
 }
 // Clear cart ONLY after successful payment
+async function initiateRazorpayPayment(orderData) {
+    try {
+        // Validate orderData before saving
+        if (!orderData.items || orderData.items.length === 0) {
+            throw new Error('No items in cart');
+        }
+        
+        if (!orderData.customer.firstName || !orderData.customer.phone) {
+            throw new Error('Missing required customer information');
+        }
+        
+        // Create validated order document
+        const validatedOrder = {
+            userId: currentUser.uid,
+            orderNumber: orderData.orderNumber,
+            customerInfo: {
+                firstName: orderData.customer.firstName.trim(),
+                lastName: orderData.customer.lastName.trim(),
+                phone: orderData.customer.phone.trim(),
+                email: orderData.customer.email.trim(),
+                address: orderData.customer.address.trim(),
+                area: orderData.customer.area,
+                pincode: orderData.customer.pincode.trim(),
+                deliveryTime: orderData.customer.deliveryTime,
+                notes: orderData.customer.notes.trim()
+            },
+            items: orderData.items.map(item => ({
+                id: item.id,
+                productId: item.productId,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+            })),
+            subtotal: orderData.subtotal,
+            deliveryFee: orderData.deliveryFee,
+            total: orderData.total,
+            status: 'pending',
+            paymentStatus: 'pending',
+            paymentMethod: 'razorpay',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        const orderDoc = await db.collection('orders').add(validatedOrder);
+        
+        // Continue with Razorpay...
+    } catch (error) {
+        console.error('Validation error:', error);
+        alert('Order validation failed: ' + error.message);
+        return;
+    }
+}
 async function handleRazorpaySuccess(paymentResponse, orderId, orderData) {
     try {
+        console.log('=== PAYMENT SUCCESS HANDLER ===');
+        console.log('Payment response:', paymentResponse);
+        console.log('Order ID:', orderId);
+        
         // Update order with payment details
         await db.collection('orders').doc(orderId).update({
             razorpayPaymentId: paymentResponse.razorpay_payment_id,
             razorpaySignature: paymentResponse.razorpay_signature || '',
             paymentStatus: 'completed',
             status: 'confirmed',
-            paidAt: firebase.firestore.FieldValue.serverTimestamp()
+            paidAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // Add to user's orders
-        await db.collection('users').doc(currentUser.uid)
-            .collection('orders').doc(orderId).set({
-            ...orderData,
-            razorpayPaymentId: paymentResponse.razorpay_payment_id,
-            paymentStatus: 'completed',
-            status: 'confirmed',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        console.log('Order updated successfully');
         
-        // Show success ONLY after Firebase update
+        // Show success message
         document.getElementById('checkoutForm').style.display = 'none';
         document.getElementById('orderSuccess').style.display = 'block';
         document.getElementById('orderNumber').textContent = orderData.orderNumber;
         
-        // Clear cart ONLY after successful payment
+        // Clear cart
         clearCart();
         
-        console.log('Payment successful:', paymentResponse.razorpay_payment_id);
-        
     } catch (error) {
-        console.error('Error updating order:', error);
+        console.error('Firebase update error:', error);
+        
+        // Payment succeeded but update failed - still show success to user
+        document.getElementById('checkoutForm').style.display = 'none';
+        document.getElementById('orderSuccess').style.display = 'block';
+        document.getElementById('orderNumber').textContent = orderData.orderNumber;
+        clearCart();
+        
+        // Show the error message you're seeing
         alert('Payment successful but order update failed. Please contact support.');
     }
 }
-
 async function handleRazorpayFailure(error, orderId) {
     try {
         console.error('Payment failed:', error);
@@ -5759,26 +5813,11 @@ async function handleRazorpayFailure(error, orderId) {
             paymentStatus: 'failed',
             status: 'cancelled',
             paymentError: error.description || error.reason || 'Payment failed',
-            failedAt: firebase.firestore.FieldValue.serverTimestamp()
+            failedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // Show user-friendly error message
-        let errorMessage = 'Payment failed. ';
-        switch(error.code) {
-            case 'BAD_REQUEST_ERROR':
-                errorMessage += 'Please check your payment details and try again.';
-                break;
-            case 'GATEWAY_ERROR':
-                errorMessage += 'Payment gateway error. Please try again.';
-                break;
-            case 'NETWORK_ERROR':
-                errorMessage += 'Network error. Please check your connection.';
-                break;
-            default:
-                errorMessage += 'Please try again or contact support.';
-        }
-        
-        alert(errorMessage);
+        alert('Payment failed. Please try again.');
         
     } catch (dbError) {
         console.error('Error updating failed payment:', dbError);
