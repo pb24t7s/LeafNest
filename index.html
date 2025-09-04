@@ -6670,12 +6670,17 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     
     // Get payment method with null check
     const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
+    console.log('Payment method element:', paymentMethodElement);
+    console.log('Selected payment method:', paymentMethodElement ? paymentMethodElement.value : 'NONE');
+
     if (!paymentMethodElement) {
         alert('Please select a payment method');
         return;
     }
     
     const selectedPaymentMethod = paymentMethodElement.value;
+    console.log('Processing with method:', selectedPaymentMethod);
+
     
     // Create order data
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
@@ -6710,6 +6715,9 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     } else if (selectedPaymentMethod === 'cod') {
         console.log('Processing Cash on Delivery...');
         await handleCashOnDelivery(orderData);
+    }
+     else {
+        console.log('=== UNKNOWN PAYMENT METHOD ===');
     }
 });
 // Similar fix for Cash on Delivery
