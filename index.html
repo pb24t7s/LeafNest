@@ -5615,15 +5615,28 @@ const RAZORPAY_KEY_ID = 'rzp_live_R9fd094wC0kFUG'; // Get from Razorpay Dashboar
 // Initialize payment
 // Updated Razorpay function for production
 async function initiateRazorpayPayment(orderData) {
+    console.log('=== RAZORPAY PAYMENT INITIATION START ===');
+    
+    // Check if Razorpay SDK is loaded
+    if (typeof Razorpay === 'undefined') {
+        console.error('Razorpay SDK not loaded');
+        alert('Payment system not available. Please refresh the page.');
+        return;
+    }
+    
+    console.log('Razorpay SDK available:', typeof Razorpay);
+    console.log('Order data received:', orderData);
+    
     try {
-        console.log('Starting Razorpay payment process...');
-        
         const submitBtn = document.querySelector('.place-order-btn');
-        const originalText = submitBtn.textContent;
-       if (submitBtn) {
-                submitBtn.textContent = 'Processing...';
-                submitBtn.disabled = true;
-            }
+        const originalText = submitBtn ? submitBtn.textContent : 'Pay Online';
+        
+        if (submitBtn) {
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+        }
+        
+        console.log('Creating Firebase order...');
         
         // Create order in Firebase with PENDING status
         const orderDoc = await db.collection('orders').add({
@@ -5640,16 +5653,18 @@ async function initiateRazorpayPayment(orderData) {
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // Configure Razorpay WITHOUT order_id (for simple payments)
+        console.log('Firebase order created with ID:', orderDoc.id);
+        
+        // Configure Razorpay options
         const razorpayOptions = {
-            key: 'rzp_live_R9fd094wC0kFUG', // Your live key
-            amount: orderData.total * 100, // Amount in paise
+            key: 'rzp_live_R9fd094wC0kFUG',
+            amount: orderData.total * 100, // Convert to paise
             currency: 'INR',
             name: 'Leaf Nest',
             description: 'Fresh Microgreens - Order #' + orderData.orderNumber,
-            // Remove order_id line - this was causing the issue
+            image: 'https://leaf-nest.com/leafnest-logo.png',
             handler: function(response) {
-                console.log('Razorpay payment successful:', response);
+                console.log('Payment success handler called:', response);
                 handleRazorpaySuccess(response, orderDoc.id, orderData);
             },
             prefill: {
@@ -5657,38 +5672,80 @@ async function initiateRazorpayPayment(orderData) {
                 email: orderData.customer.email || '',
                 contact: orderData.customer.phone
             },
+            notes: {
+                order_id: orderDoc.id,
+                customer_name: orderData.customer.firstName,
+                delivery_area: orderData.customer.area
+            },
             theme: {
                 color: '#4a7c59'
             },
             modal: {
                 ondismiss: function() {
-                    console.log('Razorpay payment cancelled');
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                }
+                    console.log('Razorpay modal dismissed by user');
+                    if (submitBtn) {
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }
+                },
+                confirm_close: true,
+                escape: true,
+                backdropclose: false
             }
         };
         
-        const razorpayInstance = new Razorpay(razorpayOptions);
-        
-        razorpayInstance.on('payment.failed', function(response) {
-            console.error('Razorpay payment failed:', response.error);
-            handleRazorpayFailure(response.error, orderDoc.id);
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
+        console.log('Razorpay options configured:', {
+            key: razorpayOptions.key,
+            amount: razorpayOptions.amount,
+            currency: razorpayOptions.currency,
+            name: razorpayOptions.name
         });
         
+        // Create Razorpay instance
+        console.log('Creating Razorpay instance...');
+        const razorpayInstance = new Razorpay(razorpayOptions);
+        
+        console.log('Razorpay instance created successfully:', razorpayInstance);
+        
+        // Set up failure handler
+        razorpayInstance.on('payment.failed', function(response) {
+            console.error('Payment failed handler called:', response.error);
+            handleRazorpayFailure(response.error, orderDoc.id);
+            if (submitBtn) {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Open payment modal
         console.log('Opening Razorpay payment modal...');
-        razorpayInstance.open();
+        
+        try {
+            razorpayInstance.open();
+            console.log('Razorpay.open() executed successfully');
+        } catch (openError) {
+            console.error('Error calling razorpayInstance.open():', openError);
+            throw new Error('Failed to open payment modal: ' + openError.message);
+        }
         
     } catch (error) {
-        console.error('Error initiating Razorpay payment:', error);
-        alert('Failed to initiate payment. Please try again.');
+        console.error('=== RAZORPAY INITIATION ERROR ===');
+        console.error('Error type:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Full error:', error);
+        console.error('Error stack:', error.stack);
         
+        alert('Failed to initiate payment: ' + error.message + '. Please try again.');
+        
+        // Reset button state
         const submitBtn = document.querySelector('.place-order-btn');
-        submitBtn.textContent = 'Pay Online';
-        submitBtn.disabled = false;
+        if (submitBtn) {
+            submitBtn.textContent = 'Pay Online';
+            submitBtn.disabled = false;
+        }
     }
+    
+    console.log('=== RAZORPAY PAYMENT INITIATION END ===');
 }
 // Clear cart ONLY after successful payment
 async function handleRazorpaySuccess(paymentResponse, orderId, orderData) {
