@@ -4895,6 +4895,7 @@ function proceedToCheckoutForm() {
     }
     
 
+
 // =================================== //
 // ======= FIREBASE CONFIGURATION ==== //
 // =================================== //
@@ -5580,15 +5581,19 @@ const RAZORPAY_KEY_ID = 'rzp_live_R9fd094wC0kFUG'; // Get from Razorpay Dashboar
 // Initialize payment
 // Updated Razorpay function for production
 async function initiateRazorpayPayment(orderData) {
+    console.log('=== RAZORPAY PAYMENT INITIATION START ===');
+    
+    // Check if Razorpay SDK is loaded
+    if (typeof Razorpay === 'undefined') {
+        console.error('Razorpay SDK not loaded');
+        alert('Payment system not available. Please refresh the page.');
+        return;
+    }
+    
+    console.log('Razorpay SDK available:', typeof Razorpay);
+    console.log('Order data received:', orderData);
+    
     try {
-        console.log('=== RAZORPAY PAYMENT INITIATION START ===');
-        
-        if (typeof Razorpay === 'undefined') {
-            console.error('Razorpay SDK not loaded');
-            alert('Payment system not available. Please refresh the page.');
-            return;
-        }
-        
         const submitBtn = document.querySelector('.place-order-btn');
         const originalText = submitBtn ? submitBtn.textContent : 'Pay Online';
         
@@ -5597,7 +5602,9 @@ async function initiateRazorpayPayment(orderData) {
             submitBtn.disabled = true;
         }
         
-        // Create order in Firebase
+        console.log('Creating Firebase order...');
+        
+        // Create order in Firebase with PENDING status
         const orderDoc = await db.collection('orders').add({
             userId: currentUser.uid,
             orderNumber: orderData.orderNumber,
@@ -5609,8 +5616,7 @@ async function initiateRazorpayPayment(orderData) {
             status: 'pending',
             paymentStatus: 'pending',
             paymentMethod: 'razorpay',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
         console.log('Firebase order created with ID:', orderDoc.id);
@@ -5618,19 +5624,24 @@ async function initiateRazorpayPayment(orderData) {
         // Configure Razorpay options
         const razorpayOptions = {
             key: 'rzp_live_R9fd094wC0kFUG',
-            amount: orderData.total * 100,
+            amount: orderData.total * 100, // Convert to paise
             currency: 'INR',
             name: 'Leaf Nest',
             description: 'Fresh Microgreens - Order #' + orderData.orderNumber,
+            image: 'https://leaf-nest.com/leafnest-logo.png',
             handler: function(response) {
                 console.log('Payment success handler called:', response);
-                // Call the success function directly
                 handleRazorpaySuccess(response, orderDoc.id, orderData);
             },
             prefill: {
                 name: orderData.customer.firstName + ' ' + (orderData.customer.lastName || ''),
                 email: orderData.customer.email || '',
                 contact: orderData.customer.phone
+            },
+            notes: {
+                order_id: orderDoc.id,
+                customer_name: orderData.customer.firstName,
+                delivery_area: orderData.customer.area
             },
             theme: {
                 color: '#4a7c59'
@@ -5642,16 +5653,29 @@ async function initiateRazorpayPayment(orderData) {
                         submitBtn.textContent = originalText;
                         submitBtn.disabled = false;
                     }
-                }
+                },
+                confirm_close: true,
+                escape: true,
+                backdropclose: false
             }
         };
         
+        console.log('Razorpay options configured:', {
+            key: razorpayOptions.key,
+            amount: razorpayOptions.amount,
+            currency: razorpayOptions.currency,
+            name: razorpayOptions.name
+        });
+        
+        // Create Razorpay instance
         console.log('Creating Razorpay instance...');
         const razorpayInstance = new Razorpay(razorpayOptions);
         
+        console.log('Razorpay instance created successfully:', razorpayInstance);
+        
+        // Set up failure handler
         razorpayInstance.on('payment.failed', function(response) {
             console.error('Payment failed handler called:', response.error);
-            // Call the failure function directly
             handleRazorpayFailure(response.error, orderDoc.id);
             if (submitBtn) {
                 submitBtn.textContent = originalText;
@@ -5659,61 +5683,74 @@ async function initiateRazorpayPayment(orderData) {
             }
         });
         
+        // Open payment modal
         console.log('Opening Razorpay payment modal...');
-        razorpayInstance.open();
-        console.log('Razorpay.open() executed');
+        
+        try {
+            razorpayInstance.open();
+            console.log('Razorpay.open() executed successfully');
+        } catch (openError) {
+            console.error('Error calling razorpayInstance.open():', openError);
+            throw new Error('Failed to open payment modal: ' + openError.message);
+        }
         
     } catch (error) {
-        console.error('Razorpay initiation error:', error);
-        alert('Failed to initiate payment: ' + error.message);
+        console.error('=== RAZORPAY INITIATION ERROR ===');
+        console.error('Error type:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Full error:', error);
+        console.error('Error stack:', error.stack);
         
+        alert('Failed to initiate payment: ' + error.message + '. Please try again.');
+        
+        // Reset button state
         const submitBtn = document.querySelector('.place-order-btn');
         if (submitBtn) {
             submitBtn.textContent = 'Pay Online';
             submitBtn.disabled = false;
         }
     }
+    
+    console.log('=== RAZORPAY PAYMENT INITIATION END ===');
 }
-
+// Clear cart ONLY after successful payment
 async function handleRazorpaySuccess(paymentResponse, orderId, orderData) {
     try {
-        console.log('=== PAYMENT SUCCESS HANDLER ===');
-        console.log('Payment response:', paymentResponse);
-        console.log('Order ID:', orderId);
-        
         // Update order with payment details
         await db.collection('orders').doc(orderId).update({
             razorpayPaymentId: paymentResponse.razorpay_payment_id,
             razorpaySignature: paymentResponse.razorpay_signature || '',
             paymentStatus: 'completed',
             status: 'confirmed',
-            paidAt: firebase.firestore.FieldValue.serverTimestamp(),
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            paidAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        console.log('Order updated successfully');
+        // Add to user's orders
+        await db.collection('users').doc(currentUser.uid)
+            .collection('orders').doc(orderId).set({
+            ...orderData,
+            razorpayPaymentId: paymentResponse.razorpay_payment_id,
+            paymentStatus: 'completed',
+            status: 'confirmed',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
         
-        // Show success message
+        // Show success ONLY after Firebase update
         document.getElementById('checkoutForm').style.display = 'none';
         document.getElementById('orderSuccess').style.display = 'block';
         document.getElementById('orderNumber').textContent = orderData.orderNumber;
         
-        // Clear cart
+        // Clear cart ONLY after successful payment
         clearCart();
+        
+        console.log('Payment successful:', paymentResponse.razorpay_payment_id);
         
     } catch (error) {
-        console.error('Firebase update error:', error);
-        
-        // Payment succeeded but update failed - still show success to user
-        document.getElementById('checkoutForm').style.display = 'none';
-        document.getElementById('orderSuccess').style.display = 'block';
-        document.getElementById('orderNumber').textContent = orderData.orderNumber;
-        clearCart();
-        
-        // Show the error message you're seeing
+        console.error('Error updating order:', error);
         alert('Payment successful but order update failed. Please contact support.');
     }
 }
+
 async function handleRazorpayFailure(error, orderId) {
     try {
         console.error('Payment failed:', error);
@@ -5723,11 +5760,26 @@ async function handleRazorpayFailure(error, orderId) {
             paymentStatus: 'failed',
             status: 'cancelled',
             paymentError: error.description || error.reason || 'Payment failed',
-            failedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            failedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        alert('Payment failed. Please try again.');
+        // Show user-friendly error message
+        let errorMessage = 'Payment failed. ';
+        switch(error.code) {
+            case 'BAD_REQUEST_ERROR':
+                errorMessage += 'Please check your payment details and try again.';
+                break;
+            case 'GATEWAY_ERROR':
+                errorMessage += 'Payment gateway error. Please try again.';
+                break;
+            case 'NETWORK_ERROR':
+                errorMessage += 'Network error. Please check your connection.';
+                break;
+            default:
+                errorMessage += 'Please try again or contact support.';
+        }
+        
+        alert(errorMessage);
         
     } catch (dbError) {
         console.error('Error updating failed payment:', dbError);
