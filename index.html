@@ -4728,7 +4728,6 @@
 
     // Checkout functions
    function openCheckout() {
-    debugCart('openCheckout start');
     
     if (cart.length === 0) {
         alert('Your cart is empty!');
@@ -4744,16 +4743,13 @@
     }
     
     // User is logged in - proceed directly to delivery form
-    debugCart('openCheckout before proceedToCheckoutForm');
     proceedToCheckoutForm();
 }
 
 function proceedToCheckoutForm() {
-    debugCart('proceedToCheckoutForm start');
     
     updateCheckoutSummary();
     
-    debugCart('proceedToCheckoutForm after updateCheckoutSummary');
     
     // Pre-fill form if user data exists
     if (currentUser) {
@@ -4771,7 +4767,6 @@ function proceedToCheckoutForm() {
         }
     }
     
-    debugCart('proceedToCheckoutForm before showing modal');
     document.getElementById('checkoutModal').classList.add('show');
     document.getElementById('cartOverlay').classList.add('show');
 }
