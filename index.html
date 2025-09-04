@@ -6604,19 +6604,27 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     e.preventDefault();
     
     debugCart('form submission start');
-    
+    try {
     if (cart.length === 0) {
         alert('Your cart is empty!');
         debugCart('cart empty check');
         return;
     }
-     // Add error handling for payment method
-    const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
-    if (!paymentMethodElement) {
-        console.error('Payment method element not found');
-        alert('Payment method selection error. Please refresh and try again.');
-        return;
-    }
+    // Add null check for submit button
+        const submitBtn = document.querySelector('.place-order-btn');
+        if (!submitBtn) {
+            console.error('Submit button not found');
+            alert('Form error. Please refresh the page.');
+            return;
+        }
+        
+        // Add null check for payment method
+        const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
+        if (!paymentMethodElement) {
+            console.error('Payment method not selected');
+            alert('Please select a payment method');
+            return;
+        }
     
     console.log('Payment method found:', paymentMethodElement.value);
     
@@ -6680,6 +6688,11 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         // DO NOT clear cart here - only clear in COD success
     } else {
         alert('Invalid payment method selected');
+    }
+        
+   } catch (error) {
+        console.error('Form submission error:', error);
+        alert('An error occurred. Please try again.');
     }
 });
 // Similar fix for Cash on Delivery
