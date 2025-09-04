@@ -4389,9 +4389,7 @@
     
     let cart = [];
     // Add this debugging function here
-function debugCart(location) {
-    console.log(`Cart at ${location}:`, cart.length, 'items:', cart);
-}
+
     let isCartOpen = false;
     
     // Product pricing data
@@ -5645,22 +5643,20 @@ async function initiateRazorpayPayment(orderData) {
             subtotal: orderData.subtotal,
             deliveryFee: orderData.deliveryFee,
             total: orderData.total,
-            status: 'pending', // IMPORTANT: Keep as pending
-            paymentStatus: 'pending', // IMPORTANT: Keep as pending
+            status: 'pending',
+            paymentStatus: 'pending',
             paymentMethod: 'razorpay',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        console.log('Order created in Firebase with pending status');
-        
-        // Configure Razorpay - this should open the payment modal
+        // Configure Razorpay WITHOUT order_id (for simple payments)
         const razorpayOptions = {
             key: 'rzp_live_R9fd094wC0kFUG', // Your live key
-            amount: orderData.total * 100,
+            amount: orderData.total * 100, // Amount in paise
             currency: 'INR',
             name: 'Leaf Nest',
             description: 'Fresh Microgreens - Order #' + orderData.orderNumber,
-            order_id: orderDoc.id,
+            // Remove order_id line - this was causing the issue
             handler: function(response) {
                 console.log('Razorpay payment successful:', response);
                 handleRazorpaySuccess(response, orderDoc.id, orderData);
@@ -5692,7 +5688,7 @@ async function initiateRazorpayPayment(orderData) {
         });
         
         console.log('Opening Razorpay payment modal...');
-        razorpayInstance.open(); // This should open the payment interface
+        razorpayInstance.open();
         
     } catch (error) {
         console.error('Error initiating Razorpay payment:', error);
@@ -5709,7 +5705,6 @@ async function handleRazorpaySuccess(paymentResponse, orderId, orderData) {
         // Update order with payment details
         await db.collection('orders').doc(orderId).update({
             razorpayPaymentId: paymentResponse.razorpay_payment_id,
-            razorpayOrderId: paymentResponse.razorpay_order_id || '',
             razorpaySignature: paymentResponse.razorpay_signature || '',
             paymentStatus: 'completed',
             status: 'confirmed',
