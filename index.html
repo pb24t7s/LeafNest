@@ -5610,13 +5610,28 @@ async function initiateRazorpayPayment(orderData) {
             submitBtn.disabled = true;
         }
         
-        console.log('Creating Firebase order...');
+        // Validate orderData before saving
+        if (!orderData.customerInfo || !orderData.customerInfo.firstName || !orderData.customerInfo.phone) {
+            throw new Error('Missing required customer information');
+        }
         
-        // Create order in Firebase with PENDING status
-        const orderDoc = await db.collection('orders').add({
+        console.log('Creating Firebase order with validated data...');
+        
+        // Create order in Firebase - ensure no undefined values
+        const firebaseOrderData = {
             userId: currentUser.uid,
             orderNumber: orderData.orderNumber,
-            customerInfo: orderData.customer,
+            customerInfo: {
+                firstName: orderData.customerInfo.firstName || 'Customer',
+                lastName: orderData.customerInfo.lastName || '',
+                phone: orderData.customerInfo.phone || '',
+                email: orderData.customerInfo.email || '',
+                address: orderData.customerInfo.address || '',
+                city: orderData.customerInfo.city || '',
+                area: orderData.customerInfo.area || '',
+                pincode: orderData.customerInfo.pincode || '',
+                deliveryTime: orderData.customerInfo.deliveryTime || 'morning'
+            },
             items: orderData.items,
             subtotal: orderData.subtotal,
             deliveryFee: orderData.deliveryFee,
@@ -5624,10 +5639,12 @@ async function initiateRazorpayPayment(orderData) {
             status: 'pending',
             paymentStatus: 'pending',
             paymentMethod: 'razorpay',
+            customerNotes: orderData.customerNotes || '',
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp() // Add this
-        });
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
         
+        const orderDoc = await db.collection('orders').add(firebaseOrderData);
         console.log('Firebase order created with ID:', orderDoc.id);
         
         // Configure Razorpay options
@@ -5643,14 +5660,14 @@ async function initiateRazorpayPayment(orderData) {
                 handleRazorpaySuccess(response, orderDoc.id, orderData);
             },
             prefill: {
-                name: orderData.customer.firstName + ' ' + (orderData.customer.lastName || ''),
-                email: orderData.customer.email || '',
-                contact: orderData.customer.phone
+                name: orderData.customerInfo.firstName + ' ' + (orderData.customerInfo.lastName || ''),
+                email: orderData.customerInfo.email || '',
+                contact: orderData.customerInfo.phone
             },
             notes: {
                 order_id: orderDoc.id,
-                customer_name: orderData.customer.firstName,
-                delivery_area: orderData.customer.area
+                customer_name: orderData.customerInfo.firstName,
+                delivery_area: orderData.customerInfo.area
             },
             theme: {
                 color: '#4a7c59'
@@ -6642,34 +6659,36 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     // Validate required fields
     const requiredFields = ['firstName', 'phone', 'address', 'area', 'pincode'];
     for (let field of requiredFields) {
-        const fieldValue = document.getElementById(field).value.trim();
+        const element = document.getElementById(field);
+        const fieldValue = element ? element.value.trim() : '';
         if (!fieldValue) {
             alert(`Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
             return;
         }
     }
     
-    // Get payment method with null check
+    // Get payment method
     const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
-    console.log('Payment method element:', paymentMethodElement);
-    console.log('Selected payment method:', paymentMethodElement ? paymentMethodElement.value : 'NONE');
-
     if (!paymentMethodElement) {
         alert('Please select a payment method');
         return;
     }
     
     const selectedPaymentMethod = paymentMethodElement.value;
-    console.log('Processing with method:', selectedPaymentMethod);
-
     
-    // Create order data
+    // Create order data with proper null checks
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
     const deliveryFee = subtotal > 200 ? 0 : 30;
     const total = subtotal + deliveryFee;
     const orderNumber = 'LN' + Date.now().toString().substr(-6);
     
-        const orderData = {
+    // Helper function to safely get form values
+    const getFormValue = (id) => {
+        const element = document.getElementById(id);
+        return element ? element.value.trim() : '';
+    };
+    
+    const orderData = {
         orderNumber: orderNumber,
         items: [...cart],
         subtotal: subtotal,
@@ -6677,28 +6696,30 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         total: total,
         paymentMethod: selectedPaymentMethod,
         customerInfo: {
-            firstName: document.getElementById('firstName').value?.trim() || '',
-            lastName: document.getElementById('lastName').value?.trim() || '',
-            phone: document.getElementById('phone').value?.trim() || '',
-            email: document.getElementById('email').value?.trim() || '',
-            address: document.getElementById('address').value?.trim() || '',
-            city: document.getElementById('area').value || '',
-            area: document.getElementById('area').value || '',
-            pincode: document.getElementById('pincode').value?.trim() || '',
-            deliveryTime: document.getElementById('deliveryTime').value || 'morning'
+            firstName: getFormValue('firstName') || 'Customer',
+            lastName: getFormValue('lastName') || '',
+            phone: getFormValue('phone') || '',
+            email: getFormValue('email') || '',
+            address: getFormValue('address') || '',
+            city: getFormValue('area') || '',
+            area: getFormValue('area') || '',
+            pincode: getFormValue('pincode') || '',
+            deliveryTime: getFormValue('deliveryTime') || 'morning'
         },
-        customerNotes: document.getElementById('notes').value?.trim() || '',
+        customerNotes: getFormValue('notes') || ''
     };
+    
+    // Debug log to check data
+    console.log('=== ORDER DATA VALIDATION ===');
+    console.log('CustomerInfo:', orderData.customerInfo);
+    console.log('All fields defined:', Object.values(orderData.customerInfo).every(val => val !== undefined));
+    console.log('============================');
+    
     // Handle payment
     if (selectedPaymentMethod === 'razorpay') {
-        console.log('Initiating Razorpay payment...');
         await initiateRazorpayPayment(orderData);
     } else if (selectedPaymentMethod === 'cod') {
-        console.log('Processing Cash on Delivery...');
         await handleCashOnDelivery(orderData);
-    }
-     else {
-        console.log('=== UNKNOWN PAYMENT METHOD ===');
     }
 });
 // Similar fix for Cash on Delivery
@@ -6707,7 +6728,7 @@ async function handleCashOnDelivery(orderData) {
         const submitBtn = document.querySelector('.place-order-btn');
         submitBtn.textContent = 'Placing Order...';
         submitBtn.disabled = true;
-        
+
         console.log('=== ORDER DATA DEBUG ===');
         console.log('Full orderData:', JSON.stringify(orderData, null, 2));
         console.log('CustomerInfo:', orderData.customerInfo);
