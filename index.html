@@ -4425,6 +4425,108 @@
     'whiteradish': 0.85
 };
 
+    async function loadProductsFromFirebase() {
+    try {
+        const snapshot = await db.collection('products').get();
+        
+        snapshot.forEach(doc => {
+            const product = doc.data();
+            const productId = doc.id;
+            
+            // Update price in productPrices object
+            if (productPrices[productId]) {
+                productPrices[productId].base = product.basePrice;
+            }
+            
+            // Update the displayed price
+            if (document.getElementById(`${productId}-price`)) {
+                updatePrice(productId);
+            }
+            
+            // Handle availability
+            const addToCartBtn = document.querySelector(`button[onclick*="addToCart('${productId}"]`);
+            const productCard = document.getElementById(`${productId}-cart-quantity`)?.closest('.product-card');
+            
+            if (!product.available) {
+                markProductOutOfStock(productId);
+            } else {
+                markProductAvailable(productId);
+            }
+            
+            // Update product image if available
+            if (product.imageUrl) {
+                const productImage = document.querySelector(`img[alt*="${product.name}"]`);
+                if (productImage) {
+                    productImage.src = product.imageUrl;
+                    productImage.onerror = null; // Remove error handler since we have real image
+                }
+            }
+        });
+        
+        console.log('Products loaded from Firebase successfully');
+        
+    } catch (error) {
+        console.error('Error loading products from Firebase:', error);
+    }
+}
+
+// Helper functions
+function markProductOutOfStock(productId) {
+    const addToCartBtn = document.querySelector(`button[onclick*="addToCart('${productId}"]`);
+    const productCard = document.getElementById(`${productId}-cart-quantity`)?.closest('.product-card');
+    
+    if (addToCartBtn) {
+        addToCartBtn.disabled = true;
+        addToCartBtn.textContent = 'Out of Stock';
+        addToCartBtn.style.background = '#ff6b6b';
+        addToCartBtn.style.cursor = 'not-allowed';
+    }
+    
+    if (productCard) {
+        productCard.style.opacity = '0.6';
+        productCard.style.position = 'relative';
+        
+        if (!productCard.querySelector('.out-of-stock-overlay')) {
+            const overlay = document.createElement('div');
+            overlay.className = 'out-of-stock-overlay';
+            overlay.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #ff6b6b;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 15px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                z-index: 10;
+            `;
+            overlay.textContent = 'OUT OF STOCK';
+            productCard.appendChild(overlay);
+        }
+    }
+}
+
+function markProductAvailable(productId) {
+    const addToCartBtn = document.querySelector(`button[onclick*="addToCart('${productId}"]`);
+    const productCard = document.getElementById(`${productId}-cart-quantity`)?.closest('.product-card');
+    
+    if (addToCartBtn) {
+        addToCartBtn.disabled = false;
+        addToCartBtn.textContent = 'Add to Cart';
+        addToCartBtn.style.background = '';
+        addToCartBtn.style.cursor = '';
+    }
+    
+    if (productCard) {
+        productCard.style.opacity = '1';
+        const overlay = productCard.querySelector('.out-of-stock-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
+}
+
     // Update product price based on quantity and type
     function updatePrice(productId) {
     const quantity = parseInt(document.getElementById(`${productId}-cart-quantity`).value);
@@ -5929,12 +6031,20 @@ window.addEventListener('beforeunload', function() {
 });
 
     // Initialize prices and nutrition calculators on page load
+    
+// REPLACE all existing DOMContentLoaded with this single one:
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize product prices
-        Object.keys(productPrices).forEach(productId => {
-            if (document.getElementById(`${productId}-price`)) {
-                updatePrice(productId);
-            }
+        // Load cart from storage
+        loadCartFromStorage();
+        
+        // Load products from Firebase and initialize prices
+        loadProductsFromFirebase().then(() => {
+            // Initialize product prices (will use Firebase data if available)
+            Object.keys(productPrices).forEach(productId => {
+                if (document.getElementById(`${productId}-price`)) {
+                    updatePrice(productId);
+                }
+            });
         });
         
         // Initialize nutrition calculators
@@ -5948,13 +6058,22 @@ window.addEventListener('beforeunload', function() {
         // Initialize blend price
         updateBlendPrice();
         updateCartUI();
- 
+        
         // Fix resend button
-         const resendBtn = document.querySelector('#otpStep .resend-btn');
-            if (resendBtn) {
-                resendBtn.onclick = resendOTP;
-            }
-    
+        const resendBtn = document.querySelector('#otpStep .resend-btn');
+        if (resendBtn) {
+            resendBtn.onclick = resendOTP;
+        }
+        
+        // Setup reCAPTCHA when login modal is opened
+        const originalOpenLogin = openLoginModal;
+        window.openLoginModal = function() {
+            originalOpenLogin();
+            setTimeout(setupRecaptcha, 100);
+        };
+        
+        // Set up periodic refresh every 5 minutes
+        setInterval(loadProductsFromFirebase, 5 * 60 * 1000);
     });
 
     // WhatsApp contact function (bonus feature)
@@ -6832,4 +6951,5 @@ document.addEventListener('keydown', function(e) {
     </script>
 </body>
 </html>
+
 
