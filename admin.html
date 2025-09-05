@@ -251,6 +251,7 @@
         .control-group {
             display: flex;
             flex-direction: column;
+            gap: 0.5rem;
         }
 
         .control-group label {
@@ -275,11 +276,16 @@
             border-color: #4a7c59;
         }
 
-        .status-toggle {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
+       .status-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 0.5rem 0;
+            border: 2px solid #ddd;
         }
 
         .toggle-switch {
@@ -292,24 +298,26 @@
             transition: background 0.3s ease;
         }
 
-        .toggle-switch.active {
-            background: #4a7c59;
-        }
+        .status-toggle.active {
+                background: #4a7c59;
+                border-color: #4a7c59;
+            }
 
         .toggle-slider {
             position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 21px;
-            height: 21px;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
             background: white;
             border-radius: 50%;
             transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        .toggle-switch.active .toggle-slider {
-            transform: translateX(25px);
-        }
+        .status-toggle.active .toggle-slider {
+                transform: translateX(28px);
+            }
 
         .save-btn {
             background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
@@ -820,12 +828,12 @@
                             <input type="number" id="price-${id}" value="${product.basePrice}" onchange="updateProduct('${id}', 'basePrice', parseInt(this.value))">
                         </div>
                         
-                        <div class="control-group">
+                         <div class="control-group">
                             <label>Status</label>
-                            <div class="status-toggle ${product.available ? 'active' : ''}" onclick="toggleAvailability('${id}')">
+                            <div class="status-toggle ${product.available ? 'active' : ''}" onclick="toggleAvailability('${id}')" id="toggle-${id}">
                                 <div class="toggle-slider"></div>
                             </div>
-                            <small style="color: #666; margin-top: 0.5rem;">
+                            <small style="color: #666; margin-top: 0.5rem;" id="status-text-${id}">
                                 ${product.available ? 'Available' : 'Out of Stock'}
                             </small>
                         </div>
