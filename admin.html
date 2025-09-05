@@ -1,1 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Leaf Nest</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        /* Header */
+        .admin-header {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .admin-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        }
+
+        .login-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            color: #2c5530;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2c5530;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e8f5e8;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4a7c59;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 124, 89, 0.3);
+        }
+
+        /* Main Admin Panel */
+        .admin-container {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #2c5530;
+            background: #f8fffe;
+            border-bottom-color: #4a7c59;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(248, 255, 254, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-admin-card {
+            background: #f8fffe;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid #e8f5e8;
+            transition: all 0.3s ease;
+        }
+
+        .product-admin-card:hover {
+            border-color: #a8e6a3;
+            transform: translateY(-5px);
+        }
+
+        .product-image-upload {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #4a7c59;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image-upload:hover {
+            border-color: #2c5530;
+            background: rgba(74, 124, 89, 0.05);
+        }
+
+        .product-image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .upload-placeholder {
+            text-align: center;
+            color: #4a7c59;
+            font-weight: 500;
+        }
+
+        .product-controls {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            color: #2c5530;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .control-group input,
+        .control-group select {
+            padding: 8px 12px;
+            border: 2px solid #e8f5e8;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .control-group input:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: #4a7c59;
+        }
+
+        .status-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: #ccc;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #4a7c59;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(25px);
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(74, 124, 89, 0.3);
+        }
+
+        /* Orders Section */
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .order-admin-card {
+            background: #f8fffe;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 4px solid #4a7c59;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .order-number {
+            font-weight: 700;
+            color: #2c5530;
+            font-size: 1.1rem;
+        }
+
+        .order-status-select {
+            padding: 5px 10px;
+            border: 2px solid #e8f5e8;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .order-items {
+            grid-column: 1 / -1;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        /* Settings Section */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .settings-card {
+            background: #f8fffe;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid #e8f5e8;
+        }
+
+        .settings-card h3 {
+            color: #2c5530;
+            margin-bottom: 1rem;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .admin-header {
+                padding: 1rem;
+            }
+
+            .admin-header h1 {
+                font-size: 1.2rem;
+            }
+
+            .logout-btn {
+                position: static;
+                transform: none;
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .admin-container {
+                padding: 1rem;
+            }
+
+            .admin-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                text-align: center;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .control-row {
+                grid-template-columns: 1fr;
+            }
+
+            .order-details {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .login-card {
+                margin: 1rem;
+                padding: 2rem;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #4a7c59;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #d4edd6;
+            color: #2c5530;
+            border: 1px solid #a8e6a3;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* File Input Styling */
+        .file-input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <h2>🛡️ Admin Login</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminEmail">Email</label>
+                    <input type="email" id="adminEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            <div id="loginMessage"></div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-container" id="adminPanel">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1>🌱 Leaf Nest Admin Panel</h1>
+            <button class="logout-btn" onclick="adminLogout()">Logout</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="showTab('products')">Products</button>
+            <button class="tab-btn" onclick="showTab('orders')">Orders</button>
+            <button class="tab-btn" onclick="showTab('settings')">Settings</button>
+        </div>
+
+        <!-- Products Tab -->
+        <div class="tab-content active" id="productsTab">
+            <h2 style="color: #2c5530; margin-bottom: 1rem;">Product Management</h2>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div class="tab-content" id="ordersTab">
+            <h2 style="color: #2c5530; margin-bottom: 1rem;">Order Management</h2>
+            <div class="orders-list" id="ordersList">
+                <!-- Orders will be loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="tab-content" id="settingsTab">
+            <h2 style="color: #2c5530; margin-bottom: 1rem;">Settings</h2>
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3>Delivery Settings</h3>
+                    <div class="form-group">
+                        <label>Minimum Order for Free Delivery</label>
+                        <input type="number" id="freeDeliveryMin" value="200">
+                    </div>
+                    <div class="form-group">
+                        <label>Delivery Fee</label>
+                        <input type="number" id="deliveryFee" value="30">
+                    </div>
+                    <button class="save-btn" onclick="saveDeliverySettings()">Save</button>
+                </div>
+                
+                <div class="settings-card">
+                    <h3>Business Settings</h3>
+                    <div class="form-group">
+                        <label>Business Hours</label>
+                        <input type="text" id="businessHours" value="8 AM - 8 PM">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="text" id="contactNumber" value="+919618571131">
+                    </div>
+                    <button class="save-btn" onclick="saveBusinessSettings()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0ZIqieV-Xwiw3wx0CrttO_-226N8ah5Y",
+            authDomain: "leaf-nest.firebaseapp.com",
+            projectId: "leaf-nest",
+            storageBucket: "leaf-nest.firebasestorage.app",
+            messagingSenderId: "1002779883702",
+            appId: "1:1002779883702:web:9e1c66f46697afe6af8e17",
+            measurementId: "G-JH4R6BG3ML"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // Product data structure
+        const defaultProducts = {
+            'alfalfa': {
+                name: 'Alfalfa Microgreens',
+                basePrice: 75,
+                available: true,
+                description: 'Mild, nutty flavor with tender leaves. Rich in protein and essential vitamins.',
+                icon: '🌱'
+            },
+            'beetroot': {
+                name: 'Beetroot Microgreens',
+                basePrice: 90,
+                available: true,
+                description: 'Earthy, sweet flavor with vibrant purple stems. Packed with antioxidants.',
+                icon: '🟣'
+            },
+            'cauliflower': {
+                name: 'Cauliflower Microgreens',
+                basePrice: 85,
+                available: true,
+                description: 'Mild cabbage-like flavor with crisp texture. Excellent source of sulforaphane.',
+                icon: '🥦'
+            },
+            'chia': {
+                name: 'Chia Microgreens',
+                basePrice: 120,
+                available: true,
+                description: 'Delicate, mild flavor with incredible nutritional density. Rich in omega-3.',
+                icon: '🌿'
+            },
+            'flax': {
+                name: 'Flax Microgreens',
+                basePrice: 110,
+                available: true,
+                description: 'Nutty, slightly bitter flavor. Exceptional source of lignans and ALA.',
+                icon: '🌾'
+            },
+            'mustard': {
+                name: 'Mustard Microgreens',
+                basePrice: 80,
+                available: true,
+                description: 'Spicy, peppery kick with bold flavor. High in vitamins A, C, and K.',
+                icon: '🌶️'
+            },
+            'pinkradish': {
+                name: 'Pink Radish Microgreens',
+                basePrice: 95,
+                available: true,
+                description: 'Beautiful pink stems with spicy radish flavor. Perfect for garnishing.',
+                icon: '🌸'
+            },
+            'sunflower': {
+                name: 'Sunflower Microgreens',
+                basePrice: 70,
+                available: true,
+                description: 'Nutty flavor with satisfying crunch. Packed with healthy fats and vitamin E.',
+                icon: '🌻'
+            },
+            'whiteradish': {
+                name: 'White Radish Microgreens',
+                basePrice: 85,
+                available: true,
+                description: 'Clean, crisp flavor with mild spiciness. Classic radish taste.',
+                icon: '⚪'
+            }
+        };
+
+        let currentProducts = { ...defaultProducts };
+
+        // Admin Authentication
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                
+                // Check if user is admin (you can customize this check)
+                if (email === 'admin@leaf-nest.com' || email === 'ruparakesh@gmail.com') {
+                    showAdminPanel();
+                } else {
+                    throw new Error('Unauthorized access');
+                }
+                
+            } catch (error) {
+                showMessage('Invalid credentials or unauthorized access', 'error');
+            }
+        });
+
+        function showAdminPanel() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadProducts();
+            loadOrders();
+        }
+
+        function adminLogout() {
+            auth.signOut();
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // Tab Management
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Product Management
+        async function loadProducts() {
+            try {
+                const snapshot = await db.collection('products').get();
+                const products = {};
+                
+                snapshot.forEach(doc => {
+                    products[doc.id] = doc.data();
+                });
+                
+                // If no products in Firebase, use defaults
+                if (Object.keys(products).length === 0) {
+                    currentProducts = { ...defaultProducts };
+                    await saveAllProducts();
+                } else {
+                    currentProducts = products;
+                }
+                
+                renderProducts();
+                
+            } catch (error) {
+                console.error('Error loading products:', error);
+                currentProducts = { ...defaultProducts };
+                renderProducts();
+            }
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            Object.entries(currentProducts).forEach(([id, product]) => {
+                const card = createProductCard(id, product);
+                grid.appendChild(card);
+            });
+        }
+
+        function createProductCard(id, product) {
+            const card = document.createElement('div');
+            card.className = 'product-admin-card';
+            
+            card.innerHTML = `
+                <div class="product-image-upload" onclick="selectImage('${id}')">
+                    ${product.imageUrl ? 
+                        `<img src="${product.imageUrl}" class="product-image-preview" alt="${product.name}">` :
+                        `<div class="upload-placeholder">
+                            <div class="upload-icon">${product.icon}</div>
+                            <div>Click to upload image</div>
+                        </div>`
+                    }
+                    <input type="file" id="file-${id}" class="file-input" accept="image/*" onchange="uploadImage('${id}', this)">
+                </div>
+                
+                <div class="product-controls">
+                    <div class="control-group">
+                        <label>Product Name</label>
+                        <input type="text" id="name-${id}" value="${product.name}" onchange="updateProduct('${id}', 'name', this.value)">
+                    </div>
+                    
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label>Base Price (₹)</label>
+                            <input type="number" id="price-${id}" value="${product.basePrice}" onchange="updateProduct('${id}', 'basePrice', parseInt(this.value))">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Status</label>
+                            <div class="status-toggle ${product.available ? 'active' : ''}" onclick="toggleAvailability('${id}')">
+                                <div class="toggle-slider"></div>
+                            </div>
+                            <small style="color: #666; margin-top: 0.5rem;">
+                                ${product.available ? 'Available' : 'Out of Stock'}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Description</label>
+                        <textarea style="min-height: 60px; resize: vertical;" id="desc-${id}" onchange="updateProduct('${id}', 'description', this.value)">${product.description}</textarea>
+                    </div>
+                    
+                    <button class="save-btn" onclick="saveProduct('${id}')">Save Changes</button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function selectImage(productId) {
+            document.getElementById(`file-${productId}`).click();
+        }
+
+        async function uploadImage(productId, input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            try {
+                const storageRef = storage.ref(`products/${productId}/${file.name}`);
+                const snapshot = await storageRef.put(file);
+                const downloadURL = await snapshot.ref.getDownloadURL();
+                
+                currentProducts[productId].imageUrl = downloadURL;
+                renderProducts();
+                showMessage('Image uploaded successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                showMessage('Failed to upload image', 'error');
+            }
+        }
+
+        function updateProduct(productId, field, value) {
+            currentProducts[productId][field] = value;
+        }
+
+        function toggleAvailability(productId) {
+            currentProducts[productId].available = !currentProducts[productId].available;
+            renderProducts();
+        }
+
+        async function saveProduct(productId) {
+            try {
+                await db.collection('products').doc(productId).set(currentProducts[productId]);
+                showMessage(`${currentProducts[productId].name} saved successfully!`, 'success');
+            } catch (error) {
+                console.error('Error saving product:', error);
+                showMessage('Failed to save product', 'error');
+            }
+        }
+
+        async function saveAllProducts() {
+            const batch = db.batch();
+            
+            Object.entries(currentProducts).forEach(([id, product]) => {
+                const ref = db.collection('products').doc(id);
+                batch.set(ref, product);
+            });
+            
+            try {
+                await batch.commit();
+                showMessage('All products saved successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving products:', error);
+                showMessage('Failed to save products', 'error');
+            }
+        }
+
+        // Order Management
+        async function loadOrders() {
+            try {
+                const snapshot = await db.collection('orders')
+                    .orderBy('createdAt', 'desc')
+                    .limit(50)
+                    .get();
+                
+                const orders = [];
+                snapshot.forEach(doc => {
+                    orders.push({ id: doc.id, ...doc.data() });
+                });
+                
+                renderOrders(orders);
+                
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('ordersList').innerHTML = '<p>Failed to load orders</p>';
+            }
+        }
+
+        function renderOrders(orders) {
+            const list = document.getElementById('ordersList');
+            
+            if (orders.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666;">No orders found</p>';
+                return;
+            }
+            
+            list.innerHTML = orders.map(order => `
+                <div class="order-admin-card">
+                    <div class="order-header">
+                        <div class="order-number">Order #${order.orderNumber}</div>
+                        <select class="order-status-select" onchange="updateOrderStatus('${order.id}', this.value)">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                            <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
+                            <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Ready</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div>
+                            <strong>Customer:</strong> ${order.customerInfo?.firstName || 'N/A'} ${order.customerInfo?.lastName || ''}
+                        </div>
+                        <div>
+                            <strong>Phone:</strong> ${order.customerInfo?.phone || 'N/A'}
+                        </div>
+                        <div>
+                            <strong>Total:</strong> ₹${order.total || 0}
+                        </div>
+                        <div>
+                            <strong>Payment:</strong> ${order.paymentStatus || 'pending'}
+                        </div>
+                    </div>
+                    
+                    <div class="order-items">
+                        <strong>Items:</strong>
+                        ${order.items ? order.items.map(item => `${item.name} (${item.quantity}g)`).join(', ') : 'No items'}
+                    </div>
+                    
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e8f5e8;">
+                        <strong>Address:</strong> ${order.customerInfo?.address || 'N/A'}, ${order.customerInfo?.area || ''}, ${order.customerInfo?.pincode || ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                await db.collection('orders').doc(orderId).update({
+                    status: newStatus,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showMessage(`Order status updated to ${newStatus}`, 'success');
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                showMessage('Failed to update order status', 'error');
+            }
+        }
+
+        // Settings Management
+        async function saveDeliverySettings() {
+            const freeDeliveryMin = document.getElementById('freeDeliveryMin').value;
+            const deliveryFee = document.getElementById('deliveryFee').value;
+            
+            try {
+                await db.collection('settings').doc('delivery').set({
+                    freeDeliveryMin: parseInt(freeDeliveryMin),
+                    deliveryFee: parseInt(deliveryFee),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showMessage('Delivery settings saved successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving delivery settings:', error);
+                showMessage('Failed to save delivery settings', 'error');
+            }
+        }
+
+        async function saveBusinessSettings() {
+            const businessHours = document.getElementById('businessHours').value;
+            const contactNumber = document.getElementById('contactNumber').value;
+            
+            try {
+                await db.collection('settings').doc('business').set({
+                    businessHours: businessHours,
+                    contactNumber: contactNumber,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showMessage('Business settings saved successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving business settings:', error);
+                showMessage('Failed to save business settings', 'error');
+            }
+        }
+
+        // Utility Functions
+        function showMessage(text, type = 'info') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            
+            // Find the active tab and prepend the message
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab) {
+                activeTab.insertBefore(messageDiv, activeTab.firstChild);
+                
+                // Remove message after 5 seconds
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.parentNode.removeChild(messageDiv);
+                    }
+                }, 5000);
+            }
+            
+            // Also show in login form if that's where we are
+            const loginMessage = document.getElementById('loginMessage');
+            if (loginMessage && type === 'error') {
+                loginMessage.innerHTML = `<div class="message ${type}">${text}</div>`;
+                setTimeout(() => {
+                    loginMessage.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already authenticated
+            auth.onAuthStateChanged(user => {
+                if (user && (user.email === 'admin@leaf-nest.com' || user.email === 'ruparakesh@gmail.com')) {
+                    showAdminPanel();
+                } else {
+                    document.getElementById('loginScreen').style.display = 'flex';
+                }
+            });
+        });
+
+        // Auto-refresh orders every 30 seconds
+        setInterval(() => {
+            const ordersTab = document.getElementById('ordersTab');
+            if (ordersTab.classList.contains('active')) {
+                loadOrders();
+            }
+        }, 30000);
+
+    </script>
+</body>
+</html>
