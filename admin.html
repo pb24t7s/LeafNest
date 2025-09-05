@@ -682,54 +682,21 @@
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const email = document.getElementById('adminEmail').value.trim();
-            const password = document.getElementById('adminPassword').value.trim();
-            
-            if (!email || !password) {
-                showMessage('Please enter both email and password', 'error');
-                return;
-            }
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
             
             try {
-                console.log('Attempting login with email:', email);
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                console.log('Firebase auth successful for:', userCredential.user.email);
                 
-                // Check if user is admin
-                const userEmail = userCredential.user.email;
-                if (userEmail === 'admin@leaf-nest.com' || 
-                    userEmail === 'ruparakesh@gmail.com' || 
-                    userEmail === 'leafnest.microgreens@gmail.com') {
-                    console.log('Admin access granted for:', userEmail);
+                // Check if user is admin (you can customize this check)
+                if (email === 'admin@leaf-nest.com' || email === 'ruparakesh@gmail.com') {
                     showAdminPanel();
                 } else {
-                    console.log('Unauthorized access attempt by:', userEmail);
-                    await auth.signOut();
-                    throw new Error('Unauthorized access - not an admin user');
+                    throw new Error('Unauthorized access');
                 }
                 
             } catch (error) {
-                console.error('Login error:', error);
-                let errorMessage = 'Login failed: ';
-                
-                switch(error.code) {
-                    case 'auth/user-not-found':
-                        errorMessage += 'No user found with this email address';
-                        break;
-                    case 'auth/wrong-password':
-                        errorMessage += 'Incorrect password';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage += 'Invalid email address format';
-                        break;
-                    case 'auth/too-many-requests':
-                        errorMessage += 'Too many failed attempts. Try again later';
-                        break;
-                    default:
-                        errorMessage += error.message;
-                }
-                
-                showMessage(errorMessage, 'error');
+                showMessage('Invalid credentials or unauthorized access', 'error');
             }
         });
 
@@ -1053,7 +1020,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is already authenticated
             auth.onAuthStateChanged(user => {
-                if (user && (user.email === 'admin@leaf-nest.com' || user.email === 'ruparakesh@gmail.com')) {
+                if (email === 'leafnest.microgreens@gmail.com') {
                     showAdminPanel();
                 } else {
                     document.getElementById('loginScreen').style.display = 'flex';
