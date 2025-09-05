@@ -1020,7 +1020,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is already authenticated
             auth.onAuthStateChanged(user => {
-                if (user && (user.email === 'admin@leaf-nest.com' || user.email === 'ruparakesh@gmail.com')) {
+                if (email === 'admin@leaf-nest.com' || email === 'ruparakesh@gmail.com' || email === 'leafnest.microgreens@gmail.com') {
                     showAdminPanel();
                 } else {
                     document.getElementById('loginScreen').style.display = 'flex';
