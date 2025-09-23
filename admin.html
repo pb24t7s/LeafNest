@@ -831,11 +831,11 @@
                     
                     <div class="control-row">
                         <div class="control-group">
-                            <label>Base Price (₹)</label>
+                            <label>Base Price per 100g (₹)</label>
                             <input type="number" id="price-${id}" value="${product.basePrice}" onchange="updateProduct('${id}', 'basePrice', parseInt(this.value))">
                         </div>
                         
-                         <div class="control-group">
+                        <div class="control-group">
                             <label>Status</label>
                             <div class="status-toggle ${product.available ? 'active' : ''}" onclick="toggleAvailability('${id}')" id="toggle-${id}">
                                 <div class="toggle-slider"></div>
