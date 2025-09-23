@@ -12,6 +12,9 @@
 
     <!-- Razorpay SDK -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7WZvBF2ED2612bIHS0t8lKYEMmfoJzPM&libraries=geometry"></script>
 
 <style>
     * {
@@ -5920,6 +5923,77 @@ async function loadUserDataFromFirebase() {
 
 // Save address to Firebase
 // Update saveAddressToFirebase function
+
+async function saveAddress(event) {
+    event.preventDefault();
+    
+    if (!currentUser || !currentUser.uid) {
+        alert('Please login to save addresses');
+        return;
+    }
+    
+    const formData = {
+        label: document.getElementById('addressLabel').value,
+        name: document.getElementById('addressName').value.trim(),
+        phone: document.getElementById('addressPhone').value.trim(),
+        fullAddress: document.getElementById('addressFull').value.trim(),
+        area: document.getElementById('addressArea').value,
+        pincode: document.getElementById('addressPincode').value.trim(),
+        isDefault: document.getElementById('setDefaultAddress').checked
+    };
+    
+    // Validation
+    if (!formData.name || !formData.phone || !formData.fullAddress || !formData.area || !formData.pincode) {
+        alert('Please fill all required fields');
+        return;
+    }
+    
+    if (!/^\d{10}$/.test(formData.phone)) {
+        alert('Please enter a valid 10-digit phone number');
+        return;
+    }
+    
+    if (!/^\d{6}$/.test(formData.pincode)) {
+        alert('Please enter a valid 6-digit pincode');
+        return;
+    }
+    
+    try {
+        // Show loading state
+        const saveBtn = document.querySelector('.address-content .save-btn');
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = 'Saving...';
+        saveBtn.disabled = true;
+        
+        // Get coordinates for the address
+        const coordinates = await geocodeAddress(formData.fullAddress, formData.area, formData.pincode);
+        if (coordinates) {
+            formData.latitude = coordinates.lat;
+            formData.longitude = coordinates.lng;
+        }
+        
+        // Save to Firebase
+        await saveAddressToFirebase(formData);
+        
+        // Reload addresses from Firebase
+        await loadUserDataFromFirebase();
+        loadAddresses();
+        closeAddressModal();
+        
+        alert(editingAddressId ? 'Address updated successfully!' : 'Address added successfully!');
+        
+    } catch (error) {
+        console.error('Error saving address:', error);
+        alert('Failed to save address. Please try again.');
+    } finally {
+        // Reset button state
+        const saveBtn = document.querySelector('.address-content .save-btn');
+        if (saveBtn) {
+            saveBtn.textContent = 'Save Address';
+            saveBtn.disabled = false;
+        }
+    }
+}
 async function saveAddressToFirebase(addressData) {
     if (!currentUser || !currentUser.uid) {
         throw new Error('No authenticated user');
@@ -5934,6 +6008,8 @@ async function saveAddressToFirebase(addressData) {
             area: addressData.area,
             pincode: addressData.pincode.trim(),
             isDefault: addressData.isDefault || false,
+            latitude: addressData.latitude || null,
+            longitude: addressData.longitude || null,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
         
@@ -5954,6 +6030,27 @@ async function saveAddressToFirebase(addressData) {
         console.error('Error saving address:', error);
         throw error;
     }
+}
+async function geocodeAddress(address, area, pincode) {
+    // You'll need to get a Google Maps API key and add it to your HTML head
+    const fullAddress = `${address}, ${area}, ${pincode}, Hyderabad, Telangana, India`;
+    
+    try {
+        const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=YOUR_GOOGLE_MAPS_API_KEY`);
+        const data = await response.json();
+        
+        if (data.status === 'OK' && data.results.length > 0) {
+            const location = data.results[0].geometry.location;
+            return {
+                lat: location.lat,
+                lng: location.lng
+            };
+        }
+    } catch (error) {
+        console.error('Geocoding error:', error);
+    }
+    
+    return null;
 }
 // Add this new function for saving orders
 async function saveOrderToFirebase(orderData) {
@@ -6829,65 +6926,107 @@ function setDefaultAddress(addressId) {
 
 // Load and display addresses
 function loadAddresses() {
-   const addressesList = document.getElementById('addressesList');
-   
-   if (userAddresses.length === 0) {
-       addressesList.innerHTML = `
-           <div class="empty-state">
-               <div style="font-size: 3rem; margin-bottom: 1rem;">📍</div>
-               <p>No saved addresses yet</p>
-               <small>Add an address to make checkout faster</small>
-           </div>
-       `;
-       return;
-   }
-   
-   const getAreaName = (areaValue) => {
-       const areaMap = {
-           'banjara-hills': 'Banjara Hills',
-           'jubilee-hills': 'Jubilee Hills',
-           'gachibowli': 'Gachibowli',
-           'hitech-city': 'Hitech City',
-           'kondapur': 'Kondapur',
-           'madhapur': 'Madhapur',
-           'begumpet': 'Begumpet',
-           'secunderabad': 'Secunderabad',
-           'ameerpet': 'Ameerpet',
-           'kukatpally': 'Kukatpally',
-           'miyapur': 'Miyapur',
-           'uppal': 'Uppal',
-           'dilsukhnagar': 'Dilsukhnagar',
-           'lb-nagar': 'LB Nagar',
-           'other': 'Other'
-       };
-       return areaMap[areaValue] || areaValue;
-   };
-   
-   const getLabelIcon = (label) => {
-       const icons = { home: '🏠', work: '🏢', other: '📍' };
-       return icons[label] || '📍';
-   };
-   
-   addressesList.innerHTML = userAddresses.map(address => `
-       <div class="address-card ${address.isDefault ? 'default' : ''}">
-           <div class="address-label">
-               ${getLabelIcon(address.label)} ${address.label.charAt(0).toUpperCase() + address.label.slice(1)}
-           </div>
-           <div class="address-details">
-               <div class="address-name">${address.name}</div>
-               <div class="address-phone">📞 ${address.phone}</div>
-               <div>${address.fullAddress}</div>
-               <div>${getAreaName(address.area)}, ${address.pincode}</div>
-           </div>
-           <div class="address-actions">
-               <button class="edit-address" onclick="editAddress('${address.id}')">✏️ Edit</button>
-               <button class="delete-address" onclick="deleteAddress('${address.id}')">🗑️ Delete</button>
-               ${!address.isDefault ? `<button class="set-default" onclick="setDefaultAddress('${address.id}')">⭐ Set Default</button>` : ''}
-           </div>
-       </div>
-   `).join('');
+    const addressesList = document.getElementById('addressesList');
+    
+    if (userAddresses.length === 0) {
+        addressesList.innerHTML = `
+            <div class="empty-state">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📍</div>
+                <p>No saved addresses yet</p>
+                <small>Add an address to make checkout faster</small>
+            </div>
+        `;
+        return;
+    }
+    
+    const getAreaName = (areaValue) => {
+        const areaMap = {
+            'banjara-hills': 'Banjara Hills',
+            'jubilee-hills': 'Jubilee Hills',
+            'gachibowli': 'Gachibowli',
+            'hitech-city': 'Hitech City',
+            'kondapur': 'Kondapur',
+            'madhapur': 'Madhapur',
+            'begumpet': 'Begumpet',
+            'secunderabad': 'Secunderabad',
+            'ameerpet': 'Ameerpet',
+            'kukatpally': 'Kukatpally',
+            'miyapur': 'Miyapur',
+            'uppal': 'Uppal',
+            'dilsukhnagar': 'Dilsukhnagar',
+            'lb-nagar': 'LB Nagar',
+            'other': 'Other'
+        };
+        return areaMap[areaValue] || areaValue;
+    };
+    
+    const getLabelIcon = (label) => {
+        const icons = { home: '🏠', work: '🏢', other: '📍' };
+        return icons[label] || '📍';
+    };
+    
+    addressesList.innerHTML = userAddresses.map(address => `
+        <div class="address-card ${address.isDefault ? 'default' : ''}">
+            <div class="address-label">
+                ${getLabelIcon(address.label)} ${address.label.charAt(0).toUpperCase() + address.label.slice(1)}
+            </div>
+            <div class="address-details">
+                <div class="address-name">${address.name}</div>
+                <div class="address-phone">📞 ${address.phone}</div>
+                <div>${address.fullAddress}</div>
+                <div>${getAreaName(address.area)}, ${address.pincode}</div>
+                ${address.latitude && address.longitude ? 
+                    `<div class="address-map" id="map-${address.id}" style="width: 100%; height: 200px; margin: 10px 0; border-radius: 10px;"></div>
+                     <button onclick="showOnMap(${address.latitude}, ${address.longitude})" style="background: #4285f4; color: white; border: none; padding: 5px 10px; border-radius: 5px; margin: 5px 0; cursor: pointer;">📍 View on Google Maps</button>` 
+                    : ''}
+            </div>
+            <div class="address-actions">
+                <button class="edit-address" onclick="editAddress('${address.id}')">✏️ Edit</button>
+                <button class="delete-address" onclick="deleteAddress('${address.id}')">🗑️ Delete</button>
+                ${!address.isDefault ? `<button class="set-default" onclick="setDefaultAddress('${address.id}')">⭐ Set Default</button>` : ''}
+            </div>
+        </div>
+    `).join('');
+    
+    // Initialize maps for addresses with coordinates
+    setTimeout(() => {
+        userAddresses.forEach(address => {
+            if (address.latitude && address.longitude) {
+                initializeAddressMap(address.id, address.latitude, address.longitude);
+            }
+        });
+    }, 100);
+}
+function initializeAddressMap(addressId, lat, lng) {
+    const mapElement = document.getElementById(`map-${addressId}`);
+    if (!mapElement) return;
+    
+    const map = new google.maps.Map(mapElement, {
+        center: { lat: lat, lng: lng },
+        zoom: 15,
+        styles: [
+            {
+                featureType: 'poi',
+                elementType: 'labels',
+                stylers: [{ visibility: 'off' }]
+            }
+        ]
+    });
+    
+    new google.maps.Marker({
+        position: { lat: lat, lng: lng },
+        map: map,
+        title: 'Delivery Address',
+        icon: {
+            url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+        }
+    });
 }
 
+function showOnMap(lat, lng) {
+    const url = `https://www.google.com/maps?q=${lat},${lng}`;
+    window.open(url, '_blank');
+}
 // Load and display orders
 function loadOrders() {
    const ordersList = document.getElementById('ordersList');
