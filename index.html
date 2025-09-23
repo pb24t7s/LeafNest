@@ -1096,6 +1096,11 @@
         border-radius: 20px;
         text-align: center;
     }
+    .blend-results .quantity-display,
+    .blend-results .quantity-number,
+    .blend-results .quantity-unit {
+        color: white !important;
+    }
     .results-title {
         font-size: 1.5rem;
         font-weight: 700;
@@ -4154,33 +4159,36 @@
                                 <input type="range" min="0" max="100" value="0" class="slider-input" id="whiteradish-range" oninput="updatePercentage('whiteradish')">
                             </div>
                         </div>
-                    </div>
-                    <div class="microgreen-control" id="greengram-control">
-                        <div class="microgreen-checkbox">
-                            <input type="checkbox" id="greengram-check" onchange="toggleMicrogreen('greengram')">
-                            <label for="greengram-check">🟢 GreenGram</label>
-                        </div>
-                        <div class="percentage-slider" id="greengram-slider">
-                            <div class="slider-label">
-                                <span>Percentage:</span>
-                                <span id="greengram-percent">0%</span>
+                    
+                        <div class="microgreen-control" id="greengram-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="greengram-check" onchange="toggleMicrogreen('greengram')">
+                                <label for="greengram-check">🟢 GreenGram</label>
                             </div>
-                            <input type="range" min="0" max="100" value="0" class="slider-input" id="greengram-range" oninput="updatePercentage('greengram')">
+                            <div class="percentage-slider" id="greengram-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="greengram-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="greengram-range" oninput="updatePercentage('greengram')">
+                            </div>
                         </div>
-                    </div>
+                  </div>
                     
                     <div class="blend-results">
                         <h3 class="results-title">Your Custom Blend</h3>
                         
-                        <div class="quantity-selector">
-                            <label>Quantity: </label>
-                            <select id="blend-quantity" onchange="updateBlendPrice()">
-                                <option value="1" selected>100g (1x)</option>
-                                <option value="2">200g (2x)</option>
-                                <option value="3">300g (3x)</option>
-                                <option value="4">400g (4x)</option>
-                                <option value="5">500g (5x)</option>
-                            </select>
+                        <div class="quantity-selector-container" style="margin-bottom: 1.5rem;">
+                            <label style="color: white; margin-bottom: 0.5rem; display: block;">Quantity: </label>
+                            <div class="quantity-selector" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseBlendQuantity()" style="background: rgba(255,255,255,0.1); color: white;">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="blend-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseBlendQuantity()" style="background: rgba(255,255,255,0.1); color: white;">+</button>
+                            </div>
+                            <input type="hidden" id="blend-quantity" value="1">
                         </div>
                         
                         <div class="blend-summary" id="blend-summary">
@@ -4190,7 +4198,7 @@
                         <div class="price-display" style="margin: 1.5rem 0;">
                             <span class="price-amount" id="blend-price">₹0</span>
                         </div>
-                        
+
                         <button class="create-blend-btn" id="add-blend-btn" onclick="addCustomBlendToCart()" disabled>Add Custom Blend to Cart</button>
                     </div>
                 </div>
@@ -4493,19 +4501,19 @@
 
 };
     // Custom blend pricing
-   const blendPrices = {
-    'alfalfa': 0.75,
-    'beetroot': 0.9,
-    'cauliflower': 0.85,
-    'chia': 1.2,
-    'flax': 1.1,
-    'mustard': 0.8,
-    'pinkradish': 0.95,
-    'sunflower': 0.7,
-    'whiteradish': 0.85,
-    'greengram': 0.85
-
+  const blendPrices = {
+    'alfalfa': 75,        // Same as base price
+    'beetroot': 90,
+    'cauliflower': 85,
+    'chia': 120,
+    'flax': 110,
+    'mustard': 80,
+    'pinkradish': 95,
+    'sunflower': 70,
+    'whiteradish': 85,
+    'greengram': 85
 };
+
 
     async function loadProductsFromFirebase() {
     try {
@@ -4526,9 +4534,6 @@
             }
             
             // Handle availability
-            const addToCartBtn = document.querySelector(`button[onclick*="addToCart('${productId}"]`);
-            const productCard = document.getElementById(`${productId}-cart-quantity`)?.closest('.product-card');
-            
             if (!product.available) {
                 markProductOutOfStock(productId);
             } else {
@@ -4540,10 +4545,13 @@
                 const productImage = document.querySelector(`img[alt*="${product.name}"]`);
                 if (productImage) {
                     productImage.src = product.imageUrl;
-                    productImage.onerror = null; // Remove error handler since we have real image
+                    productImage.onerror = null;
                 }
             }
         });
+        
+        // Update blend pricing after loading all products
+        updateBlendPrice();
         
         console.log('Products loaded from Firebase successfully');
         
@@ -4645,6 +4653,58 @@ function decreaseQuantity(productId) {
         updateCartIfItemExists(productId, currentValue);
     }
 }
+
+function increaseBlendQuantity() {
+    const hiddenInput = document.getElementById('blend-quantity');
+    const displayElement = document.getElementById('blend-quantity-display');
+    
+    let currentValue = parseInt(hiddenInput.value);
+    if (currentValue < 10) {
+        currentValue++;
+        hiddenInput.value = currentValue;
+        displayElement.textContent = currentValue;
+        updateBlendPrice();
+        
+        // Update any existing custom blend in cart
+        updateCustomBlendInCart(currentValue);
+    }
+}
+
+function decreaseBlendQuantity() {
+    const hiddenInput = document.getElementById('blend-quantity');
+    const displayElement = document.getElementById('blend-quantity-display');
+    
+    let currentValue = parseInt(hiddenInput.value);
+    if (currentValue > 1) {
+        currentValue--;
+        hiddenInput.value = currentValue;
+        displayElement.textContent = currentValue;
+        updateBlendPrice();
+        
+        // Update any existing custom blend in cart
+        updateCustomBlendInCart(currentValue);
+    }
+}
+function updateCustomBlendInCart(newMultiplier) {
+    // Find the most recent custom blend in cart
+    const customBlendIndex = cart.findIndex(item => item.productId === 'custom-blend');
+    
+    if (customBlendIndex > -1 && cart[customBlendIndex].blendConfig) {
+        const blendItem = cart[customBlendIndex];
+        const newPrice = recalculateBlendPrice(blendItem.blendConfig, newMultiplier);
+        const newQuantity = newMultiplier * 100;
+        
+        // Update the cart item
+        cart[customBlendIndex] = {
+            ...blendItem,
+            quantity: newQuantity,
+            price: newPrice,
+            multiplier: newMultiplier
+        };
+        
+        updateCartUI();
+    }
+}
 function updateCartIfItemExists(productId, newMultiplier) {
     // Check if this product is already in cart
     const existingItemIndex = cart.findIndex(item => item.productId === productId);
@@ -4724,27 +4784,105 @@ function updateAddToCartButton(productId, isAdded) {
     let activeMicrogreens = [];
 
     function toggleMicrogreen(name) {
-        const isChecked = document.getElementById(`${name}-check`).checked;
-        const sliderDiv = document.getElementById(`${name}-slider`);
-        const controlDiv = document.getElementById(`${name}-control`);
+    const isChecked = document.getElementById(`${name}-check`).checked;
+    const sliderDiv = document.getElementById(`${name}-slider`);
+    const controlDiv = document.getElementById(`${name}-control`);
+    const rangeInput = document.getElementById(`${name}-range`);
+    const percentSpan = document.getElementById(`${name}-percent`);
 
-        if (isChecked) {
-            sliderDiv.classList.add('active');
-            controlDiv.classList.add('active');
+    if (isChecked) {
+        sliderDiv.classList.add('active');
+        controlDiv.classList.add('active');
+        if (!activeMicrogreens.includes(name)) {
             activeMicrogreens.push(name);
-        } else {
-            sliderDiv.classList.remove('active');
-            controlDiv.classList.remove('active');
-            activeMicrogreens = activeMicrogreens.filter(item => item !== name);
-            document.getElementById(`${name}-range`).value = 0;
         }
-        distributePercentages();
+    } else {
+        sliderDiv.classList.remove('active');
+        controlDiv.classList.remove('active');
+        activeMicrogreens = activeMicrogreens.filter(item => item !== name);
+        rangeInput.value = 0;
+        percentSpan.textContent = '0%';
     }
+    
+    distributePercentages();
+}
 
     function updatePercentage(changedName) {
-        distributePercentages(changedName);
+    distributePercentages(changedName);
+    updateBlendPrice();
+    
+    // Update cart if blend exists
+    const customBlendIndex = cart.findIndex(item => item.productId === 'custom-blend');
+    if (customBlendIndex > -1) {
+        // Update the blend configuration in cart
+        const blendConfiguration = {};
+        activeMicrogreens.forEach(name => {
+            const percentage = parseInt(document.getElementById(`${name}-range`).value);
+            if (percentage > 0) {
+                blendConfiguration[name] = percentage;
+            }
+        });
+        
+        const multiplier = parseInt(document.getElementById('blend-quantity').value);
+        const newPrice = recalculateBlendPrice(blendConfiguration, multiplier);
+        
+        // Update blend name
+        let blendName = 'Custom Blend (';
+        let blendDetails = [];
+        Object.entries(blendConfiguration).forEach(([name, percentage]) => {
+            const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+            blendDetails.push(`${percentage}% ${nameCapitalized}`);
+        });
+        blendName += blendDetails.join(', ') + ')';
+        
+        cart[customBlendIndex] = {
+            ...cart[customBlendIndex],
+            name: blendName,
+            price: newPrice,
+            blendConfig: blendConfiguration
+        };
+        
+        updateCartUI();
     }
-
+}
+function initializeCustomBlend() {
+    // Reset all microgreen selections on page load
+    const microgreens = ['alfalfa', 'beetroot', 'cauliflower', 'chia', 'flax', 'mustard', 'pinkradish', 'sunflower', 'whiteradish', 'greengram'];
+    
+    activeMicrogreens = []; // Clear the active microgreens array
+    
+    microgreens.forEach(name => {
+        const checkbox = document.getElementById(`${name}-check`);
+        const slider = document.getElementById(`${name}-slider`);
+        const control = document.getElementById(`${name}-control`);
+        const range = document.getElementById(`${name}-range`);
+        const percent = document.getElementById(`${name}-percent`);
+        
+        if (checkbox && slider && control && range && percent) {
+            // Uncheck checkbox
+            checkbox.checked = false;
+            
+            // Hide slider
+            slider.classList.remove('active');
+            control.classList.remove('active');
+            
+            // Reset range and percentage
+            range.value = 0;
+            percent.textContent = '0%';
+        }
+    });
+    
+    // Reset quantity to 1
+    const quantityInput = document.getElementById('blend-quantity');
+    const quantityDisplay = document.getElementById('blend-quantity-display');
+    if (quantityInput && quantityDisplay) {
+        quantityInput.value = 1;
+        quantityDisplay.textContent = 1;
+    }
+    
+    // Update blend price (should show ₹0)
+    updateBlendPrice();
+}
     function distributePercentages(changedName = null) {
         if (activeMicrogreens.length === 0) {
             updateBlendPrice();
@@ -4797,82 +4935,104 @@ function updateAddToCartButton(productId, isAdded) {
     }
 
     function updateBlendPrice() {
-        const quantity = parseInt(document.getElementById('blend-quantity').value);
-        const summaryDiv = document.getElementById('blend-summary');
-        const priceDiv = document.getElementById('blend-price');
-        const addButton = document.getElementById('add-blend-btn');
+    const multiplier = parseInt(document.getElementById('blend-quantity').value);
+    const summaryDiv = document.getElementById('blend-summary');
+    const priceDiv = document.getElementById('blend-price');
+    const addButton = document.getElementById('add-blend-btn');
+    
+    let totalPrice = 0;
+    let summaryText = [];
+
+    if (activeMicrogreens.length === 0) {
+        summaryDiv.textContent = 'Select microgreens to create your blend.';
+        priceDiv.textContent = '₹0';
+        addButton.disabled = true;
+        return;
+    }
+
+    activeMicrogreens.forEach(name => {
+        const percentage = parseInt(document.getElementById(`${name}-range`).value);
         
-        let totalPrice = 0;
-        let summaryText = [];
-
-        if (activeMicrogreens.length === 0) {
-            summaryDiv.textContent = 'Select microgreens to create your blend.';
-            priceDiv.textContent = '₹0';
-            addButton.disabled = true;
-            return;
-        }
-
-        activeMicrogreens.forEach(name => {
-            const percentage = parseInt(document.getElementById(`${name}-range`).value);
+        if (percentage > 0) {
+            const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+            summaryText.push(`${nameCapitalized}: ${percentage}%`);
             
-            if (percentage > 0) {
-                const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
-                summaryText.push(`${nameCapitalized}: ${percentage}%`);
-                
-                const pricePerGram = blendPrices[name];
-                const weightContribution = (quantity * percentage) / 100;
-                totalPrice += pricePerGram * weightContribution;
-            }
-        });
+            // Get current price from productPrices object (which gets updated from Firebase)
+            const basePricePer100g = productPrices[name] ? productPrices[name].base : 0;
+            const priceContribution = (basePricePer100g * percentage) / 100;
+            totalPrice += priceContribution;
+        }
+    });
 
-        summaryDiv.textContent = summaryText.join(' | ');
-        priceDiv.textContent = `₹${Math.round(totalPrice)}`;
-        addButton.disabled = false;
-    }
+    // Multiply by the quantity multiplier
+    const finalPrice = totalPrice * multiplier;
 
-    function addCustomBlendToCart() {
-        if (activeMicrogreens.length === 0) return;
-        
-        const quantity = parseInt(document.getElementById('blend-quantity').value);
-        const price = parseInt(document.getElementById('blend-price').textContent.replace('₹', ''));
-        
-        let blendName = 'Custom Blend (';
-        let blendDetails = [];
-        
-        activeMicrogreens.forEach(name => {
-            const percentage = parseInt(document.getElementById(`${name}-range`).value);
-            if (percentage > 0) {
-                const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
-                blendDetails.push(`${percentage}% ${nameCapitalized}`);
-            }
-        });
-        
-        blendName += blendDetails.join(', ') + ')';
-        
-        const item = {
-            id: `custom-${Date.now()}`,
-            productId: 'custom',
-            name: blendName,
-            quantity: quantity,
-            type: 'custom',
-            price: price,
-            image: 'images/products/mixed-greens.jpg'
-        };
-        
-        cart.push(item);
-        updateCartUI();
-        showCartNotification();
-        
-        // Visual feedback
-        const button = document.getElementById('add-blend-btn');
-        const originalText = button.textContent;
-        button.textContent = '✅ Added to Cart!';
-        
-        setTimeout(() => {
-            button.textContent = originalText;
-        }, 1500);
-    }
-
+    summaryDiv.textContent = summaryText.join(' | ');
+    priceDiv.textContent = `₹${Math.round(finalPrice)}`;
+    addButton.disabled = false;
+}
+   function addCustomBlendToCart() {
+    if (activeMicrogreens.length === 0) return;
+    
+    const multiplier = parseInt(document.getElementById('blend-quantity').value);
+    const actualQuantity = multiplier * 100;
+    const price = parseInt(document.getElementById('blend-price').textContent.replace('₹', ''));
+    
+    // Store the blend configuration for future updates
+    const blendConfiguration = {};
+    activeMicrogreens.forEach(name => {
+        const percentage = parseInt(document.getElementById(`${name}-range`).value);
+        if (percentage > 0) {
+            blendConfiguration[name] = percentage;
+        }
+    });
+    
+    let blendName = 'Custom Blend (';
+    let blendDetails = [];
+    
+    Object.entries(blendConfiguration).forEach(([name, percentage]) => {
+        const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+        blendDetails.push(`${percentage}% ${nameCapitalized}`);
+    });
+    
+    blendName += blendDetails.join(', ') + ')';
+    
+    const item = {
+        id: `custom-${Date.now()}`,
+        productId: 'custom-blend',
+        name: blendName,
+        quantity: actualQuantity,
+        price: price,
+        type: 'custom',
+        blendConfig: blendConfiguration, // Store the blend configuration
+        multiplier: multiplier, // Store the current multiplier
+        image: 'images/products/mixed-greens.jpg'
+    };
+    
+    cart.push(item);
+    updateCartUI();
+    showCartNotification();
+    
+    // Visual feedback
+    const button = document.getElementById('add-blend-btn');
+    const originalText = button.textContent;
+    button.textContent = '✅ Added to Cart!';
+    
+    setTimeout(() => {
+        button.textContent = originalText;
+    }, 1500);
+}
+function recalculateBlendPrice(blendConfig, multiplier) {
+    let totalPrice = 0;
+    
+    Object.entries(blendConfig).forEach(([name, percentage]) => {
+        const basePricePer100g = productPrices[name] ? productPrices[name].base : 0;
+        const priceContribution = (basePricePer100g * percentage) / 100;
+        totalPrice += priceContribution;
+    });
+    
+    return Math.round(totalPrice * multiplier);
+}
     // Cart UI functions
     function updateCartUI() {
         const cartCount = document.getElementById('cartCount');
@@ -6218,6 +6378,7 @@ window.addEventListener('beforeunload', function() {
         
         // Initialize blend price
         updateBlendPrice();
+        initializeCustomBlend();
         updateCartUI();
         
         // Fix resend button
