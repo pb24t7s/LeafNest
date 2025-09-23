@@ -3393,7 +3393,7 @@
         <div class="products-container">
             <h2 class="section-title">Our Fresh Microgreens</h2>
             <div class="products-grid">
-    <div class="products-grid">
+    <div class="products-grid"id="dynamicProductsGrid">
     <!-- Alfalfa Microgreens -->
     <div class="product-card">
         <img src="images/products/alfalfa-microgreens.jpg" alt="Fresh Alfalfa Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -4428,48 +4428,134 @@
     async function loadProductsFromFirebase() {
     try {
         const snapshot = await db.collection('products').get();
+        const productsGrid = document.getElementById('dynamicProductsGrid');
+        
+        if (!productsGrid) {
+            console.error('Products grid element not found');
+            return;
+        }
+        
+        // Clear existing content
+        productsGrid.innerHTML = '<div style="text-align: center; padding: 2rem;">Loading products...</div>';
+        
+        if (snapshot.empty) {
+            productsGrid.innerHTML = '<div style="text-align: center; padding: 2rem;">No products available</div>';
+            return;
+        }
+        
+        // Clear loading message
+        productsGrid.innerHTML = '';
         
         snapshot.forEach(doc => {
             const product = doc.data();
             const productId = doc.id;
             
-            // Update price in productPrices object
-            if (productPrices[productId]) {
-                productPrices[productId].base = product.basePrice;
+            // Create product card
+            const productCard = createDynamicProductCard(productId, product);
+            productsGrid.appendChild(productCard);
+        });
+        
+        // Initialize prices and nutrition calculators for new products
+        snapshot.forEach(doc => {
+            const productId = doc.id;
+            const product = doc.data();
+            
+            // Update product prices object
+            if (!productPrices[productId]) {
+                productPrices[productId] = { base: product.basePrice };
             }
             
-            // Update the displayed price
+            // Initialize price display
             if (document.getElementById(`${productId}-price`)) {
                 updatePrice(productId);
             }
             
-            // Handle availability
-            const addToCartBtn = document.querySelector(`button[onclick*="addToCart('${productId}"]`);
-            const productCard = document.getElementById(`${productId}-cart-quantity`)?.closest('.product-card');
-            
-            if (!product.available) {
-                markProductOutOfStock(productId);
-            } else {
-                markProductAvailable(productId);
-            }
-            
-            // Update product image if available
-            if (product.imageUrl) {
-                const productImage = document.querySelector(`img[alt*="${product.name}"]`);
-                if (productImage) {
-                    productImage.src = product.imageUrl;
-                    productImage.onerror = null; // Remove error handler since we have real image
-                }
+            // Initialize nutrition calculator if nutrition data exists
+            if (nutritionData[productId] && document.getElementById(`${productId}-quantity`)) {
+                calculateNutrition(productId);
             }
         });
         
-        console.log('Products loaded from Firebase successfully');
+        console.log('Products loaded successfully from Firebase');
         
     } catch (error) {
-        console.error('Error loading products from Firebase:', error);
+        console.error('Error loading products:', error);
+        const productsGrid = document.getElementById('dynamicProductsGrid');
+        if (productsGrid) {
+            productsGrid.innerHTML = '<div style="text-align: center; padding: 2rem; color: red;">Error loading products</div>';
+        }
     }
 }
+// Create dynamic product card
+function createDynamicProductCard(productId, product) {
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'product-card';
+    
+    cardDiv.innerHTML = `
+        ${product.imageUrl ? 
+            `<img src="${product.imageUrl}" alt="${product.name}" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="product-icon" style="display: none;">${product.icon || '🌱'}</div>` :
+            `<div class="product-icon">${product.icon || '🌱'}</div>`
+        }
+        <h3>${product.name}</h3>
+        <p>${product.description}</p>
+        <ul class="product-features">
+            <li>Freshly harvested</li>
+            <li>Nutrient dense</li>
+            <li>Organic & pesticide-free</li>
+        </ul>
+        
+        ${nutritionData[productId] ? `
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Quantity</label>
+                    <select class="calculator-select" id="${productId}-quantity" onchange="calculateNutrition('${productId}')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100">100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="${productId}-mineral" onchange="calculateNutrition('${productId}')">
+                        ${Object.keys(nutritionData[productId] || {}).map(key => 
+                            `<option value="${key}">${key.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>`
+                        ).join('')}
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="${productId}-result">
+                <span class="result-value">-</span><span class="result-unit">Select options</span>
+            </div>
+        </div>` : ''}
 
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="option-group">
+                    <label class="option-label">Quantity</label>
+                    <select class="product-select" id="${productId}-cart-quantity" onchange="updatePrice('${productId}')">
+                        <option value="25">25g</option>
+                        <option value="50">50g</option>
+                        <option value="100" selected>100g</option>
+                        <option value="200">200g</option>
+                    </select>
+                </div>
+            </div>
+            <div class="price-display">
+                <span class="price-amount" id="${productId}-price">₹${product.basePrice}</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('${productId}', '${product.name}')">
+                Add to Cart
+            </button>
+        </div>
+    `;
+    
+    return cardDiv;
+}
 // Helper functions
 function markProductOutOfStock(productId) {
     const addToCartBtn = document.querySelector(`button[onclick*="addToCart('${productId}"]`);
@@ -6040,6 +6126,8 @@ window.addEventListener('beforeunload', function() {
         // Load products from Firebase and initialize prices
         loadProductsFromFirebase().then(() => {
             // Initialize product prices (will use Firebase data if available)
+            console.log('Products loaded and displayed');
+
             Object.keys(productPrices).forEach(productId => {
                 if (document.getElementById(`${productId}-price`)) {
                     updatePrice(productId);
