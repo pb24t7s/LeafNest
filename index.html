@@ -3961,6 +3961,69 @@
         </div>
     </div>
 </div>
+
+<!-- GreenGram Microgreens -->
+        <div class="product-card">
+            <img src="images/products/greengram-microgreens.jpg" alt="Fresh GreenGram Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="product-icon" style="display: none;">🟢</div>
+            <h3>GreenGram Microgreens</h3>
+            <p>Fresh, crisp mung bean sprouts with mild, nutty flavor. Excellent source of protein and folate.</p>
+            <ul class="product-features">
+                <li>High in protein</li>
+                <li>Rich in folate</li>
+                <li>Mild, nutty taste</li>
+            </ul>
+            
+            <div class="nutrition-calculator">
+                <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+                <div class="calculator-controls">
+                    <div class="control-group">
+                        <label class="control-label">Quantity</label>
+                        <select class="calculator-select" id="greengram-quantity" onchange="calculateNutrition('greengram')">
+                            <option value="25">25g</option>
+                            <option value="50">50g</option>
+                            <option value="100">100g</option>
+                            <option value="200">200g</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Mineral/Vitamin</label>
+                        <select class="calculator-select" id="greengram-mineral" onchange="calculateNutrition('greengram')">
+                            <option value="protein">Protein</option>
+                            <option value="vitamin-c">Vitamin C</option>
+                            <option value="vitamin-k">Vitamin K</option>
+                            <option value="folate">Folate</option>
+                            <option value="iron">Iron</option>
+                            <option value="fiber">Fiber</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="nutrition-result" id="greengram-result">
+                    <span class="result-value">12.5</span><span class="result-unit">g Protein</span>
+                </div>
+            </div>
+
+            <div class="product-purchase">
+                <h4 class="purchase-title">🛒 Add to Cart</h4>
+                <div class="purchase-options">
+                    <div class="option-group">
+                        <label class="option-label">Quantity</label>
+                        <select class="product-select" id="greengram-cart-quantity" onchange="updatePrice('greengram')">
+                            <option value="25">25g</option>
+                            <option value="50">50g</option>
+                            <option value="100" selected>100g</option>
+                            <option value="200">200g</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="price-display">
+                    <span class="price-amount" id="greengram-price">₹85</span>
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart('greengram', 'GreenGram Microgreens')">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
     </section>
 
     <!-- Custom Blend Calculator Section -->
@@ -4098,6 +4161,19 @@
                                 </div>
                                 <input type="range" min="0" max="100" value="0" class="slider-input" id="whiteradish-range" oninput="updatePercentage('whiteradish')">
                             </div>
+                        </div>
+                    </div>
+                    <div class="microgreen-control" id="greengram-control">
+                        <div class="microgreen-checkbox">
+                            <input type="checkbox" id="greengram-check" onchange="toggleMicrogreen('greengram')">
+                            <label for="greengram-check">🟢 GreenGram</label>
+                        </div>
+                        <div class="percentage-slider" id="greengram-slider">
+                            <div class="slider-label">
+                                <span>Percentage:</span>
+                                <span id="greengram-percent">0%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="0" class="slider-input" id="greengram-range" oninput="updatePercentage('greengram')">
                         </div>
                     </div>
                     
@@ -4361,6 +4437,14 @@
         'calcium': { value: 48, unit: 'mg' },
         'phosphorus': { value: 42, unit: 'mg' },
         'fiber': { value: 2.2, unit: 'g' }
+    },
+    'greengram': {
+        'protein': { value: 12.5, unit: 'g' },
+        'vitamin-c': { value: 45, unit: 'mg' },
+        'vitamin-k': { value: 95, unit: 'mcg' },
+        'folate': { value: 180, unit: 'mcg' },
+        'iron': { value: 2.8, unit: 'mg' },
+        'fiber': { value: 4.2, unit: 'g' }
     }
 };
     // Add this debug function after line 1850
@@ -4410,7 +4494,9 @@
     'mustard': { base: 80 },
     'pinkradish': { base: 95 },
     'sunflower': { base: 70 },
-    'whiteradish': { base: 85 }
+    'whiteradish': { base: 85 },
+    'greengram': { base: 85 }
+
 };
     // Custom blend pricing
    const blendPrices = {
@@ -4422,7 +4508,9 @@
     'mustard': 0.8,
     'pinkradish': 0.95,
     'sunflower': 0.7,
-    'whiteradish': 0.85
+    'whiteradish': 0.85,
+    'greengram': 0.85
+
 };
 
     async function loadProductsFromFirebase() {
@@ -6048,8 +6136,7 @@ window.addEventListener('beforeunload', function() {
         });
         
         // Initialize nutrition calculators
-        const microgreens = ['alfalfa', 'beetroot', 'cauliflower', 'chia', 'flax', 'mustard', 'pinkradish', 'sunflower', 'whiteradish'];
-        microgreens.forEach(mg => {
+            const microgreens = ['alfalfa', 'beetroot', 'cauliflower', 'chia', 'flax', 'mustard', 'pinkradish', 'sunflower', 'whiteradish', 'greengram'];        microgreens.forEach(mg => {
             if (document.getElementById(`${mg}-quantity`)) {
                 calculateNutrition(mg);
             }
