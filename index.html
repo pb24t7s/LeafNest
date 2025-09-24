@@ -2981,126 +2981,127 @@
             <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
         </div>
     </div>
-
-    <!-- Checkout Modal -->
-    <div class="checkout-modal" id="checkoutModal">
-        <div class="checkout-header">
-            <h2>🛒 Checkout</h2>
-            <button class="close-cart" onclick="closeCheckout()">✕</button>
-        </div>
-        <div class="checkout-content">
-            <form id="checkoutForm">
-                <h3 style="color: #2c5530; margin-bottom: 1.5rem;">Delivery Information</h3>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">First Name *</label>
-                        <input type="text" id="firstName" name="firstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name *</label>
-                        <input type="text" id="lastName" name="lastName" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="phone">Phone Number *</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email">
-                </div>
-                
-                <div class="form-group">
-                    <label for="address">Full Address *</label>
-                    <textarea id="address" name="address" rows="3" required placeholder="House/Flat No, Street, Area, Landmark"></textarea>
-                </div>
-                <div class="form-group" id="savedAddressGroup" style="display: none;">
-                    <label for="savedAddress">Or choose from saved addresses:</label>
-                    <select id="savedAddress" onchange="fillAddressFromSaved()">
-                        <option value="">Select a saved address...</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="area">Area *</label>
-                        <select id="area" name="area" required>
-                            <option value="">Select Area</option>
-                            <option value="banjara-hills">Banjara Hills</option>
-                            <option value="jubilee-hills">Jubilee Hills</option>
-                            <option value="gachibowli">Gachibowli</option>
-                            <option value="hitech-city">Hitech City</option>
-                            <option value="kondapur">Kondapur</option>
-                            <option value="madhapur">Madhapur</option>
-                            <option value="begumpet">Begumpet</option>
-                            <option value="secunderabad">Secunderabad</option>
-                            <option value="ameerpet">Ameerpet</option>
-                            <option value="kukatpally">Kukatpally</option>
-                            <option value="miyapur">Miyapur</option>
-                            <option value="uppal">Uppal</option>
-                            <option value="dilsukhnagar">Dilsukhnagar</option>
-                            <option value="lb-nagar">LB Nagar</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="pincode">Pincode *</label>
-                        <input type="text" id="pincode" name="pincode" required maxlength="6">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="deliveryTime">Preferred Delivery Time</label>
-                    <select id="deliveryTime" name="deliveryTime">
-                        <option value="morning">Morning (8 AM - 12 PM)</option>
-                        <option value="afternoon">Afternoon (12 PM - 4 PM)</option>
-                        <option value="evening">Evening (4 PM - 8 PM)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="notes">Special Instructions</label>
-                    <textarea id="notes" name="notes" rows="2" placeholder="Any special delivery instructions..."></textarea>
-                </div>
-                
-                <div class="order-summary">
-                    <h3>Order Summary</h3>
-                    <div id="checkoutItems"></div>
-                    
-                    </div>
-                </div>
-                <h3 style="color: #2c5530; margin: 2rem 0 1rem 0;">Payment Method</h3>
-
-                <div class="payment-methods">
-                    <div class="payment-option">
-                        <input type="radio" id="razorpay" name="paymentMethod" value="razorpay" checked>
-                        <label for="razorpay" class="payment-label">
-                            <div class="payment-info">
-                                <strong>💳 Pay Online</strong>
-                                <span>Credit/Debit Card, UPI, Net Banking</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-                <button type="submit" class="place-order-btn" id="placeOrderBtn">
-                    💳 Pay Online
-                </button>
-
-            </form>
+<!-- Checkout Modal -->
+<div class="checkout-modal" id="checkoutModal">
+    <div class="checkout-header">
+        <h2>🛒 Checkout</h2>
+        <button class="close-cart" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="checkout-content">
+        <form id="checkoutForm">
+            <h3 style="color: #2c5530; margin-bottom: 1.5rem;">Delivery Information</h3>
             
-            <div id="orderSuccess" style="display: none;">
-                <div class="success-animation">
-                    <div class="success-icon">✅</div>
-                    <div class="success-message">Order Placed Successfully!</div>
-                    <div class="order-number">Order #<span id="orderNumber"></span></div>
-                    <p style="color: #556b5d; margin-bottom: 2rem;">We'll contact you shortly to confirm your order and delivery time.</p>
-                    <button onclick="closeCheckout()" style="background: #4a7c59; color: white; border: none; padding: 12px 30px; border-radius: 25px; cursor: pointer;">Continue Shopping</button>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" name="firstName" required>
                 </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Full Address *</label>
+                <textarea id="address" name="address" rows="3" required placeholder="House/Flat No, Street, Area, Landmark"></textarea>
+            </div>
+            
+            <div class="form-group" id="savedAddressGroup" style="display: none;">
+                <label for="savedAddress">Or choose from saved addresses:</label>
+                <select id="savedAddress" onchange="fillAddressFromSaved()">
+                    <option value="">Select a saved address...</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="area">Area *</label>
+                    <select id="area" name="area" required>
+                        <option value="">Select Area</option>
+                        <option value="banjara-hills">Banjara Hills</option>
+                        <option value="jubilee-hills">Jubilee Hills</option>
+                        <option value="gachibowli">Gachibowli</option>
+                        <option value="hitech-city">Hitech City</option>
+                        <option value="kondapur">Kondapur</option>
+                        <option value="madhapur">Madhapur</option>
+                        <option value="begumpet">Begumpet</option>
+                        <option value="secunderabad">Secunderabad</option>
+                        <option value="ameerpet">Ameerpet</option>
+                        <option value="kukatpally">Kukatpally</option>
+                        <option value="miyapur">Miyapur</option>
+                        <option value="uppal">Uppal</option>
+                        <option value="dilsukhnagar">Dilsukhnagar</option>
+                        <option value="lb-nagar">LB Nagar</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pincode">Pincode *</label>
+                    <input type="text" id="pincode" name="pincode" required maxlength="6">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="deliveryTime">Preferred Delivery Time</label>
+                <select id="deliveryTime" name="deliveryTime">
+                    <option value="morning">Morning (8 AM - 12 PM)</option>
+                    <option value="afternoon">Afternoon (12 PM - 4 PM)</option>
+                    <option value="evening">Evening (4 PM - 8 PM)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">Special Instructions</label>
+                <textarea id="notes" name="notes" rows="2" placeholder="Any special delivery instructions..."></textarea>
+            </div>
+            
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div id="checkoutItems"></div>
+            </div>
+            
+            <h3 style="color: #2c5530; margin: 2rem 0 1rem 0;">Payment Method</h3>
+
+            <div class="payment-methods">
+                <div class="payment-option">
+                    <input type="radio" id="razorpay" name="paymentMethod" value="razorpay" checked>
+                    <label for="razorpay" class="payment-label">
+                        <div class="payment-info">
+                            <strong>💳 Pay Online</strong>
+                            <span>Credit/Debit Card, UPI, Net Banking, Wallets</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="place-order-btn" id="placeOrderBtn">
+                💳 Pay Online
+            </button>
+
+        </form>
+        
+        <div id="orderSuccess" style="display: none;">
+            <div class="success-animation">
+                <div class="success-icon">✅</div>
+                <div class="success-message">Order Placed Successfully!</div>
+                <div class="order-number">Order #<span id="orderNumber"></span></div>
+                <p style="color: #556b5d; margin-bottom: 2rem;">Payment confirmed! We'll contact you shortly to confirm your order and delivery time.</p>
+                <button onclick="closeCheckout()" style="background: #4a7c59; color: white; border: none; padding: 12px 30px; border-radius: 25px; cursor: pointer;">Continue Shopping</button>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Header -->
             <!-- Login Modal -->
@@ -7230,7 +7231,7 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         subtotal: subtotal,
         deliveryFee: deliveryFee,
         total: total,
-        paymentMethod: 'razorpay', // Always razorpay now
+        paymentMethod: 'razorpay',
         customerInfo: {
             firstName: getFormValue('firstName') || 'Customer',
             lastName: getFormValue('lastName') || '',
@@ -7245,7 +7246,7 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         customerNotes: getFormValue('notes') || ''
     };
     
-    // Only handle Razorpay payment
+    // Process online payment only
     await initiateRazorpayPayment(orderData);
 });
 // Similar fix for Cash on Delivery
