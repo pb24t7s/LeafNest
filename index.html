@@ -3253,35 +3253,35 @@
                     <button class="tab-btn" onclick="showTab('orders')" id="ordersTabBtn">Orders</button>
                 </div>
                 
-                <!-- Profile Tab -->
-                <div class="tab-content active" id="profileTab">
-                    <form id="profileForm" onsubmit="updateProfile(event)">
-                        <div class="profile-section">
-                            <h3>Personal Information</h3>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>First Name *</label>
-                                    <input type="text" id="editFirstName" required>
+               <!-- Profile Tab -->
+                    <div class="tab-content active" id="profileTab">
+                        <form id="profileForm" onsubmit="updateProfile(event)">
+                            <div class="profile-section">
+                                <h3>Personal Information</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>First Name *</label>
+                                        <input type="text" id="editFirstName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Last Name</label>
+                                        <input type="text" id="editLastName">
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Last Name</label>
-                                    <input type="text" id="editLastName">
+                                    <label>Phone Number</label>
+                                    <input type="tel" id="editPhone" disabled style="background: #f5f5f5;">
+                                    <small style="color: #666; font-size: 0.8rem;">Contact us to change your phone number</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" id="editEmail" placeholder="your.email@example.com">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label>Phone Number</label>
-                                <input type="tel" id="editPhone" disabled style="background: #f5f5f5;">
-                                <small style="color: #666; font-size: 0.8rem;">Contact us to change your phone number</small>
-                            </div>
-                            <div class="form-group">
-                                <label>Email Address</label>
-                                <input type="email" id="editEmail" placeholder="your.email@example.com">
-                            </div>
-                        </div>
-                        <button type="submit" class="save-btn">💾 Save Changes</button>
-                    </form>
-                </div>
-                
+                            <button type="submit" class="save-btn">💾 Save Changes</button>
+                        </form>
+                    </div>
+                                    
                 <!-- Addresses Tab -->
                 <div class="tab-content" id="addressesTab">
                     <div class="addresses-section">
@@ -6814,40 +6814,7 @@ function showTab(tabName) {
     }
 }
 
-// Update profile
-function updateProfile(event) {
-   event.preventDefault();
-   
-   if (!currentUser) return;
-   
-   // Get form data
-   const firstName = document.getElementById('editFirstName').value.trim();
-   const lastName = document.getElementById('editLastName').value.trim();
-   const email = document.getElementById('editEmail').value.trim();
-   const dob = document.getElementById('editDob').value;
-   
-   // Validation
-   if (!firstName) {
-       alert('First name is required');
-       return;
-   }
-   
-   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-       alert('Please enter a valid email address');
-       return;
-   }
-   
-   // Update user data
-   currentUser.firstName = firstName;
-   currentUser.lastName = lastName;
-   currentUser.email = email;
-   currentUser.dob = dob;
-   
-   saveUserData();
-   updateUserUI();
-   
-   alert('Profile updated successfully! 🎉');
-}
+
 async function updateProfile(event) {
     event.preventDefault();
     
