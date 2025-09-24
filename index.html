@@ -2954,6 +2954,7 @@
             font-size: 14px;
         }
     }
+    
 </style>
 </head>
 <body>
@@ -7146,6 +7147,27 @@ function clearOTPBoxes() {
     otpBoxes.forEach(box => box.value = '');
     if (otpBoxes[0]) otpBoxes[0].focus();
 }
+
+function testGoogleMaps() {
+    if (typeof google === 'undefined') {
+        console.error('Google Maps API not loaded');
+        return false;
+    }
+    
+    // Create a simple test map
+    const testMap = new google.maps.Map(document.getElementById('test-map'), {
+        center: { lat: 17.4065, lng: 78.4772 }, // Hyderabad coordinates
+        zoom: 13
+    });
+    
+    console.log('Google Maps loaded successfully');
+    return true;
+}
+
+// Call this after page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(testGoogleMaps, 1000); // Wait 1 second for API to load
+});
 
 // Countdown timer
 let countdownTimer;
