@@ -2954,6 +2954,32 @@
             font-size: 14px;
         }
     }
+            .location-btn {
+            background: linear-gradient(135deg, #4285f4 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: fit-content;
+        }
+
+        .location-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(66, 133, 244, 0.3);
+        }
+
+        .location-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
     
 </style>
 </head>
@@ -3298,7 +3324,14 @@
                         </div>
                     </div>
                 </div>
-                
+                <!-- Add this in your address form, after the address textarea -->
+                    <div class="form-group">
+                        <label>Complete Address *</label>
+                        <textarea id="addressFull" rows="3" required placeholder="House/Flat No, Street, Area, Landmark"></textarea>
+                        <button type="button" class="location-btn" onclick="useCurrentLocation()">
+                            📍 Use Current Location
+                        </button>
+                    </div>
                 <!-- Orders Tab -->
                 <div class="tab-content" id="ordersTab">
                     <div class="orders-section">
@@ -5476,7 +5509,138 @@ async function sendRealOTP(phone, sendBtn) {
         handleOTPSendError(error, sendBtn);
     }
 }
+async function useCurrentLocation() {
+    const locationBtn = document.querySelector('.location-btn');
+    const originalText = locationBtn.textContent;
+    
+    try {
+        // Show loading state
+        locationBtn.textContent = '📍 Getting location...';
+        locationBtn.disabled = true;
+        
+        // Get current position
+        const location = await getCurrentLocation();
+        console.log('Current location:', location);
+        
+        // Reverse geocode to get address
+        const address = await reverseGeocode(location.latitude, location.longitude);
+        
+        if (address) {
+            // Fill form with detected address
+            document.getElementById('addressFull').value = address.formattedAddress;
+            
+            // Try to detect area from address components
+            const detectedArea = detectAreaFromAddress(address);
+            if (detectedArea) {
+                document.getElementById('addressArea').value = detectedArea;
+            }
+            
+            // Try to detect pincode
+            if (address.pincode) {
+                document.getElementById('addressPincode').value = address.pincode;
+            }
+            
+            // Store coordinates for later use
+            window.currentLocationCoords = {
+                lat: location.latitude,
+                lng: location.longitude,
+                accuracy: location.accuracy
+            };
+            
+            alert('Location detected successfully! Please verify the address details.');
+        }
+        
+    } catch (error) {
+        console.error('Location error:', error);
+        alert('Unable to detect location: ' + error.message + '\nPlease enter address manually.');
+    } finally {
+        // Reset button
+        locationBtn.textContent = originalText;
+        locationBtn.disabled = false;
+    }
+}
 
+// Reverse geocoding function
+async function reverseGeocode(lat, lng) {
+    return new Promise((resolve, reject) => {
+        const geocoder = new google.maps.Geocoder();
+        
+        geocoder.geocode(
+            { location: { lat: lat, lng: lng } },
+            (results, status) => {
+                if (status === 'OK' && results[0]) {
+                    const result = results[0];
+                    const components = result.address_components;
+                    
+                    // Extract address parts
+                    let streetNumber = '';
+                    let route = '';
+                    let locality = '';
+                    let pincode = '';
+                    
+                    components.forEach(component => {
+                        const types = component.types;
+                        
+                        if (types.includes('street_number')) {
+                            streetNumber = component.long_name;
+                        }
+                        if (types.includes('route')) {
+                            route = component.long_name;
+                        }
+                        if (types.includes('sublocality') || types.includes('locality')) {
+                            locality = component.long_name;
+                        }
+                        if (types.includes('postal_code')) {
+                            pincode = component.long_name;
+                        }
+                    });
+                    
+                    resolve({
+                        formattedAddress: result.formatted_address,
+                        streetAddress: `${streetNumber} ${route}`.trim(),
+                        locality: locality,
+                        pincode: pincode,
+                        components: components
+                    });
+                } else {
+                    reject(new Error('Unable to get address from coordinates'));
+                }
+            }
+        );
+    });
+}
+
+// Detect area from address components
+function detectAreaFromAddress(address) {
+    const areaMap = {
+        'banjara hills': 'banjara-hills',
+        'jubilee hills': 'jubilee-hills',
+        'gachibowli': 'gachibowli',
+        'hitech city': 'hitech-city',
+        'hi-tech city': 'hitech-city',
+        'kondapur': 'kondapur',
+        'madhapur': 'madhapur',
+        'begumpet': 'begumpet',
+        'secunderabad': 'secunderabad',
+        'ameerpet': 'ameerpet',
+        'kukatpally': 'kukatpally',
+        'miyapur': 'miyapur',
+        'uppal': 'uppal',
+        'dilsukhnagar': 'dilsukhnagar',
+        'lb nagar': 'lb-nagar',
+        'l.b. nagar': 'lb-nagar'
+    };
+    
+    const addressText = address.formattedAddress.toLowerCase();
+    
+    for (const [area, value] of Object.entries(areaMap)) {
+        if (addressText.includes(area)) {
+            return value;
+        }
+    }
+    
+    return null;
+}
 // Verify real OTP
 let otpRetryCount = 0;
 const MAX_OTP_RETRIES = 3;
@@ -5932,6 +6096,15 @@ async function saveAddress(event) {
         isDefault: document.getElementById('setDefaultAddress').checked
     };
     
+    // Include live location coordinates if available
+    if (window.currentLocationCoords) {
+        formData.latitude = window.currentLocationCoords.lat;
+        formData.longitude = window.currentLocationCoords.lng;
+        formData.locationAccuracy = window.currentLocationCoords.accuracy;
+        formData.locationType = 'live'; // Mark as live location
+        formData.locationTimestamp = new Date().toISOString();
+    }
+    
     // Validation
     if (!formData.name || !formData.phone || !formData.fullAddress || !formData.area || !formData.pincode) {
         alert('Please fill all required fields');
@@ -5949,40 +6122,67 @@ async function saveAddress(event) {
     }
     
     try {
-        // Show loading state
         const saveBtn = document.querySelector('.address-content .save-btn');
         const originalText = saveBtn.textContent;
         saveBtn.textContent = 'Saving...';
         saveBtn.disabled = true;
         
-        // Get coordinates for the address
-        const coordinates = await geocodeAddress(formData.fullAddress, formData.area, formData.pincode);
-        if (coordinates) {
-            formData.latitude = coordinates.lat;
-            formData.longitude = coordinates.lng;
+        // If we don't have live coordinates, try geocoding the address
+        if (!formData.latitude) {
+            console.log('No live location, attempting to geocode address...');
+            const coordinates = await geocodeAddress(formData.fullAddress, formData.area, formData.pincode);
+            if (coordinates) {
+                formData.latitude = coordinates.lat;
+                formData.longitude = coordinates.lng;
+                formData.locationType = 'geocoded';
+            }
         }
         
-        // Save to Firebase
         await saveAddressToFirebase(formData);
-        
-        // Reload addresses from Firebase
         await loadUserDataFromFirebase();
         loadAddresses();
         closeAddressModal();
         
-        alert(editingAddressId ? 'Address updated successfully!' : 'Address added successfully!');
+        const locationInfo = formData.locationType === 'live' ? 
+            ' (Live location saved)' : 
+            formData.latitude ? ' (Address geocoded)' : '';
+            
+        alert(`Address saved successfully!${locationInfo}`);
+        
+        // Clear stored coordinates
+        window.currentLocationCoords = null;
         
     } catch (error) {
         console.error('Error saving address:', error);
         alert('Failed to save address. Please try again.');
     } finally {
-        // Reset button state
         const saveBtn = document.querySelector('.address-content .save-btn');
         if (saveBtn) {
             saveBtn.textContent = 'Save Address';
             saveBtn.disabled = false;
         }
     }
+}
+// Calculate distance between two coordinates (in kilometers)
+function calculateDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371; // Radius of Earth in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLng/2) * Math.sin(dLng/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+    return distance;
+}
+
+// Estimate delivery time based on distance
+function estimateDeliveryTime(distance) {
+    if (distance <= 5) return "30-45 minutes";
+    if (distance <= 10) return "45-60 minutes";
+    if (distance <= 15) return "60-90 minutes";
+    return "90+ minutes";
 }
 // Updated saveAddressToFirebase function
 async function saveAddressToFirebase(addressData) {
@@ -7011,6 +7211,49 @@ async function saveAddress(event) {
     }
 }
 
+
+// Add to your main script section
+async function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error('Geolocation is not supported by this browser'));
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    accuracy: position.coords.accuracy
+                });
+            },
+            (error) => {
+                let errorMessage = '';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = 'Location access denied by user';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = 'Location information is unavailable';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = 'Location request timed out';
+                        break;
+                    default:
+                        errorMessage = 'An unknown error occurred';
+                        break;
+                }
+                reject(new Error(errorMessage));
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 300000 // 5 minutes
+            }
+        );
+    });
+}
 // Delete address
 
 // Set default address
