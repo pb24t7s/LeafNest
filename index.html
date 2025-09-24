@@ -3083,18 +3083,7 @@
                             </div>
                         </label>
                     </div>
-                    
-                    <div class="payment-option">
-                        <input type="radio" id="cod" name="paymentMethod" value="cod">
-                        <label for="cod" class="payment-label">
-                            <div class="payment-info">
-                                <strong>💰 Cash on Delivery</strong>
-                                <span>Pay when your order arrives</span>
-                            </div>
-                        </label>
-                    </div>
                 </div>
-
                 <button type="submit" class="place-order-btn" id="placeOrderBtn">
                     💳 Pay Online
                 </button>
@@ -6535,29 +6524,6 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Add this function to handle payment method selection
-function handlePaymentMethodChange() {
-    const razorpayRadio = document.getElementById('razorpay');
-    const codRadio = document.getElementById('cod');
-    const placeOrderBtn = document.getElementById('placeOrderBtn');
-    
-    if (razorpayRadio && codRadio && placeOrderBtn) {
-        razorpayRadio.addEventListener('change', function() {
-            if (this.checked) {
-                placeOrderBtn.textContent = '💳 Pay Online';
-                placeOrderBtn.style.background = 'linear-gradient(135deg, #4a7c59 0%, #2c5530 100%)';
-            }
-        });
-        
-        codRadio.addEventListener('change', function() {
-            if (this.checked) {
-                placeOrderBtn.textContent = '📦 Place Order (Cash on Delivery)';
-                placeOrderBtn.style.background = 'linear-gradient(135deg, #ff8c00 0%, #ff6600 100%)';
-            }
-        });
-    }
-}
-
 
 // Initialize when login modal opens
 function openLoginModal() {
@@ -7247,22 +7213,12 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         }
     }
     
-    // Get payment method
-    const paymentMethodElement = document.querySelector('input[name="paymentMethod"]:checked');
-    if (!paymentMethodElement) {
-        alert('Please select a payment method');
-        return;
-    }
-    
-    const selectedPaymentMethod = paymentMethodElement.value;
-    
-    // Create order data with proper null checks
+    // Create order data
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
     const deliveryFee = subtotal > 200 ? 0 : 30;
     const total = subtotal + deliveryFee;
     const orderNumber = 'LN' + Date.now().toString().substr(-6);
     
-    // Helper function to safely get form values
     const getFormValue = (id) => {
         const element = document.getElementById(id);
         return element ? element.value.trim() : '';
@@ -7274,7 +7230,7 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         subtotal: subtotal,
         deliveryFee: deliveryFee,
         total: total,
-        paymentMethod: selectedPaymentMethod,
+        paymentMethod: 'razorpay', // Always razorpay now
         customerInfo: {
             firstName: getFormValue('firstName') || 'Customer',
             lastName: getFormValue('lastName') || '',
@@ -7289,18 +7245,8 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         customerNotes: getFormValue('notes') || ''
     };
     
-    // Debug log to check data
-    console.log('=== ORDER DATA VALIDATION ===');
-    console.log('CustomerInfo:', orderData.customerInfo);
-    console.log('All fields defined:', Object.values(orderData.customerInfo).every(val => val !== undefined));
-    console.log('============================');
-    
-    // Handle payment
-    if (selectedPaymentMethod === 'razorpay') {
-        await initiateRazorpayPayment(orderData);
-    } else if (selectedPaymentMethod === 'cod') {
-        await handleCashOnDelivery(orderData);
-    }
+    // Only handle Razorpay payment
+    await initiateRazorpayPayment(orderData);
 });
 // Similar fix for Cash on Delivery
 async function handleCashOnDelivery(orderData) {
