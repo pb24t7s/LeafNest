@@ -6100,19 +6100,61 @@ async function saveOrderToFirebase(orderData) {
     }
 }
 // Delete address from Firebase
+async function deleteAddress(addressId) {
+    if (!confirm('Are you sure you want to delete this address?')) {
+        return;
+    }
+    
+    if (!currentUser || !currentUser.uid) {
+        alert('Please login to delete addresses');
+        return;
+    }
+    
+    try {
+        // Show loading state (optional)
+        const deleteBtn = document.querySelector(`button[onclick="deleteAddress('${addressId}')"]`);
+        if (deleteBtn) {
+            deleteBtn.textContent = 'Deleting...';
+            deleteBtn.disabled = true;
+        }
+        
+        // Delete from Firebase
+        await deleteAddressFromFirebase(addressId);
+        
+        // Remove from local array
+        userAddresses = userAddresses.filter(addr => addr.id !== addressId);
+        
+        // Reload the addresses display
+        loadAddresses();
+        
+        alert('Address deleted successfully');
+        
+    } catch (error) {
+        console.error('Error deleting address:', error);
+        alert('Failed to delete address. Please try again.');
+        
+        // Reset button if error occurred
+        const deleteBtn = document.querySelector(`button[onclick="deleteAddress('${addressId}')"]`);
+        if (deleteBtn) {
+            deleteBtn.textContent = '🗑️ Delete';
+            deleteBtn.disabled = false;
+        }
+    }
+}
 async function deleteAddressFromFirebase(addressId) {
-    if (!currentUser || !currentUser.uid) return;
+    if (!currentUser || !currentUser.uid) {
+        throw new Error('No authenticated user');
+    }
     
     try {
         await db.collection('users').doc(currentUser.uid)
             .collection('addresses').doc(addressId).delete();
-        console.log('Address deleted successfully');
+        console.log('Address deleted from Firebase successfully');
     } catch (error) {
-        console.error('Error deleting address:', error);
+        console.error('Error deleting address from Firebase:', error);
         throw error;
     }
 }
-
 // =================================== //
 // ======= RAZORPAY INTEGRATION ======= //
 // =================================== //
