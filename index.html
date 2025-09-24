@@ -5344,9 +5344,10 @@ firebase.auth().onAuthStateChanged(async (user) => {
     console.log('Auth state changed:', user);
     
     if (user) {
-        // User is signed in
         try {
-            // Get user data from Firestore
+            // Add a small delay to allow Firebase to sync
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
             const userDoc = await db.collection('users').doc(user.uid).get();
             
             if (userDoc.exists) {
@@ -5357,7 +5358,6 @@ firebase.auth().onAuthStateChanged(async (user) => {
                     isLoggedIn: true
                 };
             } else {
-                // User exists in auth but not in Firestore
                 currentUser = {
                     uid: user.uid,
                     phone: user.phoneNumber,
@@ -5368,12 +5368,11 @@ firebase.auth().onAuthStateChanged(async (user) => {
                 };
             }
             
-            // Load additional data (addresses, orders)
+            // Load addresses and other data
             await loadUserDataFromFirebase();
             updateUserUI();
             
-            console.log('User restored from Firebase:', currentUser);
-            console.log('Addresses loaded:', userAddresses.length);
+            console.log('User data loaded, addresses count:', userAddresses.length);
             
         } catch (error) {
             console.error('Error loading user data:', error);
@@ -5387,15 +5386,12 @@ firebase.auth().onAuthStateChanged(async (user) => {
             updateUserUI();
         }
     } else {
-        // User is signed out
         currentUser = null;
         userAddresses = [];
         userOrders = [];
         updateUserUI();
-        console.log('No user authenticated');
     }
 });
-
 
 // =================================== //
 // ===== REAL PHONE AUTHENTICATION === //
@@ -6146,10 +6142,21 @@ async function deleteAddressFromFirebase(addressId) {
         throw new Error('No authenticated user');
     }
     
+    if (!addressId) {
+        throw new Error('No address ID provided');
+    }
+    
     try {
+        console.log('Deleting from Firebase:', addressId);
+        
         await db.collection('users').doc(currentUser.uid)
             .collection('addresses').doc(addressId).delete();
+            
         console.log('Address deleted from Firebase successfully');
+        
+        // Wait a moment for Firebase to process the deletion
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
     } catch (error) {
         console.error('Error deleting address from Firebase:', error);
         throw error;
