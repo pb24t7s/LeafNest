@@ -6094,46 +6094,41 @@ async function saveOrderToFirebase(orderData) {
         throw error;
     }
 }
-// Delete address from Firebase
 async function deleteAddress(addressId) {
     if (!confirm('Are you sure you want to delete this address?')) {
         return;
     }
     
+    // Check authentication state
+    const authUser = firebase.auth().currentUser;
+    if (!authUser) {
+        alert('You are not logged in. Please login and try again.');
+        return;
+    }
+    
     if (!currentUser || !currentUser.uid) {
-        alert('Please login to delete addresses');
+        alert('User session expired. Please refresh and login again.');
+        return;
+    }
+    
+    if (authUser.uid !== currentUser.uid) {
+        alert('Authentication mismatch. Please refresh and login again.');
         return;
     }
     
     try {
-        // Show loading state (optional)
-        const deleteBtn = document.querySelector(`button[onclick="deleteAddress('${addressId}')"]`);
-        if (deleteBtn) {
-            deleteBtn.textContent = 'Deleting...';
-            deleteBtn.disabled = true;
-        }
-        
-        // Delete from Firebase
+        console.log('Attempting to delete address:', addressId);
         await deleteAddressFromFirebase(addressId);
         
-        // Remove from local array
-        userAddresses = userAddresses.filter(addr => addr.id !== addressId);
-        
-        // Reload the addresses display
+        // Force reload from Firebase
+        await loadUserDataFromFirebase();
         loadAddresses();
         
         alert('Address deleted successfully');
         
     } catch (error) {
-        console.error('Error deleting address:', error);
-        alert('Failed to delete address. Please try again.');
-        
-        // Reset button if error occurred
-        const deleteBtn = document.querySelector(`button[onclick="deleteAddress('${addressId}')"]`);
-        if (deleteBtn) {
-            deleteBtn.textContent = '🗑️ Delete';
-            deleteBtn.disabled = false;
-        }
+        console.error('Delete error:', error);
+        alert('Failed to delete address: ' + error.message);
     }
 }
 async function deleteAddressFromFirebase(addressId) {
@@ -6146,18 +6141,30 @@ async function deleteAddressFromFirebase(addressId) {
     }
     
     try {
-        console.log('Deleting from Firebase:', addressId);
+        console.log('=== DELETE DEBUG ===');
+        console.log('Current user UID:', currentUser.uid);
+        console.log('Address ID to delete:', addressId);
+        console.log('Auth user:', firebase.auth().currentUser);
         
-        await db.collection('users').doc(currentUser.uid)
-            .collection('addresses').doc(addressId).delete();
+        const addressRef = db.collection('users').doc(currentUser.uid)
+            .collection('addresses').doc(addressId);
             
-        console.log('Address deleted from Firebase successfully');
+        console.log('Document path:', addressRef.path);
         
-        // Wait a moment for Firebase to process the deletion
-        await new Promise(resolve => setTimeout(resolve, 200));
+        // Check if document exists before deletion
+        const doc = await addressRef.get();
+        console.log('Document exists:', doc.exists);
+        if (doc.exists) {
+            console.log('Document data:', doc.data());
+        }
+        
+        await addressRef.delete();
+        console.log('Delete operation completed');
         
     } catch (error) {
-        console.error('Error deleting address from Firebase:', error);
+        console.error('Firebase delete error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
         throw error;
     }
 }
@@ -7005,14 +7012,6 @@ async function saveAddress(event) {
 }
 
 // Delete address
-function deleteAddress(addressId) {
-   if (confirm('Are you sure you want to delete this address?')) {
-       userAddresses = userAddresses.filter(addr => addr.id !== addressId);
-       saveUserData();
-       loadAddresses();
-       alert('Address deleted successfully');
-   }
-}
 
 // Set default address
 function setDefaultAddress(addressId) {
@@ -7038,7 +7037,8 @@ function loadAddresses() {
         `;
         return;
     }
-    
+        console.log('Rendering addresses:', userAddresses);
+
     const getAreaName = (areaValue) => {
         const areaMap = {
             'banjara-hills': 'Banjara Hills',
@@ -7087,7 +7087,10 @@ function loadAddresses() {
             </div>
         </div>
     `).join('');
-    
+    // Log all address IDs for debugging
+    userAddresses.forEach(address => {
+        console.log('Address ID:', address.id, 'Type:', typeof address.id);
+    });
     // Initialize maps for addresses with coordinates
     setTimeout(() => {
         userAddresses.forEach(address => {
