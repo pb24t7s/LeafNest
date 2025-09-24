@@ -3277,10 +3277,6 @@
                                 <label>Email Address</label>
                                 <input type="email" id="editEmail" placeholder="your.email@example.com">
                             </div>
-                            <div class="form-group">
-                                <label>Date of Birth</label>
-                                <input type="date" id="editDob">
-                            </div>
                         </div>
                         <button type="submit" class="save-btn">💾 Save Changes</button>
                     </form>
@@ -5840,22 +5836,25 @@ async function saveUserProfileToFirebase(profileData) {
     }
     
     try {
-        // Validate data before saving
+        // Validate and clean data
         const validatedData = {
             firstName: profileData.firstName?.trim() || '',
             lastName: profileData.lastName?.trim() || '',
             email: profileData.email?.trim() || '',
-            dob: profileData.dob || '',
-            phone: currentUser.phone, // Keep phone from auth
+            phone: currentUser.phone, // Keep existing phone from auth
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
         
+        console.log('Updating Firebase with:', validatedData);
+        
+        // Update the user document in Firestore
         await db.collection('users').doc(currentUser.uid).update(validatedData);
-        console.log('Profile updated successfully');
+        
+        console.log('Profile updated in Firebase successfully');
         return true;
         
     } catch (error) {
-        console.error('Error updating profile:', error);
+        console.error('Error updating profile in Firebase:', error);
         throw error;
     }
 }
@@ -6768,23 +6767,22 @@ function updateUserUI() {
 
 // Open profile modal
 function showProfile() {
-   document.getElementById('profileModal').classList.add('show');
-   document.getElementById('cartOverlay').classList.add('show');
-   toggleUserMenu();
-   
-   // Load current user data into form
-   if (currentUser) {
-       document.getElementById('editFirstName').value = currentUser.firstName || '';
-       document.getElementById('editLastName').value = currentUser.lastName || '';
-       document.getElementById('editPhone').value = currentUser.phone || '';
-       document.getElementById('editEmail').value = currentUser.email || '';
-       document.getElementById('editDob').value = currentUser.dob || '';
-   }
-   
-   // Show profile tab by default
-   showTab('profile');
-   loadAddresses();
-   loadOrders();
+    document.getElementById('profileModal').classList.add('show');
+    document.getElementById('cartOverlay').classList.add('show');
+    toggleUserMenu();
+    
+    // Load current user data into form
+    if (currentUser) {
+        document.getElementById('editFirstName').value = currentUser.firstName || '';
+        document.getElementById('editLastName').value = currentUser.lastName || '';
+        document.getElementById('editPhone').value = currentUser.phone || '';
+        document.getElementById('editEmail').value = currentUser.email || '';
+    }
+    
+    // Show profile tab by default
+    showTab('profile');
+    loadAddresses();
+    loadOrders();
 }
 
 // Close profile modal
@@ -6850,7 +6848,72 @@ function updateProfile(event) {
    
    alert('Profile updated successfully! 🎉');
 }
-
+async function updateProfile(event) {
+    event.preventDefault();
+    
+    if (!currentUser || !currentUser.uid) {
+        alert('Please login to update profile');
+        return;
+    }
+    
+    // Get form data
+    const firstName = document.getElementById('editFirstName').value.trim();
+    const lastName = document.getElementById('editLastName').value.trim();
+    const email = document.getElementById('editEmail').value.trim();
+    
+    // Validation
+    if (!firstName) {
+        alert('First name is required');
+        return;
+    }
+    
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('Please enter a valid email address');
+        return;
+    }
+    
+    try {
+        // Show loading state
+        const saveBtn = document.querySelector('#profileForm .save-btn');
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = 'Saving...';
+        saveBtn.disabled = true;
+        
+        // Prepare data for Firebase
+        const profileData = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: currentUser.phone, // Keep existing phone
+        };
+        
+        console.log('Saving profile data:', profileData);
+        
+        // Save to Firebase
+        await saveUserProfileToFirebase(profileData);
+        
+        // Update current user object
+        currentUser.firstName = firstName;
+        currentUser.lastName = lastName;
+        currentUser.email = email;
+        
+        // Update UI
+        updateUserUI();
+        
+        alert('Profile updated successfully! 🎉');
+        
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        alert('Failed to update profile. Please try again.');
+    } finally {
+        // Reset button state
+        const saveBtn = document.querySelector('#profileForm .save-btn');
+        if (saveBtn) {
+            saveBtn.textContent = '💾 Save Changes';
+            saveBtn.disabled = false;
+        }
+    }
+}
 // Add new address
 function addNewAddress() {
    editingAddressId = null;
