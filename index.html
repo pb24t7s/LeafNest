@@ -5368,15 +5368,15 @@ firebase.auth().onAuthStateChanged(async (user) => {
                 };
             }
             
-            // Load additional data
+            // Load additional data (addresses, orders)
             await loadUserDataFromFirebase();
             updateUserUI();
             
             console.log('User restored from Firebase:', currentUser);
+            console.log('Addresses loaded:', userAddresses.length);
             
         } catch (error) {
             console.error('Error loading user data:', error);
-            // Still set basic user info
             currentUser = {
                 uid: user.uid,
                 phone: user.phoneNumber,
@@ -5867,17 +5867,23 @@ async function saveUserProfileToFirebase(profileData) {
 // Load user data from Firebase
 // Update loadUserDataFromFirebase function
 async function loadUserDataFromFirebase() {
-    if (!currentUser || !currentUser.uid) return;
+    if (!currentUser || !currentUser.uid) {
+        console.log('No current user to load data for');
+        return;
+    }
     
     try {
+        console.log('Loading data for user:', currentUser.uid);
+        
         // Load user profile
         const userDoc = await db.collection('users').doc(currentUser.uid).get();
         if (userDoc.exists) {
             const userData = userDoc.data();
             Object.assign(currentUser, userData);
+            console.log('User profile loaded');
         }
         
-        // Load addresses with proper error handling
+        // Load addresses
         const addressesSnapshot = await db.collection('users').doc(currentUser.uid)
             .collection('addresses').orderBy('createdAt', 'desc').get();
             
@@ -5885,6 +5891,8 @@ async function loadUserDataFromFirebase() {
             id: doc.id,
             ...doc.data()
         }));
+        
+        console.log('Addresses loaded from Firebase:', userAddresses.length);
         
         // Load orders
         const ordersSnapshot = await db.collection('users').doc(currentUser.uid)
@@ -5899,14 +5907,10 @@ async function loadUserDataFromFirebase() {
             };
         });
         
-        console.log('User data loaded:', { 
-            addresses: userAddresses.length, 
-            orders: userOrders.length 
-        });
+        console.log('Orders loaded from Firebase:', userOrders.length);
         
     } catch (error) {
-        console.error('Error loading user data:', error);
-        // Don't throw - allow app to continue with empty data
+        console.error('Error loading user data from Firebase:', error);
         userAddresses = [];
         userOrders = [];
     }
@@ -6649,14 +6653,7 @@ function resendOTP() {
 }
 
 function saveUserData() {
-    if (currentUser && currentUser.phone) {
-        const phoneKey = currentUser.phone.replace('+91', '').replace(/\s+/g, ''); // Remove +91 and spaces
-        localStorage.setItem('leafnest_user_' + phoneKey, JSON.stringify(currentUser));
-        localStorage.setItem('leafnest_addresses_' + phoneKey, JSON.stringify(userAddresses));
-        localStorage.setItem('leafnest_orders_' + phoneKey, JSON.stringify(userOrders));
-    } else {
-        console.warn('Cannot save user data: user or phone number is missing');
-    }
+        console.log('Data automatically saved to Firebase');
 }
 
 function loadUserData() {
@@ -6746,16 +6743,28 @@ function closeProfileModal() {
    document.getElementById('profileModal').classList.remove('show');
    document.getElementById('cartOverlay').classList.remove('show');
 }
-
+function debugAddresses() {
+    console.log('=== ADDRESS DEBUG ===');
+    console.log('Current user:', currentUser);
+    console.log('User addresses:', userAddresses);
+    console.log('User addresses length:', userAddresses.length);
+    console.log('====================');
+}
 // Tab switching
 function showTab(tabName) {
-   // Remove active class from all tabs and buttons
-   document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-   
-   // Add active class to selected tab and button
-   document.getElementById(tabName + 'Tab').classList.add('active');
-   document.getElementById(tabName + 'TabBtn').classList.add('active');
+    // Remove active class from all tabs and buttons
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // Add active class to selected tab and button
+    document.getElementById(tabName + 'Tab').classList.add('active');
+    document.getElementById(tabName + 'TabBtn').classList.add('active');
+    
+    // Debug addresses when switching to addresses tab
+    if (tabName === 'addresses') {
+        debugAddresses();
+        loadAddresses(); // Reload addresses when tab is shown
+    }
 }
 
 // Update profile
