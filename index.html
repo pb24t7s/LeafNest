@@ -6630,20 +6630,20 @@ function resendOTP() {
     }
 }
 
-// Save user data to localStorage
 function saveUserData() {
-    if (currentUser) {
-        const phoneKey = currentUser.phone.replace('+91 ', '');
+    if (currentUser && currentUser.phone) {
+        const phoneKey = currentUser.phone.replace('+91', '').replace(/\s+/g, ''); // Remove +91 and spaces
         localStorage.setItem('leafnest_user_' + phoneKey, JSON.stringify(currentUser));
         localStorage.setItem('leafnest_addresses_' + phoneKey, JSON.stringify(userAddresses));
         localStorage.setItem('leafnest_orders_' + phoneKey, JSON.stringify(userOrders));
+    } else {
+        console.warn('Cannot save user data: user or phone number is missing');
     }
 }
 
-// Load user data from localStorage
 function loadUserData() {
-    if (currentUser) {
-        const phoneKey = currentUser.phone.replace('+91 ', '');
+    if (currentUser && currentUser.phone) {
+        const phoneKey = currentUser.phone.replace('+91', '').replace(/\s+/g, '');
         userAddresses = JSON.parse(localStorage.getItem('leafnest_addresses_' + phoneKey) || '[]');
         userOrders = JSON.parse(localStorage.getItem('leafnest_orders_' + phoneKey) || '[]');
     }
