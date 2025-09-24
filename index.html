@@ -2954,7 +2954,8 @@
             font-size: 14px;
         }
     }
-            .location-btn {
+
+        .location-btn {
             background: linear-gradient(135deg, #4285f4 0%, #1976d2 100%);
             color: white;
             border: none;
@@ -2964,10 +2965,9 @@
             font-size: 0.9rem;
             margin-top: 0.5rem;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            width: fit-content;
+            display: block; /* Changed to block */
+            text-align: center; /* Center the text */
+            width: 100%; /* Full width */
         }
 
         .location-btn:hover {
@@ -3325,13 +3325,15 @@
                     </div>
                 </div>
                 <!-- Add this in your address form, after the address textarea -->
-                    <div class="form-group">
-                        <label>Complete Address *</label>
-                        <textarea id="addressFull" rows="3" required placeholder="House/Flat No, Street, Area, Landmark"></textarea>
+                <div class="form-group">
+                    <label>Complete Address *</label>
+                    <textarea id="addressFull" rows="3" required placeholder="House/Flat No, Street, Area, Landmark"></textarea>
+                    <div style="text-align: center; margin-top: 0.5rem;">
                         <button type="button" class="location-btn" onclick="useCurrentLocation()">
                             📍 Use Current Location
                         </button>
                     </div>
+                </div>
                 <!-- Orders Tab -->
                 <div class="tab-content" id="ordersTab">
                     <div class="orders-section">
