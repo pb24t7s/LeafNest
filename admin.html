@@ -3086,6 +3086,11 @@
 </style>
 </head>
 <body>
+    <!-- Floating Cart Button -->
+<button class="floating-cart" onclick="openCart()" aria-label="Shopping Cart" title="View Cart">
+    🛒
+    <span class="floating-cart-count" id="floatingCartCount">0</span>
+</button>
     <!-- Cart Overlay -->
     <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 
@@ -4482,12 +4487,8 @@
             <p style="margin-bottom: 1rem; opacity: 0.8; font-size: 0.9rem;">This is a GamesFortStudios Venture</p>
             <p>&copy; 2025 Leaf Nest. All rights reserved. Where Health Takes Roots.</p>
         </div>
-        
-   <!-- Floating Cart Button -->
-        <button class="floating-cart" onclick="openCart()" aria-label="Shopping Cart" title="View Cart">
-            🛒
-            <span class="floating-cart-count" id="floatingCartCount">0</span>
-        </button>
+
+  
 <script>
 
      
@@ -7886,6 +7887,7 @@ document.addEventListener('keydown', function(e) {
 });
 
     </script>
+    
 </body>
 </html>
 
