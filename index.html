@@ -3055,6 +3055,56 @@
     animation: cartPulse 0.3s ease;
 }
 
+/* Cart Quantity Selector */
+.cart-quantity-selector {
+    display: flex;
+    align-items: center;
+    background: rgba(168, 230, 163, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(168, 230, 163, 0.3);
+    margin-top: 0.5rem;
+}
+
+.cart-qty-btn {
+    background: rgba(168, 230, 163, 0.1);
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: #4a7c59;
+    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-qty-btn:hover {
+    background: rgba(168, 230, 163, 0.3);
+}
+
+.cart-qty-btn:active {
+    background: rgba(168, 230, 163, 0.5);
+}
+
+.cart-qty-btn.minus {
+    border-right: 1px solid rgba(168, 230, 163, 0.3);
+}
+
+.cart-qty-btn.plus {
+    border-left: 1px solid rgba(168, 230, 163, 0.3);
+}
+
+.cart-qty-display {
+    padding: 0 12px;
+    font-weight: 600;
+    color: #2c5530;
+    font-size: 0.9rem;
+    min-width: 60px;
+    text-align: center;
+}
 @keyframes cartPulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.2); }
@@ -3070,7 +3120,6 @@
     }
 }
 
-/* Mobile adjustments */
 /* Mobile adjustments */
 @media (max-width: 768px) {
     .floating-cart {
@@ -5184,7 +5233,7 @@ function recalculateBlendPrice(blendConfig, multiplier) {
     return Math.round(totalPrice * multiplier);
 }
     // Cart UI functions
-   function updateCartUI() {
+ function updateCartUI() {
     const cartCount = document.getElementById('cartCount');
     const mobileCartCount = document.getElementById('mobileCartCount');
     const floatingCartCount = document.getElementById('floatingCartCount');
@@ -5199,18 +5248,18 @@ function recalculateBlendPrice(blendConfig, multiplier) {
     // Update all cart counts
     cartCount.textContent = totalItems;
     mobileCartCount.textContent = totalItems;
-    floatingCartCount.textContent = totalItems;
+    if (floatingCartCount) floatingCartCount.textContent = totalItems;
     
     // Show/hide floating cart based on items
     if (totalItems > 0) {
         cartCount.classList.add('show');
-        floatingCart.classList.add('show'); // Show floating button
+        if (floatingCart) floatingCart.classList.add('show');
     } else {
         cartCount.classList.remove('show');
-        floatingCart.classList.remove('show'); // Hide floating button
+        if (floatingCart) floatingCart.classList.remove('show');
     }
     
-    // Update cart items display
+    // Update cart items display with quantity controls
     if (cart.length === 0) {
         cartItems.innerHTML = `
             <div class="empty-cart">
@@ -5228,7 +5277,11 @@ function recalculateBlendPrice(blendConfig, multiplier) {
                     <div class="cart-item-name">${item.name}</div>
                     <div class="cart-item-price">₹${item.price}</div>
                     <div class="cart-item-controls">
-                        <span style="font-size: 0.8rem; color: #666;">${item.quantity}g</span>
+                        <div class="cart-quantity-selector">
+                            <button class="cart-qty-btn minus" onclick="updateCartQuantity('${item.id}', 'decrease')">−</button>
+                            <span class="cart-qty-display">${item.quantity}g</span>
+                            <button class="cart-qty-btn plus" onclick="updateCartQuantity('${item.id}', 'increase')">+</button>
+                        </div>
                     </div>
                 </div>
                 <button class="remove-item" onclick="removeFromCart('${item.id}')">Remove</button>
@@ -5248,6 +5301,56 @@ function recalculateBlendPrice(blendConfig, multiplier) {
         const isInCart = cart.some(item => item.productId === productId);
         updateAddToCartButton(productId, isInCart);
     });
+}
+function updateCartQuantity(itemId, action) {
+    const itemIndex = cart.findIndex(item => item.id === itemId);
+    
+    if (itemIndex === -1) return;
+    
+    const item = cart[itemIndex];
+    const productId = item.productId;
+    const currentMultiplier = item.quantity / 100; // Convert back to multiplier
+    
+    let newMultiplier = currentMultiplier;
+    
+    if (action === 'increase' && currentMultiplier < 10) {
+        newMultiplier = currentMultiplier + 1;
+    } else if (action === 'decrease' && currentMultiplier > 1) {
+        newMultiplier = currentMultiplier - 1;
+    } else if (action === 'decrease' && currentMultiplier === 1) {
+        // Remove item if quantity reaches 0
+        removeFromCart(itemId);
+        return;
+    }
+    
+    // Calculate new price
+    const basePrice = productPrices[productId] ? productPrices[productId].base : 0;
+    const newPrice = Math.round(basePrice * newMultiplier);
+    const newQuantity = newMultiplier * 100;
+    
+    // Update the cart item
+    cart[itemIndex] = {
+        ...item,
+        quantity: newQuantity,
+        price: newPrice,
+        id: `${productId}-${newMultiplier}` // Update ID to reflect new quantity
+    };
+    
+    // Update the product card quantity if visible
+    const productQuantityInput = document.getElementById(`${productId}-cart-quantity`);
+    const productQuantityDisplay = document.getElementById(`${productId}-cart-quantity-display`);
+    if (productQuantityInput) {
+        productQuantityInput.value = newMultiplier;
+    }
+    if (productQuantityDisplay) {
+        productQuantityDisplay.textContent = newMultiplier;
+    }
+    
+    // Update price display on product card
+    updatePrice(productId);
+    
+    // Refresh cart UI
+    updateCartUI();
 }
    function clearCart() {
     debugCart('clearCart called - before clearing');
