@@ -578,7 +578,7 @@
     .mobile-menu-btn.active span:nth-child(3) {
         transform: rotate(45deg) translate(-5px, -6px);
     }
-   .mobile-nav {
+  .mobile-nav {
     display: none;
     position: fixed;
     top: 80px;
@@ -591,12 +591,17 @@
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
-    /* Add bottom padding for safe area */
-        padding-bottom: 20px;
-    }
-    .mobile-nav.active {
-        max-height: 500px; /* Increased from 400px to accommodate all items */
-    }
+    padding-bottom: 20px;
+    opacity: 0; /* Add opacity transition */
+    visibility: hidden; /* Add visibility */
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease; /* Combined transitions */
+}
+
+.mobile-nav.active {
+    max-height: 500px;
+    opacity: 1; /* Show when active */
+    visibility: visible; /* Show when active */
+}
 
     /* Add specific styling for mobile nav items */
     .mobile-nav ul {
@@ -2990,7 +2995,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    display: flex;
+    display: none; /* Hidden by default */
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
@@ -3000,7 +3005,9 @@
     z-index: 999;
     border: none;
 }
-
+.floating-cart.show {
+    display: flex; /* Show when items in cart */
+}
 .floating-cart:hover {
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 6px 20px rgba(74, 124, 89, 0.5);
@@ -3041,7 +3048,6 @@
     font-size: 0.75rem;
     font-weight: bold;
     border: 2px solid white;
-    display: none;
 }
 
 .floating-cart-count.show {
@@ -3054,12 +3060,17 @@
     50% { transform: scale(1.2); }
     100% { transform: scale(1); }
 }
+
+.floating-cart.pulse {
+    animation: cartPulse 0.5s ease;
+}
 @media (min-width: 769px) {
     .floating-cart {
         display: none;
     }
 }
 
+/* Mobile adjustments */
 /* Mobile adjustments */
 @media (max-width: 768px) {
     .floating-cart {
@@ -3080,6 +3091,11 @@
 </style>
 </head>
 <body>
+    <!-- Floating Cart Button -->
+<button class="floating-cart" onclick="openCart()" aria-label="Shopping Cart" title="View Cart">
+    🛒
+    <span class="floating-cart-count" id="floatingCartCount">0</span>
+</button>
     <!-- Cart Overlay -->
     <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 
@@ -4476,14 +4492,9 @@
             <p style="margin-bottom: 1rem; opacity: 0.8; font-size: 0.9rem;">This is a GamesFortStudios Venture</p>
             <p>&copy; 2025 Leaf Nest. All rights reserved. Where Health Takes Roots.</p>
         </div>
-    </footer>
-        <!-- Floating Cart Button -->
-        <button class="floating-cart" onclick="openCart()" aria-label="Shopping Cart">
-            🛒
-            <span class="floating-cart-count" id="floatingCartCount">0</span>
-        </button>
-    
-    <script>
+
+  
+<script>
 
      
     
@@ -4894,11 +4905,14 @@ function updateCartIfItemExists(productId, newMultiplier) {
      
     // Animate floating cart button
     const floatingCart = document.querySelector('.floating-cart');
-    if (floatingCart) {
-        floatingCart.style.animation = 'none';
+    if (floatingCart && floatingCart.classList.contains('show')) {
+        floatingCart.classList.remove('pulse');
         setTimeout(() => {
-            floatingCart.style.animation = 'cartPulse 0.5s ease';
+            floatingCart.classList.add('pulse');
         }, 10);
+        setTimeout(() => {
+            floatingCart.classList.remove('pulse');
+        }, 510);
     }
 }
 
@@ -5170,69 +5184,71 @@ function recalculateBlendPrice(blendConfig, multiplier) {
     return Math.round(totalPrice * multiplier);
 }
     // Cart UI functions
-    function updateCartUI() {
-        const cartCount = document.getElementById('cartCount');
-        const mobileCartCount = document.getElementById('mobileCartCount');
-        const floatingCartCount = document.getElementById('floatingCartCount'); // Add this
-        const cartItems = document.getElementById('cartItems');
-        const cartFooter = document.getElementById('cartFooter');
-        const cartTotal = document.getElementById('cartTotal');
-        
-        const totalItems = cart.reduce((sum, item) => sum + 1, 0);
-        const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
-        
-        // Update cart count
-        cartCount.textContent = totalItems;
-        mobileCartCount.textContent = totalItems;
-        floatingCartCount.textContent = totalItems; // Add this
-
-        if (totalItems > 0) {
-            cartCount.classList.add('show');
-            floatingCartCount.classList.add('show'); // Add this
-
-        } else {
-            cartCount.classList.remove('show');
-            floatingCartCount.classList.remove('show'); // Add this
-
-        }
-        
-        // Update cart items display
-        if (cart.length === 0) {
-            cartItems.innerHTML = `
-                <div class="empty-cart">
-                    <div class="empty-cart-icon">🛒</div>
-                    <p>Your cart is empty</p>
-                    <p style="font-size: 0.9rem; color: #999; margin-top: 0.5rem;">Add some fresh microgreens!</p>
-                </div>
-            `;
-            cartFooter.style.display = 'none';
-        } else {
-            cartItems.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <img src="${item.image}" alt="${item.name}" class="cart-item-image" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect width=%2260%22 height=%2260%22 fill=%22%23e8f5e8%22/><text x=%2230%22 y=%2235%22 text-anchor=%22middle%22 font-size=%2230%22>🌱</text></svg>'">
-                    <div class="cart-item-details">
-                        <div class="cart-item-name">${item.name}</div>
-                        <div class="cart-item-price">₹${item.price}</div>
-                        <div class="cart-item-controls">
-                            <span style="font-size: 0.8rem; color: #666;">${item.quantity}g</span>
-                        </div>
+   function updateCartUI() {
+    const cartCount = document.getElementById('cartCount');
+    const mobileCartCount = document.getElementById('mobileCartCount');
+    const floatingCartCount = document.getElementById('floatingCartCount');
+    const floatingCart = document.querySelector('.floating-cart');
+    const cartItems = document.getElementById('cartItems');
+    const cartFooter = document.getElementById('cartFooter');
+    const cartTotal = document.getElementById('cartTotal');
+    
+    const totalItems = cart.reduce((sum, item) => sum + 1, 0);
+    const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+    
+    // Update all cart counts
+    cartCount.textContent = totalItems;
+    mobileCartCount.textContent = totalItems;
+    floatingCartCount.textContent = totalItems;
+    
+    // Show/hide floating cart based on items
+    if (totalItems > 0) {
+        cartCount.classList.add('show');
+        floatingCart.classList.add('show'); // Show floating button
+    } else {
+        cartCount.classList.remove('show');
+        floatingCart.classList.remove('show'); // Hide floating button
+    }
+    
+    // Update cart items display
+    if (cart.length === 0) {
+        cartItems.innerHTML = `
+            <div class="empty-cart">
+                <div class="empty-cart-icon">🛒</div>
+                <p>Your cart is empty</p>
+                <p style="font-size: 0.9rem; color: #999; margin-top: 0.5rem;">Add some fresh microgreens!</p>
+            </div>
+        `;
+        cartFooter.style.display = 'none';
+    } else {
+        cartItems.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <img src="${item.image}" alt="${item.name}" class="cart-item-image" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect width=%2260%22 height=%2260%22 fill=%22%23e8f5e8%22/><text x=%2230%22 y=%2235%22 text-anchor=%22middle%22 font-size=%2230%22>🌱</text></svg>'">
+                <div class="cart-item-details">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-price">₹${item.price}</div>
+                    <div class="cart-item-controls">
+                        <span style="font-size: 0.8rem; color: #666;">${item.quantity}g</span>
                     </div>
-                    <button class="remove-item" onclick="removeFromCart('${item.id}')">Remove</button>
                 </div>
-            `).join('');
-            
-            cartFooter.style.display = 'block';
-            cartTotal.textContent = `₹${totalPrice}`;
-        }
-      localStorage.setItem('leafnest_cart', JSON.stringify(cart));
-     // Update all product button states
+                <button class="remove-item" onclick="removeFromCart('${item.id}')">Remove</button>
+            </div>
+        `).join('');
+        
+        cartFooter.style.display = 'block';
+        cartTotal.textContent = `₹${totalPrice}`;
+    }
+    
+    localStorage.setItem('leafnest_cart', JSON.stringify(cart));
+    
+    // Update all product button states
     const allProductIds = ['alfalfa', 'beetroot', 'cauliflower', 'chia', 'flax', 'mustard', 'pinkradish', 'sunflower', 'whiteradish', 'greengram'];
     
     allProductIds.forEach(productId => {
         const isInCart = cart.some(item => item.productId === productId);
         updateAddToCartButton(productId, isInCart);
     });
- }
+}
    function clearCart() {
     debugCart('clearCart called - before clearing');
     
@@ -7876,6 +7892,7 @@ document.addEventListener('keydown', function(e) {
 });
 
     </script>
+    
 </body>
 </html>
 
