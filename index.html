@@ -8159,103 +8159,94 @@ document.addEventListener('keydown', function(e) {
         }
     }
 });
-// ===== STATS COUNTER ANIMATION ===== //
 
-function animateCounterWithSuffix(element, target, suffix, duration = 2000) {
-    const start = 0;
-    const increment = target / (duration / 16);
-    let current = start;
-    
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            element.textContent = target + suffix;
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(current) + suffix;
-        }
-    }, 16);
-}
 
-function animateRangeStat(element, start, end, duration = 2000) {
-    let currentStart = 0;
-    let currentEnd = 0;
-    const incrementStart = start / (duration / 16);
-    const incrementEnd = end / (duration / 16);
-    
-    const timer = setInterval(() => {
-        currentStart += incrementStart;
-        currentEnd += incrementEnd;
+(function() {
+    function animateCounterWithSuffix(element, target, suffix, duration) {
+        duration = duration || 2000;
+        const start = 0;
+        const increment = target / (duration / 16);
+        let current = start;
         
-        if (currentStart >= start && currentEnd >= end) {
-            element.textContent = `${start}-${end}`;
-            clearInterval(timer);
-        } else {
-            element.textContent = `${Math.floor(currentStart)}-${Math.floor(currentEnd)}`;
-        }
-    }, 16);
-}
-
-// Initialize stats animation
-// Debug version - replace the initStatsAnimation function with this
-function initStatsAnimation() {
-    console.log('Stats animation initializing...');
-    
-    const statCards = document.querySelectorAll('.stat-card');
-    console.log('Found stat cards:', statCards.length);
-    
-    if (statCards.length === 0) {
-        console.error('No stat cards found! Check your HTML.');
-        return;
+        const timer = setInterval(function() {
+            current += increment;
+            if (current >= target) {
+                element.textContent = target + suffix;
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(current) + suffix;
+            }
+        }, 16);
     }
 
-    const observerOptions = {
-        threshold: 0.3,
-        rootMargin: '0px'
-    };
-
-    const statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            console.log('Stat card observed:', entry.isIntersecting);
+    function animateRangeStat(element, start, end, duration) {
+        duration = duration || 2000;
+        let currentStart = 0;
+        let currentEnd = 0;
+        const incrementStart = start / (duration / 16);
+        const incrementEnd = end / (duration / 16);
+        
+        const timer = setInterval(function() {
+            currentStart += incrementStart;
+            currentEnd += incrementEnd;
             
-            if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
-                console.log('Starting animation for card');
-                entry.target.classList.add('animated');
-                
-                const statNumber = entry.target.querySelector('.stat-number');
-                if (!statNumber) {
-                    console.error('No stat-number found in card');
-                    return;
-                }
-                
-                const targetValue = statNumber.getAttribute('data-target');
-                const suffix = statNumber.getAttribute('data-suffix') || '';
-                
-                console.log('Target:', targetValue, 'Suffix:', suffix);
-                
-                if (targetValue.includes('-')) {
-                    const [start, end] = targetValue.split('-').map(num => parseInt(num));
-                    animateRangeStat(statNumber, start, end, 2000);
-                } else {
-                    animateCounterWithSuffix(statNumber, parseInt(targetValue), suffix, 2000);
-                }
+            if (currentStart >= start && currentEnd >= end) {
+                element.textContent = start + '-' + end;
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(currentStart) + '-' + Math.floor(currentEnd);
             }
+        }, 16);
+    }
+
+    function initStatsAnimation() {
+        const statCards = document.querySelectorAll('.stat-card');
+        
+        if (statCards.length === 0) {
+            console.log('No stat cards found');
+            return;
+        }
+
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px'
+        };
+
+        const statsObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                    entry.target.classList.add('animated');
+                    
+                    const statNumber = entry.target.querySelector('.stat-number');
+                    if (!statNumber) return;
+                    
+                    const targetValue = statNumber.getAttribute('data-target');
+                    const suffix = statNumber.getAttribute('data-suffix') || '';
+                    
+                    if (targetValue.includes('-')) {
+                        const parts = targetValue.split('-');
+                        const start = parseInt(parts[0]);
+                        const end = parseInt(parts[1]);
+                        animateRangeStat(statNumber, start, end, 2000);
+                    } else {
+                        animateCounterWithSuffix(statNumber, parseInt(targetValue), suffix, 2000);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        statCards.forEach(function(card) {
+            statsObserver.observe(card);
         });
-    }, observerOptions);
+    }
 
-    statCards.forEach(card => {
-        statsObserver.observe(card);
-        console.log('Observing card:', card);
-    });
-}
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initStatsAnimation);
+    } else {
+        initStatsAnimation();
+    }
+})();
 
-// Call initialization after DOM is fully loaded
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initStatsAnimation);
-} else {
-    // DOM already loaded
-    initStatsAnimation();
-}
     </script>
     
 </body>
