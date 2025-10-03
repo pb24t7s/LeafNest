@@ -1744,30 +1744,21 @@
     }
 
     .tab-button {
-        flex: 1;
-        padding: 16px 12px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 600;
-        color: #6c757d;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        transition: all 0.3s ease;
-        position: relative;
-    }
+    flex: 1;
+    padding: 16px 12px;
+    background: white;
+    border: none;
+    cursor: default;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0ea5e9;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    position: relative;
+    border-bottom: 2px solid #0ea5e9;
+}
 
-    .tab-button.active {
-        color: #0ea5e9;
-        background: white;
-        border-bottom: 2px solid #0ea5e9;
-    }
-
-    .tab-button:hover:not(.active) {
-        color: #495057;
-    }
-
+    
     /* Tab Content */
     .login-tab-content {
         display: none;
@@ -3417,10 +3408,8 @@
                             <button class="close-login" onclick="closeLoginModal()">×</button>
                         </div>
                         
-                        <!-- Tab Buttons -->
                         <div class="login-tabs">
-                            <button class="tab-button active" id="otpTab" onclick="switchToOTP()">LOGIN WITH OTP</button>
-                            <button class="tab-button" id="passwordTab" onclick="switchToPassword()">LOGIN WITH PASSWORD</button>
+                            <button class="tab-button active" style="width: 100%; cursor: default;">LOGIN WITH OTP</button>
                         </div>
                         
                         <!-- OTP Login Content -->
@@ -3480,17 +3469,6 @@
                                         <span class="btn-text">VERIFY & LOGIN</span>
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Password Login Content (Placeholder) -->
-                        <div class="login-tab-content" id="passwordContent">
-                            <div class="step-content">
-                                <label class="input-label">Enter Password</label>
-                                <input type="password" class="password-input" placeholder="Enter your password">
-                                <button class="primary-btn">
-                                    <span class="btn-text">LOGIN</span>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -7207,7 +7185,7 @@ function openLoginModal() {
     document.getElementById('cartOverlay').classList.add('show');
     toggleUserMenu();
     
-    // Update login modal title if user is trying to checkout
+    // Update login modal title
     const loginHeader = document.querySelector('.login-header h2');
     if (cart.length > 0) {
         loginHeader.textContent = 'LOGIN TO CHECKOUT';
@@ -7872,20 +7850,7 @@ function addOrderToHistory(orderData) {
    userOrders.unshift(order); // Add to beginning of array
    saveUserData();
 }
-// Tab switching functionality
-function switchToOTP() {
-    document.getElementById('otpTab').classList.add('active');
-    document.getElementById('passwordTab').classList.remove('active');
-    document.getElementById('otpContent').classList.add('active');
-    document.getElementById('passwordContent').classList.remove('active');
-}
 
-function switchToPassword() {
-    document.getElementById('passwordTab').classList.add('active');
-    document.getElementById('otpTab').classList.remove('active');
-    document.getElementById('passwordContent').classList.add('active');
-    document.getElementById('otpContent').classList.remove('active');
-}
 
 // OTP input navigation
 function moveToNext(current, index) {
