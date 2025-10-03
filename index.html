@@ -3125,6 +3125,100 @@
         display: none;
     }
 }
+/* Professional Testimonials */
+.professional-testimonials {
+    background: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 100%);
+    padding: 80px 2rem;
+}
+
+.professional-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.professional-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(74, 124, 89, 0.1);
+    border: 2px solid #e8f5e8;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.professional-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(74, 124, 89, 0.15);
+    border-color: #a8e6a3;
+}
+
+.professional-image {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #4a7c59;
+    box-shadow: 0 5px 15px rgba(74, 124, 89, 0.2);
+}
+
+.professional-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.professional-info {
+    margin-bottom: 1.5rem;
+}
+
+.professional-name {
+    color: #2c5530;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.professional-credentials {
+    color: #4a7c59;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.professional-specialty {
+    color: #666;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.professional-quote {
+    position: relative;
+    background: #f8fffe;
+    padding: 1.5rem;
+    border-radius: 15px;
+    border-left: 4px solid #4a7c59;
+}
+
+.quote-icon {
+    font-size: 4rem;
+    color: #a8e6a3;
+    line-height: 0;
+    margin-bottom: 1rem;
+    font-family: serif;
+}
+
+.professional-quote p {
+    color: #556b5d;
+    font-size: 1rem;
+    line-height: 1.7;
+    text-align: left;
+    font-style: italic;
+}
+
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
@@ -3140,6 +3234,23 @@
         width: 22px;
         height: 22px;
         font-size: 0.7rem;
+    }
+    .professional-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .professional-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .professional-image {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .professional-name {
+        font-size: 1.3rem;
     }
 }
 
@@ -4453,7 +4564,49 @@
             </div>
         </div>
     </section>
+    <!-- Professional Testimonials Section - Add BEFORE customer testimonials -->
+    <section class="professional-testimonials">
+        <div class="testimonials-container">
+            <h2 class="section-title">Trusted by Healthcare Professionals</h2>
+            <p style="text-align: center; color: #666; max-width: 700px; margin: 0 auto 3rem;">
+                Leading doctors and nutritionists recommend Leaf Nest microgreens for optimal health and nutrition.
+            </p>
+            
+            <div class="professional-grid">
+                <!-- Dr. Sai Keerthi -->
+                <div class="professional-card">
+                    <div class="professional-image">
+                        <img src="images/doctors/dr-sai-keerthi.jpg" alt="Dr. Sai Keerthi" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22><circle cx=%2275%22 cy=%2275%22 r=%2275%22 fill=%22%234a7c59%22/><text x=%2275%22 y=%2285%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2248%22 font-family=%22Arial%22>SK</text></svg>'">
+                    </div>
+                    <div class="professional-info">
+                        <h3 class="professional-name">Dr. Sai Keerthi</h3>
+                        <p class="professional-credentials">MBBS, MD</p>
+                        <p class="professional-specialty">General Medicine</p>
+                    </div>
+                    <div class="professional-quote">
+                        <div class="quote-icon">"</div>
+                        <p>Microgreens from Leaf Nest are an excellent addition to a healthy diet. Their high nutrient density and freshness make them ideal for patients looking to improve their overall wellness naturally.</p>
+                    </div>
+                </div>
 
+                <!-- Dr. Sunil Jilla -->
+                <div class="professional-card">
+                    <div class="professional-image">
+                        <img src="images/doctors/dr-sunil-jilla.jpg" alt="Dr. Sunil Jilla" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22><circle cx=%2275%22 cy=%2275%22 r=%2275%22 fill=%22%234a7c59%22/><text x=%2775%22 y=%2285%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2248%22 font-family=%22Arial%22>SJ</text></svg>'">
+                    </div>
+                    <div class="professional-info">
+                        <h3 class="professional-name">Dr. Sunil Jilla</h3>
+                        <p class="professional-credentials">MBBS, MD</p>
+                        <p class="professional-specialty">Internal Medicine</p>
+                    </div>
+                    <div class="professional-quote">
+                        <div class="quote-icon">"</div>
+                        <p>I recommend Leaf Nest microgreens to my patients seeking natural nutrition sources. The quality and consistency of their produce is exceptional, and the health benefits are well-documented.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
       <!-- Testimonials -->
     <section class="testimonials">
         <div class="testimonials-container">
