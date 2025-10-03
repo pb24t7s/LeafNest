@@ -86,12 +86,12 @@
         gap: 1rem;
     }
    .logo-img {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     object-fit: contain; /* Changed from cover to contain */
     background: transparent; /* Changed from white to transparent */
-    padding: 2px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); /* Optional: adds subtle shadow */
+    padding: 0; /* Removed padding */
+    border: none; /* Removed border */
     }
     .logo-text {
         font-size: 1.8rem;
@@ -4523,21 +4523,22 @@
             
             <div class="nutrition-stats">
                 <div class="stat-card">
-                    <div class="stat-number">40x</div>
+                    <div class="stat-number" data-target="40">0</div>
                     <div class="stat-label">More Nutrients than Mature Plants</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">100%</div>
+                    <div class="stat-number" data-target="100">0</div>
                     <div class="stat-label">Organic & Chemical-Free</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">7-14</div>
+                    <div class="stat-number" data-target="7-14">0-0</div>
                     <div class="stat-label">Days from Seed to Harvest</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">24hr</div>
+                    <div class="stat-number" data-target="24">0</div>
                     <div class="stat-label">Fresh Delivery Promise</div>
                 </div>
+                
             </div>
         </div>
     </section>
@@ -7050,7 +7051,6 @@ async function handleRazorpayFailure(error, orderId) {
     });
 
     // Intersection observer for animations
-    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -7418,6 +7418,79 @@ function showTab(tabName) {
     }
 }
 
+// Number Rolling Animation for Stats
+function animateCounter(element, target, duration = 2000) {
+    const start = 0;
+    const increment = target / (duration / 16); // 60fps
+    let current = start;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = formatStatNumber(target);
+            clearInterval(timer);
+        } else {
+            element.textContent = formatStatNumber(Math.floor(current));
+        }
+    }, 16);
+}
+function formatStatNumber(num) {
+    // Format the number appropriately
+    if (num >= 1000) {
+        return num.toLocaleString();
+    }
+    return num.toString();
+}
+
+// Intersection Observer for triggering animation when visible
+const observerOptions = {
+    threshold: 0.5,
+    rootMargin: '0px'
+};
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+            entry.target.classList.add('animated');
+            const statNumber = entry.target.querySelector('.stat-number');
+            const targetValue = statNumber.getAttribute('data-target');
+            const suffix = statNumber.getAttribute('data-suffix') || '';
+            
+            if (targetValue.includes('-')) {
+                const [start, end] = targetValue.split('-').map(num => parseInt(num));
+                animateRangeStat(statNumber, start, end, 2000);
+            } else {
+                animateCounterWithSuffix(statNumber, parseInt(targetValue), suffix, 2000);
+            }
+        }
+    });
+}, observerOptions);
+
+// Add this special case function for the "7-14" stat
+function animateRangeStat(element, start, end, duration = 2000) {
+    let currentStart = 0;
+    let currentEnd = 0;
+    const incrementStart = start / (duration / 16);
+    const incrementEnd = end / (duration / 16);
+    
+    const timer = setInterval(() => {
+        currentStart += incrementStart;
+        currentEnd += incrementEnd;
+        
+        if (currentStart >= start && currentEnd >= end) {
+            element.textContent = `${start}-${end}`;
+            clearInterval(timer);
+        } else {
+            element.textContent = `${Math.floor(currentStart)}-${Math.floor(currentEnd)}`;
+        }
+    }, 16);
+}
+// Initialize stats animation when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+        statsObserver.observe(card);
+    });
+});
 
 async function updateProfile(event) {
     event.preventDefault();
@@ -8157,8 +8230,5 @@ document.addEventListener('keydown', function(e) {
     
 </body>
 </html>
-
-
-
 
 
