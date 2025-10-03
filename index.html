@@ -4523,11 +4523,11 @@
             
             <div class="nutrition-stats">
                 <div class="stat-card">
-                    <div class="stat-number" data-target="40">0</div>
+                    <div class="stat-number" data-target="40" data-suffix="x">0x</div>
                     <div class="stat-label">More Nutrients than Mature Plants</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" data-target="100">0</div>
+                    <div class="stat-number" data-target="100" data-suffix="%">0%</div>
                     <div class="stat-label">Organic & Chemical-Free</div>
                 </div>
                 <div class="stat-card">
@@ -4535,10 +4535,9 @@
                     <div class="stat-label">Days from Seed to Harvest</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" data-target="24">0</div>
+                    <div class="stat-number" data-target="24" data-suffix="hr">0hr</div>
                     <div class="stat-label">Fresh Delivery Promise</div>
                 </div>
-                
             </div>
         </div>
     </section>
@@ -7418,72 +7417,7 @@ function showTab(tabName) {
     }
 }
 
-// Number Rolling Animation for Stats
-function animateCounter(element, target, duration = 2000) {
-    const start = 0;
-    const increment = target / (duration / 16); // 60fps
-    let current = start;
-    
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            element.textContent = formatStatNumber(target);
-            clearInterval(timer);
-        } else {
-            element.textContent = formatStatNumber(Math.floor(current));
-        }
-    }, 16);
-}
-function formatStatNumber(num) {
-    // Format the number appropriately
-    if (num >= 1000) {
-        return num.toLocaleString();
-    }
-    return num.toString();
-}
 
-// Intersection Observer for triggering animation when visible
-const observerOptions = {
-    threshold: 0.5,
-    rootMargin: '0px'
-};
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
-            entry.target.classList.add('animated');
-            const statNumber = entry.target.querySelector('.stat-number');
-            const targetValue = statNumber.getAttribute('data-target');
-            const suffix = statNumber.getAttribute('data-suffix') || '';
-            
-            if (targetValue.includes('-')) {
-                const [start, end] = targetValue.split('-').map(num => parseInt(num));
-                animateRangeStat(statNumber, start, end, 2000);
-            } else {
-                animateCounterWithSuffix(statNumber, parseInt(targetValue), suffix, 2000);
-            }
-        }
-    });
-}, observerOptions);
-
-// Add this special case function for the "7-14" stat
-function animateRangeStat(element, start, end, duration = 2000) {
-    let currentStart = 0;
-    let currentEnd = 0;
-    const incrementStart = start / (duration / 16);
-    const incrementEnd = end / (duration / 16);
-    
-    const timer = setInterval(() => {
-        currentStart += incrementStart;
-        currentEnd += incrementEnd;
-        
-        if (currentStart >= start && currentEnd >= end) {
-            element.textContent = `${start}-${end}`;
-            clearInterval(timer);
-        } else {
-            element.textContent = `${Math.floor(currentStart)}-${Math.floor(currentEnd)}`;
-        }
-    }, 16);
-}
 // Initialize stats animation when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     const statCards = document.querySelectorAll('.stat-card');
@@ -8225,7 +8159,103 @@ document.addEventListener('keydown', function(e) {
         }
     }
 });
+// ===== STATS COUNTER ANIMATION ===== //
 
+function animateCounterWithSuffix(element, target, suffix, duration = 2000) {
+    const start = 0;
+    const increment = target / (duration / 16);
+    let current = start;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target + suffix;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current) + suffix;
+        }
+    }, 16);
+}
+
+function animateRangeStat(element, start, end, duration = 2000) {
+    let currentStart = 0;
+    let currentEnd = 0;
+    const incrementStart = start / (duration / 16);
+    const incrementEnd = end / (duration / 16);
+    
+    const timer = setInterval(() => {
+        currentStart += incrementStart;
+        currentEnd += incrementEnd;
+        
+        if (currentStart >= start && currentEnd >= end) {
+            element.textContent = `${start}-${end}`;
+            clearInterval(timer);
+        } else {
+            element.textContent = `${Math.floor(currentStart)}-${Math.floor(currentEnd)}`;
+        }
+    }, 16);
+}
+
+// Initialize stats animation
+// Debug version - replace the initStatsAnimation function with this
+function initStatsAnimation() {
+    console.log('Stats animation initializing...');
+    
+    const statCards = document.querySelectorAll('.stat-card');
+    console.log('Found stat cards:', statCards.length);
+    
+    if (statCards.length === 0) {
+        console.error('No stat cards found! Check your HTML.');
+        return;
+    }
+
+    const observerOptions = {
+        threshold: 0.3,
+        rootMargin: '0px'
+    };
+
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            console.log('Stat card observed:', entry.isIntersecting);
+            
+            if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                console.log('Starting animation for card');
+                entry.target.classList.add('animated');
+                
+                const statNumber = entry.target.querySelector('.stat-number');
+                if (!statNumber) {
+                    console.error('No stat-number found in card');
+                    return;
+                }
+                
+                const targetValue = statNumber.getAttribute('data-target');
+                const suffix = statNumber.getAttribute('data-suffix') || '';
+                
+                console.log('Target:', targetValue, 'Suffix:', suffix);
+                
+                if (targetValue.includes('-')) {
+                    const [start, end] = targetValue.split('-').map(num => parseInt(num));
+                    animateRangeStat(statNumber, start, end, 2000);
+                } else {
+                    animateCounterWithSuffix(statNumber, parseInt(targetValue), suffix, 2000);
+                }
+            }
+        });
+    }, observerOptions);
+
+    statCards.forEach(card => {
+        statsObserver.observe(card);
+        console.log('Observing card:', card);
+    });
+}
+
+// Call initialization after DOM is fully loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStatsAnimation);
+} else {
+    // DOM already loaded
+    initStatsAnimation();
+}
     </script>
     
 </body>
