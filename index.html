@@ -1361,20 +1361,26 @@
         text-align: center;
         position: relative;
     }
-    .why-choose-circle {
-        width: 300px;
-        height: 300px;
-        background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
-        border-radius: 50%;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 4rem;
-        color: white;
-        position: relative;
-        animation: pulse 2s ease-in-out infinite;
-    }
+   .why-choose-circle {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, #a8e6a3 0%, #4a7c59 100%);
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: pulse 2s ease-in-out infinite;
+    overflow: hidden; /* Important for circular image crop */
+}
+
+.why-choose-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills circle without distortion */
+    border-radius: 50%;
+}
     @keyframes pulse {
         0% {
             box-shadow: 0 0 0 0 rgba(168, 230, 163, 0.7);
@@ -4441,7 +4447,8 @@
                     </ul>
                 </div>
                 <div class="why-choose-visual">
-                    <div class="why-choose-circle">🌱</div>
+                    <div class="why-choose-circle">
+                    <img src="images/microgreens-circle.jpg" alt="Fresh Microgreens">
                 </div>
             </div>
         </div>
