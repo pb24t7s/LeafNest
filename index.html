@@ -86,13 +86,13 @@
         gap: 1rem;
     }
    .logo-img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     object-fit: contain; /* Changed from cover to contain */
     background: transparent; /* Changed from white to transparent */
     padding: 0; /* Removed padding */
     border: none; /* Removed border */
-    }
+        }
     .logo-text {
         font-size: 1.8rem;
         font-weight: 700;
@@ -7050,6 +7050,7 @@ async function handleRazorpayFailure(error, orderId) {
     });
 
     // Intersection observer for animations
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -7417,53 +7418,6 @@ function showTab(tabName) {
     }
 }
 
-// Number Rolling Animation for Stats
-function animateCounter(element, target, duration = 2000) {
-    const start = 0;
-    const increment = target / (duration / 16); // 60fps
-    let current = start;
-    
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            element.textContent = formatStatNumber(target);
-            clearInterval(timer);
-        } else {
-            element.textContent = formatStatNumber(Math.floor(current));
-        }
-    }, 16);
-}
-function formatStatNumber(num) {
-    // Format the number appropriately
-    if (num >= 1000) {
-        return num.toLocaleString();
-    }
-    return num.toString();
-}
-
-// Intersection Observer for triggering animation when visible
-const observerOptions = {
-    threshold: 0.5,
-    rootMargin: '0px'
-};
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
-            entry.target.classList.add('animated');
-            const statNumber = entry.target.querySelector('.stat-number');
-            const targetValue = parseInt(statNumber.getAttribute('data-target'));
-            animateCounter(statNumber, targetValue, 2000);
-        }
-    });
-}, observerOptions);
-
-// Initialize stats animation when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    const statCards = document.querySelectorAll('.stat-card');
-    statCards.forEach(card => {
-        statsObserver.observe(card);
-    });
-});
 
 async function updateProfile(event) {
     event.preventDefault();
