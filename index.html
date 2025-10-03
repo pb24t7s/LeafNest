@@ -85,14 +85,13 @@
         align-items: center;
         gap: 1rem;
     }
-    .logo-img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: white;
-        padding: 2px;
-        object-fit: cover;
-        border: 2px solid rgba(255, 255, 255, 0.3);
+   .logo-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain; /* Changed from cover to contain */
+    background: transparent; /* Changed from white to transparent */
+    padding: 0; /* Removed padding */
+    border: none; /* Removed border */
     }
     .logo-text {
         font-size: 1.8rem;
