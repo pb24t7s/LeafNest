@@ -4297,7 +4297,119 @@
         </button>
     </div>
 </div>
+<!-- Purple Radish Microgreens -->
+<div class="product-card">
+    <img src="images/products/purple-radish-microgreens.jpg" alt="Fresh Purple Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <div class="product-icon" style="display: none;">🟣</div>
+    <h3>Purple Radish Microgreens</h3>
+    <p>Vibrant purple color with peppery, spicy flavor. High in anthocyanins and antioxidants.</p>
+    <ul class="product-features">
+        <li>Rich in anthocyanins</li>
+        <li>Bold, peppery taste</li>
+        <li>Stunning purple stems</li>
+    </ul>
+    
+    <div class="nutrition-calculator">
+        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+        <div class="calculator-controls">
+            <div class="control-group">
+                <label class="control-label">Mineral/Vitamin</label>
+                <select class="calculator-select" id="purpleradish-mineral" onchange="calculateNutrition('purpleradish')">
+                    <option value="vitamin-c">Vitamin C</option>
+                    <option value="anthocyanins">Anthocyanins</option>
+                    <option value="vitamin-k">Vitamin K</option>
+                    <option value="folate">Folate</option>
+                    <option value="potassium">Potassium</option>
+                    <option value="fiber">Fiber</option>
+                </select>
+            </div>
+        </div>
+        <div class="nutrition-result" id="purpleradish-result">
+            <span class="result-value">310</span><span class="result-unit">mg Vitamin C</span>
+        </div>
+    </div>
 
+    <div class="product-purchase">
+        <h4 class="purchase-title">🛒 Add to Cart</h4>
+        <div class="purchase-options">
+            <div class="quantity-selector-container">
+                <label class="option-label">Quantity</label>
+                <div class="quantity-selector">
+                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('purpleradish')">−</button>
+                    <div class="quantity-display">
+                        <span class="quantity-number" id="purpleradish-cart-quantity-display">1</span>
+                        <span class="quantity-unit">× 100g</span>
+                    </div>
+                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('purpleradish')">+</button>
+                </div>
+                <input type="hidden" id="purpleradish-cart-quantity" value="1">
+            </div>
+        </div>
+        <div class="price-display">
+            <span class="price-amount" id="purpleradish-price">₹95</span>
+        </div>
+        <button class="add-to-cart-btn" onclick="addToCart('purpleradish', 'Purple Radish Microgreens')">
+            Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Broccoli Microgreens -->
+<div class="product-card">
+    <img src="images/products/broccoli-microgreens.jpg" alt="Fresh Broccoli Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <div class="product-icon" style="display: none;">🥦</div>
+    <h3>Broccoli Microgreens</h3>
+    <p>Mild, fresh broccoli flavor packed with sulforaphane. Excellent cancer-fighting properties.</p>
+    <ul class="product-features">
+        <li>Highest sulforaphane content</li>
+        <li>Mild, pleasant taste</li>
+        <li>Powerful antioxidants</li>
+    </ul>
+    
+    <div class="nutrition-calculator">
+        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+        <div class="calculator-controls">
+            <div class="control-group">
+                <label class="control-label">Mineral/Vitamin</label>
+                <select class="calculator-select" id="broccoli-mineral" onchange="calculateNutrition('broccoli')">
+                    <option value="sulforaphane">Sulforaphane</option>
+                    <option value="vitamin-c">Vitamin C</option>
+                    <option value="vitamin-k">Vitamin K</option>
+                    <option value="vitamin-a">Vitamin A</option>
+                    <option value="folate">Folate</option>
+                    <option value="calcium">Calcium</option>
+                </select>
+            </div>
+        </div>
+        <div class="nutrition-result" id="broccoli-result">
+            <span class="result-value">115</span><span class="result-unit">mg Sulforaphane</span>
+        </div>
+    </div>
+
+    <div class="product-purchase">
+        <h4 class="purchase-title">🛒 Add to Cart</h4>
+        <div class="purchase-options">
+            <div class="quantity-selector-container">
+                <label class="option-label">Quantity</label>
+                <div class="quantity-selector">
+                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('broccoli')">−</button>
+                    <div class="quantity-display">
+                        <span class="quantity-number" id="broccoli-cart-quantity-display">1</span>
+                        <span class="quantity-unit">× 100g</span>
+                    </div>
+                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('broccoli')">+</button>
+                </div>
+                <input type="hidden" id="broccoli-cart-quantity" value="1">
+            </div>
+        </div>
+        <div class="price-display">
+            <span class="price-amount" id="broccoli-price">₹100</span>
+        </div>
+        <button class="add-to-cart-btn" onclick="addToCart('broccoli', 'Broccoli Microgreens')">
+            Add to Cart
+        </button>
+    </div>
+</div>
     </section>
 
     <!-- Custom Blend Calculator Section -->
@@ -4450,7 +4562,36 @@
                                 <input type="range" min="0" max="100" value="0" class="slider-input" id="greengram-range" oninput="updatePercentage('greengram')">
                             </div>
                         </div>
-                  </div>
+
+                        <div class="microgreen-control" id="purpleradish-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="purpleradish-check" onchange="toggleMicrogreen('purpleradish')">
+                                <label for="purpleradish-check">🟣 Purple Radish</label>
+                            </div>
+                            <div class="percentage-slider" id="purpleradish-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="purpleradish-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="purpleradish-range" oninput="updatePercentage('purpleradish')">
+                            </div>
+                        </div>
+
+                        <div class="microgreen-control" id="broccoli-control">
+                            <div class="microgreen-checkbox">
+                                <input type="checkbox" id="broccoli-check" onchange="toggleMicrogreen('broccoli')">
+                                <label for="broccoli-check">🥦 Broccoli</label>
+                            </div>
+                            <div class="percentage-slider" id="broccoli-slider">
+                                <div class="slider-label">
+                                    <span>Percentage:</span>
+                                    <span id="broccoli-percent">0%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="0" class="slider-input" id="broccoli-range" oninput="updatePercentage('broccoli')">
+                            </div>
+                        </div>
+                        
+                   </div>
                     
                     <div class="blend-results">
                         <h3 class="results-title">Your Custom Blend</h3>
@@ -4765,6 +4906,22 @@
         'folate': { value: 180, unit: 'mcg' },
         'iron': { value: 2.8, unit: 'mg' },
         'fiber': { value: 4.2, unit: 'g' }
+    },
+    'purpleradish': {
+        'vitamin-c': { value: 310, unit: 'mg' },
+        'anthocyanins': { value: 195, unit: 'mg' },
+        'vitamin-k': { value: 142, unit: 'mcg' },
+        'folate': { value: 118, unit: 'mcg' },
+        'potassium': { value: 295, unit: 'mg' },
+        'fiber': { value: 2.6, unit: 'g' }
+    },
+    'broccoli': {
+        'sulforaphane': { value: 115, unit: 'mg' },
+        'vitamin-c': { value: 89, unit: 'mg' },
+        'vitamin-k': { value: 110, unit: 'mcg' },
+        'vitamin-a': { value: 623, unit: 'mcg' },
+        'folate': { value: 108, unit: 'mcg' },
+        'calcium': { value: 47, unit: 'mg' }
     }
 };
     // Add this debug function after line 1850
@@ -4816,7 +4973,9 @@
     'pinkradish': { base: 95 },
     'sunflower': { base: 70 },
     'whiteradish': { base: 85 },
-    'greengram': { base: 85 }
+    'greengram': { base: 85 },
+    'purpleradish': { base: 95 }, 
+    'broccoli': { base: 100 }      
 
 };
     // Custom blend pricing
@@ -4830,7 +4989,9 @@
     'pinkradish': 95,
     'sunflower': 70,
     'whiteradish': 85,
-    'greengram': 85
+    'greengram': 85,
+    'purpleradish': 95, 
+    'broccoli': 100  
 };
 
 
@@ -5178,7 +5339,7 @@ function updateAddToCartButton(productId, isAdded) {
 }
 function initializeCustomBlend() {
     // Reset all microgreen selections on page load
-    const microgreens = ['alfalfa', 'beetroot', 'cauliflower', 'chia', 'flax', 'mustard', 'pinkradish', 'sunflower', 'whiteradish', 'greengram'];
+    const microgreens = ['alfalfa', 'beetroot', 'cauliflower', 'chia', 'flax', 'mustard', 'pinkradish', 'sunflower', 'whiteradish', 'greengram', 'purpleradish', 'broccoli'];
     
     activeMicrogreens = []; // Clear the active microgreens array
     
@@ -7105,7 +7266,8 @@ window.addEventListener('beforeunload', function() {
         });
         
         // Initialize nutrition calculators
-            const microgreens = ['alfalfa', 'beetroot', 'cauliflower', 'chia', 'flax', 'mustard', 'pinkradish', 'sunflower', 'whiteradish', 'greengram'];        microgreens.forEach(mg => {
+            const microgreens = ['alfalfa', 'beetroot', 'cauliflower', 'chia', 'flax', 'mustard', 'pinkradish', 'sunflower', 'whiteradish', 'greengram', 'purpleradish', 'broccoli'];     
+             microgreens.forEach(mg => {
             if (document.getElementById(`${mg}-quantity`)) {
                 calculateNutrition(mg);
             }
