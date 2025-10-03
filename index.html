@@ -3520,67 +3520,113 @@
                 <span></span>
             </button>
         </nav>
-        <!-- Profile Modal -->
-        <div class="profile-modal" id="profileModal">
-            <div class="profile-content">
-                <div class="profile-header">
-                    <h2>👤 My Profile</h2>
-                    <button class="close-profile" onclick="closeProfileModal()">✕</button>
-                </div>
-                
-                <div class="profile-tabs">
-                    <button class="tab-btn active" onclick="showTab('profile')" id="profileTabBtn">Profile</button>
-                    <button class="tab-btn" onclick="showTab('addresses')" id="addressesTabBtn">Addresses</button>
-                    <button class="tab-btn" onclick="showTab('orders')" id="ordersTabBtn">Orders</button>
-                </div>
-                
-               <!-- Profile Tab -->
-                    <div class="tab-content active" id="profileTab">
-                        <form id="profileForm" onsubmit="updateProfile(event)">
-                            <div class="profile-section">
-                                <h3>Personal Information</h3>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>First Name *</label>
-                                        <input type="text" id="editFirstName" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Last Name</label>
-                                        <input type="text" id="editLastName">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Phone Number</label>
-                                    <input type="tel" id="editPhone" disabled style="background: #f5f5f5;">
-                                    <small style="color: #666; font-size: 0.8rem;">Contact us to change your phone number</small>
-                                </div>
-                                <div class="form-group">
-                                    <label>Email Address</label>
-                                    <input type="email" id="editEmail" placeholder="your.email@example.com">
-                                </div>
-                            </div>
-                            <button type="submit" class="save-btn">💾 Save Changes</button>
-                        </form>
-                    </div>
-                                    
-                <!-- Addresses Tab -->
-                <div class="tab-content" id="addressesTab">
-                    <div class="addresses-section">
-                        <div class="section-header">
-                            <h3>Saved Addresses</h3>
-                            <button class="add-btn" onclick="addNewAddress()">➕ Add Address</button>
+      <!-- Profile Modal -->
+<div class="profile-modal" id="profileModal">
+    <div class="profile-content">
+        <div class="profile-header">
+            <h2>👤 My Profile</h2>
+            <button class="close-profile" onclick="closeProfileModal()">✕</button>
+        </div>
+        
+        <div class="profile-tabs">
+            <button class="tab-btn active" onclick="showTab('profile')" id="profileTabBtn">Profile</button>
+            <button class="tab-btn" onclick="showTab('addresses')" id="addressesTabBtn">Addresses</button>
+            <button class="tab-btn" onclick="showTab('orders')" id="ordersTabBtn">Orders</button>
+        </div>
+        
+        <!-- Profile Tab -->
+        <div class="tab-content active" id="profileTab">
+            <form id="profileForm" onsubmit="updateProfile(event)">
+                <div class="profile-section">
+                    <h3>Personal Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name *</label>
+                            <input type="text" id="editFirstName" required>
                         </div>
-                        <div class="addresses-list" id="addressesList">
-                            <div class="empty-state">
-                                <div style="font-size: 3rem; margin-bottom: 1rem;">📍</div>
-                                <p>No saved addresses yet</p>
-                                <small>Add an address to make checkout faster</small>
-                            </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="editLastName">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="editPhone" disabled style="background: #f5f5f5;">
+                        <small style="color: #666; font-size: 0.8rem;">Contact us to change your phone number</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="editEmail" placeholder="your.email@example.com">
+                    </div>
+                </div>
+                <button type="submit" class="save-btn">💾 Save Changes</button>
+            </form>
+        </div>
+                        
+        <!-- Addresses Tab -->
+        <div class="tab-content" id="addressesTab">
+            <div class="addresses-section">
+                <div class="section-header">
+                    <h3>Saved Addresses</h3>
+                    <button class="add-btn" onclick="addNewAddress()">➕ Add Address</button>
+                </div>
+                <div class="addresses-list" id="addressesList">
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📍</div>
+                        <p>No saved addresses yet</p>
+                        <small>Add an address to make checkout faster</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div class="tab-content" id="ordersTab">
+            <div class="orders-section">
+                <h3>Order History</h3>
+                <div class="orders-list" id="ordersList">
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+                        <p>No orders yet</p>
+                        <small>Your order history will appear here</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Address Modal (COMPLETELY SEPARATE) -->
+<div class="address-modal" id="addressModal">
+    <div class="address-content">
+        <div class="address-header">
+            <h2 id="addressTitle">📍 Add New Address</h2>
+            <button class="close-address" onclick="closeAddressModal()">✕</button>
+        </div>
+        
+        <form id="addressForm" onsubmit="saveAddress(event)">
+            <div class="address-form-content">
+                <div class="form-group">
+                    <label>Address Label *</label>
+                    <select id="addressLabel" required>
+                        <option value="">Select label</option>
+                        <option value="home">🏠 Home</option>
+                        <option value="work">🏢 Work</option>
+                        <option value="other">📍 Other</option>
+                    </select>
                 </div>
                 
-                <!-- Add this in your address form, after the address textarea -->
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="addressName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="addressPhone" required maxlength="10" placeholder="9876543210">
+                </div>
+                
                 <div class="form-group">
                     <label>Complete Address *</label>
                     <textarea id="addressFull" rows="3" required placeholder="House/Flat No, Street, Area, Landmark"></textarea>
@@ -3590,101 +3636,50 @@
                         </button>
                     </div>
                 </div>
-
-              <!-- Orders Tab -->
-                <div class="tab-content" id="ordersTab">
-                    <div class="orders-section">
-                        <h3>Order History</h3>
-                        <div class="orders-list" id="ordersList">
-                            <div class="empty-state">
-                                <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
-                                <p>No orders yet</p>
-                                <small>Your order history will appear here</small>
-                            </div>
-                        </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Area *</label>
+                        <select id="addressArea" required>
+                            <option value="">Select Area</option>
+                            <option value="banjara-hills">Banjara Hills</option>
+                            <option value="jubilee-hills">Jubilee Hills</option>
+                            <option value="gachibowli">Gachibowli</option>
+                            <option value="hitech-city">Hitech City</option>
+                            <option value="kondapur">Kondapur</option>
+                            <option value="madhapur">Madhapur</option>
+                            <option value="begumpet">Begumpet</option>
+                            <option value="secunderabad">Secunderabad</option>
+                            <option value="ameerpet">Ameerpet</option>
+                            <option value="kukatpally">Kukatpally</option>
+                            <option value="miyapur">Miyapur</option>
+                            <option value="uppal">Uppal</option>
+                            <option value="dilsukhnagar">Dilsukhnagar</option>
+                            <option value="lb-nagar">LB Nagar</option>
+                            <option value="other">Other</option>
+                        </select>
                     </div>
-                </div>
-            </div>
-        
-
-        <!-- Address Modal -->
-        <div class="address-modal" id="addressModal">
-            <div class="address-content">
-                <div class="address-header">
-                    <h2 id="addressTitle">📍 Add New Address</h2>
-                    <button class="close-address" onclick="closeAddressModal()">✕</button>
+                    <div class="form-group">
+                        <label>Pincode *</label>
+                        <input type="text" id="addressPincode" required maxlength="6" placeholder="500001">
+                    </div>
                 </div>
                 
-                <form id="addressForm" onsubmit="saveAddress(event)">
-                    <div class="address-form-content">
-                        <div class="form-group">
-                            <label>Address Label *</label>
-                            <select id="addressLabel" required>
-                                <option value="">Select label</option>
-                                <option value="home">🏠 Home</option>
-                                <option value="work">🏢 Work</option>
-                                <option value="other">📍 Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Full Name *</label>
-                            <input type="text" id="addressName" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Phone Number *</label>
-                            <input type="tel" id="addressPhone" required maxlength="10" placeholder="9876543210">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Complete Address *</label>
-                            <textarea id="addressFull" rows="3" required placeholder="House/Flat No, Street, Area, Landmark"></textarea>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Area *</label>
-                                <select id="addressArea" required>
-                                    <option value="">Select Area</option>
-                                    <option value="banjara-hills">Banjara Hills</option>
-                                    <option value="jubilee-hills">Jubilee Hills</option>
-                                    <option value="gachibowli">Gachibowli</option>
-                                    <option value="hitech-city">Hitech City</option>
-                                    <option value="kondapur">Kondapur</option>
-                                    <option value="madhapur">Madhapur</option>
-                                    <option value="begumpet">Begumpet</option>
-                                    <option value="secunderabad">Secunderabad</option>
-                                    <option value="ameerpet">Ameerpet</option>
-                                    <option value="kukatpally">Kukatpally</option>
-                                    <option value="miyapur">Miyapur</option>
-                                    <option value="uppal">Uppal</option>
-                                    <option value="dilsukhnagar">Dilsukhnagar</option>
-                                    <option value="lb-nagar">LB Nagar</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Pincode *</label>
-                                <input type="text" id="addressPincode" required maxlength="6" placeholder="500001">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="setDefaultAddress">
-                                <span>Make this my default address</span>
-                            </label>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button type="button" onclick="closeAddressModal()" class="cancel-btn">Cancel</button>
-                            <button type="submit" class="save-btn">💾 Save Address</button>
-                        </div>
-                    </div>
-                </form>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="setDefaultAddress">
+                        <span>Make this my default address</span>
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" onclick="closeAddressModal()" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">💾 Save Address</button>
+                </div>
             </div>
-        </div>
+        </form>
+    </div>
+</div>
         <!-- Mobile Navigation -->
             <nav class="mobile-nav" id="mobileNav">
                 <ul>
