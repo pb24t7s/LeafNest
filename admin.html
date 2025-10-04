@@ -618,78 +618,93 @@
         const storage = firebase.storage();
 
         // Product data structure
-        const defaultProducts = {
-            'alfalfa': {
-                name: 'Alfalfa Microgreens',
-                basePrice: 75,
-                available: true,
-                description: 'Mild, nutty flavor with tender leaves. Rich in protein and essential vitamins.',
-                icon: '🌱'
-            },
-            'beetroot': {
-                name: 'Beetroot Microgreens',
-                basePrice: 90,
-                available: true,
-                description: 'Earthy, sweet flavor with vibrant purple stems. Packed with antioxidants.',
-                icon: '🟣'
-            },
-            'cauliflower': {
-                name: 'Cauliflower Microgreens',
-                basePrice: 85,
-                available: true,
-                description: 'Mild cabbage-like flavor with crisp texture. Excellent source of sulforaphane.',
-                icon: '🥦'
-            },
-            'chia': {
-                name: 'Chia Microgreens',
-                basePrice: 120,
-                available: true,
-                description: 'Delicate, mild flavor with incredible nutritional density. Rich in omega-3.',
-                icon: '🌿'
-            },
-            'flax': {
-                name: 'Flax Microgreens',
-                basePrice: 110,
-                available: true,
-                description: 'Nutty, slightly bitter flavor. Exceptional source of lignans and ALA.',
-                icon: '🌾'
-            },
-            'mustard': {
-                name: 'Mustard Microgreens',
-                basePrice: 80,
-                available: true,
-                description: 'Spicy, peppery kick with bold flavor. High in vitamins A, C, and K.',
-                icon: '🌶️'
-            },
-            'pinkradish': {
-                name: 'Pink Radish Microgreens',
-                basePrice: 95,
-                available: true,
-                description: 'Beautiful pink stems with spicy radish flavor. Perfect for garnishing.',
-                icon: '🌸'
-            },
-            'sunflower': {
-                name: 'Sunflower Microgreens',
-                basePrice: 70,
-                available: true,
-                description: 'Nutty flavor with satisfying crunch. Packed with healthy fats and vitamin E.',
-                icon: '🌻'
-            },
-            'whiteradish': {
-                name: 'White Radish Microgreens',
-                basePrice: 85,
-                available: true,
-                description: 'Clean, crisp flavor with mild spiciness. Classic radish taste.',
-                icon: '⚪'
-            },
-            'greengram': {
-                name: 'GreenGram Microgreens',
-                basePrice: 85,
-                available: true,
-                description: 'Fresh, crisp mung bean sprouts with mild, nutty flavor. Excellent source of protein and folate.',
-                icon: '🟢'
-            }
-        };
+        // Product data structure
+const defaultProducts = {
+    'alfalfa': {
+        name: 'Alfalfa Microgreens',
+        basePrice: 75,
+        available: true,
+        description: 'Mild, nutty flavor with tender leaves. Rich in protein and essential vitamins.',
+        icon: '🌱'
+    },
+    'beetroot': {
+        name: 'Beetroot Microgreens',
+        basePrice: 90,
+        available: true,
+        description: 'Earthy, sweet flavor with vibrant purple stems. Packed with antioxidants.',
+        icon: '🟣'
+    },
+    'cauliflower': {
+        name: 'Cauliflower Microgreens',
+        basePrice: 85,
+        available: true,
+        description: 'Mild cabbage-like flavor with crisp texture. Excellent source of sulforaphane.',
+        icon: '🥦'
+    },
+    'chia': {
+        name: 'Chia Microgreens',
+        basePrice: 120,
+        available: true,
+        description: 'Delicate, mild flavor with incredible nutritional density. Rich in omega-3.',
+        icon: '🌿'
+    },
+    'flax': {
+        name: 'Flax Microgreens',
+        basePrice: 110,
+        available: true,
+        description: 'Nutty, slightly bitter flavor. Exceptional source of lignans and ALA.',
+        icon: '🌾'
+    },
+    'mustard': {
+        name: 'Mustard Microgreens',
+        basePrice: 80,
+        available: true,
+        description: 'Spicy, peppery kick with bold flavor. High in vitamins A, C, and K.',
+        icon: '🌶️'
+    },
+    'pinkradish': {
+        name: 'Pink Radish Microgreens',
+        basePrice: 95,
+        available: true,
+        description: 'Beautiful pink stems with spicy radish flavor. Perfect for garnishing.',
+        icon: '🌸'
+    },
+    'sunflower': {
+        name: 'Sunflower Microgreens',
+        basePrice: 70,
+        available: true,
+        description: 'Nutty flavor with satisfying crunch. Packed with healthy fats and vitamin E.',
+        icon: '🌻'
+    },
+    'whiteradish': {
+        name: 'White Radish Microgreens',
+        basePrice: 85,
+        available: true,
+        description: 'Clean, crisp flavor with mild spiciness. Classic radish taste.',
+        icon: '⚪'
+    },
+    'greengram': {
+        name: 'GreenGram Microgreens',
+        basePrice: 85,
+        available: true,
+        description: 'Fresh, crisp mung bean sprouts with mild, nutty flavor. Excellent source of protein and folate.',
+        icon: '🟢'
+    },
+    'purpleradish': {
+        name: 'Purple Radish Microgreens',
+        basePrice: 95,
+        available: true,
+        description: 'Vibrant purple color with peppery, spicy flavor. High in anthocyanins and antioxidants.',
+        icon: '🟣'
+    },
+    'broccoli': {
+        name: 'Broccoli Microgreens',
+        basePrice: 100,
+        available: true,
+        description: 'Mild, fresh broccoli flavor packed with sulforaphane. Excellent cancer-fighting properties.',
+        icon: '🥦'
+    }
+};
 
         let currentProducts = { ...defaultProducts };
 
