@@ -3485,7 +3485,8 @@
             </div>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#products">Products</a></li>
+                <li><a href="#products">Microgreens</a></li>
+                <li><a href="#sprouts">Sprouts</a></li> <!-- ADD THIS LINE -->
                 <li><a href="#contact">Contact</a></li>
                 <li>
                     <button class="profile-button" onclick="toggleUserMenu()" id="profileButton">
@@ -3684,7 +3685,8 @@
             <nav class="mobile-nav" id="mobileNav">
                 <ul>
                     <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
-                    <li><a href="#products" onclick="closeMobileMenu()">Products</a></li>
+                    <li><a href="#products" onclick="closeMobileMenu()">Microgreens</a></li>
+                    <li><a href="#sprouts" onclick="closeMobileMenu()">Sprouts</a></li> <!-- ADD THIS LINE -->
                     <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
                     
                     <!-- Mobile Profile Section -->
@@ -4411,7 +4413,651 @@
     </div>
 </div>
     </section>
+<!-- ADD THIS SECTION AFTER YOUR MICROGREENS PRODUCTS SECTION -->
+<!-- Around line 850 in your HTML, after the microgreens products-grid closes -->
 
+<!-- Sprouts Section -->
+<section id="sprouts" class="products">
+    <div class="products-container">
+        <h2 class="section-title">Fresh Sprouts</h2>
+        <p style="text-align: center; color: #666; max-width: 700px; margin: 0 auto 3rem;">
+            Crunchy, nutritious sprouts grown fresh daily. Perfect for salads, sandwiches, and healthy snacking!
+        </p>
+        
+        <div class="products-grid">
+            
+            <!-- Alfalfa Sprouts -->
+            <div class="product-card">
+                <img src="images/sprouts/alfalfa-sprouts.jpg" alt="Fresh Alfalfa Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌱</div>
+                <h3>Alfalfa Sprouts</h3>
+                <p>Crunchy and mild-flavored. Perfect for sandwiches and salads. Rich in vitamins and enzymes.</p>
+                <ul class="product-features">
+                    <li>High in protein</li>
+                    <li>Low in calories</li>
+                    <li>Great source of fiber</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-alfalfa')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-alfalfa-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-alfalfa')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-alfalfa-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-alfalfa-price">₹60</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-alfalfa', 'Alfalfa Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+             <!-- BEETROOT SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/beetroot-sprouts.jpg" alt="Fresh Beetroot Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🟣</div>
+                <h3>Beetroot Sprouts</h3>
+                <p>Earthy, sweet flavor with vibrant purple stems. Packed with antioxidants and folate.</p>
+                <ul class="product-features">
+                    <li>High in antioxidants</li>
+                    <li>Sweet, earthy taste</li>
+                    <li>Beautiful purple color</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-beetroot')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-beetroot-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-beetroot')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-beetroot-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-beetroot-price">₹90</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-beetroot', 'Beetroot Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- CAULIFLOWER SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/cauliflower-sprouts.jpg" alt="Fresh Cauliflower Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🥦</div>
+                <h3>Cauliflower Sprouts</h3>
+                <p>Mild cabbage-like flavor with crisp texture. Excellent source of sulforaphane and vitamin K.</p>
+                <ul class="product-features">
+                    <li>High in sulforaphane</li>
+                    <li>Crisp, fresh texture</li>
+                    <li>Mild cabbage flavor</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-cauliflower')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-cauliflower-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-cauliflower')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-cauliflower-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-cauliflower-price">₹85</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-cauliflower', 'Cauliflower Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- CHIA SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/chia-sprouts.jpg" alt="Fresh Chia Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">⭐</div>
+                <h3>Chia Sprouts</h3>
+                <p>Delicate, mild flavor with incredible nutritional density. Rich in omega-3 fatty acids.</p>
+                <ul class="product-features">
+                    <li>High in Omega-3</li>
+                    <li>Delicate, mild taste</li>
+                    <li>Super nutrient dense</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-chia')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-chia-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-chia')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-chia-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-chia-price">₹120</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-chia', 'Chia Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- FLAX SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/flax-sprouts.jpg" alt="Fresh Flax Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌾</div>
+                <h3>Flax Sprouts</h3>
+                <p>Nutty, slightly bitter flavor. Exceptional source of lignans and alpha-linolenic acid.</p>
+                <ul class="product-features">
+                    <li>Rich in lignans</li>
+                    <li>High in ALA</li>
+                    <li>Nutty, unique flavor</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-flax')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-flax-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-flax')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-flax-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-flax-price">₹110</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-flax', 'Flax Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- MUSTARD SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/mustard-sprouts.jpg" alt="Fresh Mustard Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌶️</div>
+                <h3>Mustard Sprouts</h3>
+                <p>Spicy, peppery kick with bold flavor. Excellent source of vitamins A, C, and K.</p>
+                <ul class="product-features">
+                    <li>Bold, spicy flavor</li>
+                    <li>High in vitamins A, C, K</li>
+                    <li>Great for Asian dishes</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-mustard')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-mustard-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-mustard')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-mustard-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-mustard-price">₹80</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-mustard', 'Mustard Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- PINK RADISH SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/pink-radish-sprouts.jpg" alt="Fresh Pink Radish Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌸</div>
+                <h3>Pink Radish Sprouts</h3>
+                <p>Beautiful pink stems with spicy radish flavor. Stunning visual appeal with great nutrition.</p>
+                <ul class="product-features">
+                    <li>Beautiful pink color</li>
+                    <li>Spicy radish taste</li>
+                    <li>Perfect for garnishing</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-pinkradish')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-pinkradish-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-pinkradish')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-pinkradish-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-pinkradish-price">₹95</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-pinkradish', 'Pink Radish Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUNFLOWER SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/sunflower-sprouts.jpg" alt="Fresh Sunflower Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌻</div>
+                <h3>Sunflower Sprouts</h3>
+                <p>Nutty flavor with satisfying crunch. Packed with healthy fats, protein, and vitamin E.</p>
+                <ul class="product-features">
+                    <li>High in healthy fats</li>
+                    <li>Nutty, satisfying taste</li>
+                    <li>Great texture variety</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-sunflower')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-sunflower-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-sunflower')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-sunflower-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-sunflower-price">₹70</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-sunflower', 'Sunflower Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- WHITE RADISH SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/white-radish-sprouts.jpg" alt="Fresh White Radish Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">⚪</div>
+                <h3>White Radish Sprouts</h3>
+                <p>Clean, crisp flavor with mild spiciness. Classic radish taste with beautiful white stems.</p>
+                <ul class="product-features">
+                    <li>Clean, crisp flavor</li>
+                    <li>Beautiful white stems</li>
+                    <li>Mild spicy kick</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-whiteradish')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-whiteradish-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-whiteradish')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-whiteradish-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-whiteradish-price">₹85</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-whiteradish', 'White Radish Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- GREEN GRAM SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/greengram-sprouts.jpg" alt="Fresh GreenGram Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🟢</div>
+                <h3>Green Gram Sprouts</h3>
+                <p>Fresh, crisp mung bean sprouts with mild, nutty flavor. Excellent source of protein and folate.</p>
+                <ul class="product-features">
+                    <li>High in protein</li>
+                    <li>Rich in folate</li>
+                    <li>Mild, nutty taste</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-greengram')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-greengram-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-greengram')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-greengram-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-greengram-price">₹85</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-greengram', 'Green Gram Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- PURPLE RADISH SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/purple-radish-sprouts.jpg" alt="Fresh Purple Radish Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🟣</div>
+                <h3>Purple Radish Sprouts</h3>
+                <p>Vibrant purple color with peppery, spicy flavor. High in anthocyanins and antioxidants.</p>
+                <ul class="product-features">
+                    <li>Rich in anthocyanins</li>
+                    <li>Bold, peppery taste</li>
+                    <li>Stunning purple stems</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-purpleradish')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-purpleradish-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-purpleradish')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-purpleradish-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-purpleradish-price">₹95</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-purpleradish', 'Purple Radish Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- BROCCOLI SPROUTS -->
+            <div class="product-card">
+                <img src="images/sprouts/broccoli-sprouts.jpg" alt="Fresh Broccoli Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🥦</div>
+                <h3>Broccoli Sprouts</h3>
+                <p>Mild, fresh broccoli flavor packed with sulforaphane. Excellent cancer-fighting properties.</p>
+                <ul class="product-features">
+                    <li>Highest sulforaphane content</li>
+                    <li>Mild, pleasant taste</li>
+                    <li>Powerful antioxidants</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-broccoli')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-broccoli-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-broccoli')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-broccoli-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-broccoli-price">₹100</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-broccoli', 'Broccoli Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mung Bean Sprouts -->
+            <div class="product-card">
+                <img src="images/sprouts/mungbean-sprouts.jpg" alt="Fresh Mung Bean Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🫘</div>
+                <h3>Mung Bean Sprouts</h3>
+                <p>Classic Asian sprouts with crisp texture. Excellent for stir-fries and Asian dishes.</p>
+                <ul class="product-features">
+                    <li>High in protein & fiber</li>
+                    <li>Crunchy texture</li>
+                    <li>Perfect for cooking</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-mungbean')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-mungbean-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-mungbean')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-mungbean-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-mungbean-price">₹50</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-mungbean', 'Mung Bean Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chickpea Sprouts -->
+            <div class="product-card">
+                <img src="images/sprouts/chickpea-sprouts.jpg" alt="Fresh Chickpea Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🫛</div>
+                <h3>Chickpea Sprouts</h3>
+                <p>Nutty flavor with firm texture. High in protein and perfect for Indian dishes.</p>
+                <ul class="product-features">
+                    <li>Very high in protein</li>
+                    <li>Nutty, hearty flavor</li>
+                    <li>Great for chaat</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-chickpea')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-chickpea-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-chickpea')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-chickpea-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-chickpea-price">₹55</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-chickpea', 'Chickpea Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lentil Sprouts -->
+            <div class="product-card">
+                <img src="images/sprouts/lentil-sprouts.jpg" alt="Fresh Lentil Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🫘</div>
+                <h3>Lentil Sprouts</h3>
+                <p>Mild, earthy flavor. Excellent source of iron and folate. Perfect for Indian cuisine.</p>
+                <ul class="product-features">
+                    <li>High in iron & folate</li>
+                    <li>Mild, earthy taste</li>
+                    <li>Easy to digest</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-lentil')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-lentil-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-lentil')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-lentil-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-lentil-price">₹45</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-lentil', 'Lentil Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Fenugreek Sprouts -->
+            <div class="product-card">
+                <img src="images/sprouts/fenugreek-sprouts.jpg" alt="Fresh Fenugreek Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌿</div>
+                <h3>Fenugreek Sprouts</h3>
+                <p>Slightly bitter, aromatic sprouts. Known for health benefits and blood sugar regulation.</p>
+                <ul class="product-features">
+                    <li>Helps regulate blood sugar</li>
+                    <li>Aromatic flavor</li>
+                    <li>Traditional health food</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-fenugreek')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-fenugreek-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-fenugreek')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-fenugreek-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-fenugreek-price">₹65</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-fenugreek', 'Fenugreek Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Radish Sprouts -->
+            <div class="product-card">
+                <img src="images/sprouts/radish-sprouts.jpg" alt="Fresh Radish Sprouts" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌶️</div>
+                <h3>Radish Sprouts</h3>
+                <p>Spicy, peppery flavor with nice crunch. Great for adding kick to any dish!</p>
+                <ul class="product-features">
+                    <li>Spicy, peppery taste</li>
+                    <li>High in vitamin C</li>
+                    <li>Adds flavor punch</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sprout-radish')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="sprout-radish-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 100g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sprout-radish')">+</button>
+                            </div>
+                            <input type="hidden" id="sprout-radish-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="sprout-radish-price">₹70</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('sprout-radish', 'Radish Sprouts')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
     <!-- Custom Blend Calculator Section -->
     <section class="custom-blend">
         <div class="custom-blend-container">
@@ -4978,8 +5624,26 @@
     'whiteradish': { base: 85 },
     'greengram': { base: 85 },
     'purpleradish': { base: 95 }, 
-    'broccoli': { base: 100 }      
-
+    'broccoli': { base: 100 },      
+   
+    // ADD SPROUTS PRICES HERE:
+    'sprout-alfalfa': { base: 60 },
+    'sprout-mungbean': { base: 50 },
+    'sprout-chickpea': { base: 55 },
+    'sprout-lentil': { base: 45 },
+    'sprout-fenugreek': { base: 65 },
+    'sprout-radish': { base: 70 },
+    'sprout-beetroot': { base: 90 },
+    'sprout-cauliflower': { base: 85 },
+    'sprout-chia': { base: 120 },
+    'sprout-flax': { base: 110 },
+    'sprout-mustard': { base: 80 },
+    'sprout-pinkradish': { base: 95 },
+    'sprout-sunflower': { base: 70 },
+    'sprout-whiteradish': { base: 85 },
+    'sprout-greengram': { base: 85 },
+    'sprout-purpleradish': { base: 95 },
+    'sprout-broccoli': { base: 100 }
 };
     // Custom blend pricing
   const blendPrices = {
@@ -8282,6 +8946,5 @@ document.addEventListener('keydown', function(e) {
     
 </body>
 </html>
-
 
 
