@@ -244,7 +244,20 @@
         gap: 0.5rem;
         margin-top: 0.5rem;
     }
-  
+  /* Hero Quick Links - Add to your existing styles */
+.hero-quick-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+}
+
+.hero-quick-links .cta-button {
+    padding: 12px 25px;
+    font-size: 1rem;
+}
+
 
 .quantity-btn {
     background: rgba(168, 230, 163, 0.1);
@@ -2645,7 +2658,17 @@
             margin-bottom: 2rem;
             padding: 0 0.5rem;
         }
+          .hero-quick-links {
+        gap: 0.8rem;
+        }
         
+        .hero-quick-links .cta-button {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            flex: 1 1 calc(50% - 0.8rem);
+            min-width: 140px;
+        }
+    
         .cta-button {
             font-size: 1rem;
             padding: 12px 30px;
@@ -3133,7 +3156,10 @@
         .hero h1 {
             font-size: 1.8rem !important;
         }
-        
+          .hero-quick-links .cta-button {
+        flex: 1 1 100%;
+        max-width: 250px;
+        }
         .nutrition-stats {
             grid-template-columns: 1fr !important;
             gap: 1rem !important;
@@ -3947,15 +3973,30 @@
             </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Fresh Microgreens Delivered Daily</h1>
-            <p class="tagline">Where Health Takes Roots</p>
-            <p>We grow premium, nutrient-packed microgreens in Hyderabad and deliver them fresh to your doorstep. Experience the concentrated power of vitamins, minerals, and flavor in every bite!</p>
-            <a href="#products" class="cta-button">Order Fresh Microgreens</a>
+   <!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="hero-content">
+        <h1>Fresh Microgreens, Sprouts & Seeds Delivered Daily</h1>
+        <p class="tagline">Where Health Takes Roots</p>
+        <p>We grow premium, nutrient-packed microgreens and sprouts in Hyderabad and deliver them fresh to your doorstep. Plus, get organic seeds and complete growing kits to grow your own at home!</p>
+        
+        <!-- Quick Category Links -->
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 2rem 0;">
+            <a href="#products" class="cta-button" style="padding: 12px 25px; font-size: 1rem;">
+                🌱 Microgreens
+            </a>
+            <a href="#sprouts" class="cta-button" style="padding: 12px 25px; font-size: 1rem;">
+                🌿 Sprouts
+            </a>
+            <a href="#seeds" class="cta-button" style="padding: 12px 25px; font-size: 1rem;">
+                🌾 Seeds
+            </a>
+            <a href="#howtogrow" class="cta-button" style="padding: 12px 25px; font-size: 1rem;">
+                🪴 Growing Supplies
+            </a>
         </div>
-    </section>
+    </div>
+</section>
  <!-- Products Section -->
 <section id="products" class="products">
         <div class="products-container">
