@@ -34,6 +34,9 @@
             position: sticky;
             top: 0;
             z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .admin-header h1 {
@@ -53,10 +56,6 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s ease;
-            position: absolute;
-            right: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
         }
 
         .logout-btn:hover {
@@ -183,6 +182,35 @@
             display: block;
         }
 
+        /* Category Filter */
+        .category-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 0.5rem 1.5rem;
+            background: #f8fffe;
+            border: 2px solid #e8f5e8;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #4a7c59;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn.active {
+            background: #4a7c59;
+            color: white;
+            border-color: #4a7c59;
+        }
+
+        .category-btn:hover {
+            border-color: #4a7c59;
+        }
+
         /* Products Grid */
         .products-grid {
             display: grid;
@@ -202,6 +230,18 @@
         .product-admin-card:hover {
             border-color: #a8e6a3;
             transform: translateY(-5px);
+        }
+
+        .product-category-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #4a7c59;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
         }
 
         .product-image-upload {
@@ -401,6 +441,8 @@
         @media (max-width: 768px) {
             .admin-header {
                 padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
             }
 
             .admin-header h1 {
@@ -408,9 +450,6 @@
             }
 
             .logout-btn {
-                position: static;
-                transform: none;
-                margin-top: 1rem;
                 width: 100%;
             }
 
@@ -446,6 +485,14 @@
             .login-card {
                 margin: 1rem;
                 padding: 2rem;
+            }
+
+            .category-filter {
+                flex-direction: column;
+            }
+
+            .category-btn {
+                width: 100%;
             }
         }
 
@@ -507,13 +554,23 @@
             font-size: 2rem;
             margin-bottom: 0.5rem;
         }
+
+        .product-count {
+            background: rgba(74, 124, 89, 0.1);
+            color: #2c5530;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
     <!-- Login Screen -->
     <div class="login-screen" id="loginScreen">
         <div class="login-card">
-            <h2>Admin Login</h2>
+            <h2>🌱 Admin Login</h2>
             <form id="adminLoginForm">
                 <div class="form-group">
                     <label for="adminEmail">Email</label>
@@ -533,7 +590,7 @@
     <div class="admin-container" id="adminPanel">
         <!-- Header -->
         <div class="admin-header">
-            <h1>Leaf Nest Admin Panel</h1>
+            <h1>🌱 Leaf Nest Admin Panel</h1>
             <button class="logout-btn" onclick="adminLogout()">Logout</button>
         </div>
 
@@ -547,6 +604,17 @@
         <!-- Products Tab -->
         <div class="tab-content active" id="productsTab">
             <h2 style="color: #2c5530; margin-bottom: 1rem;">Product Management</h2>
+            <div class="product-count" id="productCount">Loading products...</div>
+            
+            <!-- Category Filter -->
+            <div class="category-filter">
+                <button class="category-btn active" onclick="filterByCategory('all')">All Products</button>
+                <button class="category-btn" onclick="filterByCategory('microgreens')">Microgreens</button>
+                <button class="category-btn" onclick="filterByCategory('sprouts')">Sprouts</button>
+                <button class="category-btn" onclick="filterByCategory('seeds')">Seeds</button>
+                <button class="category-btn" onclick="filterByCategory('supplies')">Growing Supplies</button>
+            </div>
+            
             <div class="products-grid" id="productsGrid">
                 <!-- Products will be loaded dynamically -->
             </div>
@@ -610,95 +678,8 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
 
-        // Product data structure - UPDATED WITH NEW PRODUCTS
-        const defaultProducts = {
-            'alfalfa': {
-                name: 'Alfalfa Microgreens',
-                basePrice: 75,
-                available: true,
-                description: 'Mild, nutty flavor with tender leaves. Rich in protein and essential vitamins.',
-                icon: '🌱'
-            },
-            'beetroot': {
-                name: 'Beetroot Microgreens',
-                basePrice: 90,
-                available: true,
-                description: 'Earthy, sweet flavor with vibrant purple stems. Packed with antioxidants.',
-                icon: '🟣'
-            },
-            'broccoli': {
-                name: 'Broccoli Microgreens',
-                basePrice: 100,
-                available: true,
-                description: 'Mild, fresh broccoli flavor packed with sulforaphane. Excellent cancer-fighting properties.',
-                icon: '🥦'
-            },
-            'cauliflower': {
-                name: 'Cauliflower Microgreens',
-                basePrice: 85,
-                available: true,
-                description: 'Mild cabbage-like flavor with crisp texture. Excellent source of sulforaphane.',
-                icon: '🥦'
-            },
-            'chia': {
-                name: 'Chia Microgreens',
-                basePrice: 120,
-                available: true,
-                description: 'Delicate, mild flavor with incredible nutritional density. Rich in omega-3.',
-                icon: '🌿'
-            },
-            'flax': {
-                name: 'Flax Microgreens',
-                basePrice: 110,
-                available: true,
-                description: 'Nutty, slightly bitter flavor. Exceptional source of lignans and ALA.',
-                icon: '🌾'
-            },
-            'greengram': {
-                name: 'GreenGram Microgreens',
-                basePrice: 85,
-                available: true,
-                description: 'Fresh, crisp mung bean sprouts with mild, nutty flavor. Excellent source of protein and folate.',
-                icon: '🟢'
-            },
-            'mustard': {
-                name: 'Mustard Microgreens',
-                basePrice: 80,
-                available: true,
-                description: 'Spicy, peppery kick with bold flavor. High in vitamins A, C, and K.',
-                icon: '🌶️'
-            },
-            'pinkradish': {
-                name: 'Pink Radish Microgreens',
-                basePrice: 95,
-                available: true,
-                description: 'Beautiful pink stems with spicy radish flavor. Perfect for garnishing.',
-                icon: '🌸'
-            },
-            'purpleradish': {
-                name: 'Purple Radish Microgreens',
-                basePrice: 95,
-                available: true,
-                description: 'Vibrant purple color with peppery, spicy flavor. High in anthocyanins and antioxidants.',
-                icon: '🟣'
-            },
-            'sunflower': {
-                name: 'Sunflower Microgreens',
-                basePrice: 70,
-                available: true,
-                description: 'Nutty flavor with satisfying crunch. Packed with healthy fats and vitamin E.',
-                icon: '🌻'
-            },
-            'whiteradish': {
-                name: 'White Radish Microgreens',
-                basePrice: 85,
-                available: true,
-                description: 'Clean, crisp flavor with mild spiciness. Classic radish taste.',
-                icon: '⚪'
-            }
-        };
-
-        let currentProducts = { ...defaultProducts };
+        let currentProducts = {};
+        let currentFilter = 'all';
 
         // Admin Authentication
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
@@ -777,38 +758,63 @@
             event.target.classList.add('active');
         }
 
+        // Category Filter
+        function filterByCategory(category) {
+            currentFilter = category;
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            renderProducts();
+        }
+
         // Product Management
         async function loadProducts() {
             try {
                 const snapshot = await db.collection('products').get();
-                const products = {};
+                currentProducts = {};
                 
                 snapshot.forEach(doc => {
-                    products[doc.id] = doc.data();
+                    currentProducts[doc.id] = doc.data();
                 });
                 
-                // If no products in Firebase, use defaults
-                if (Object.keys(products).length === 0) {
-                    currentProducts = { ...defaultProducts };
-                    await saveAllProducts();
-                } else {
-                    currentProducts = products;
-                }
-                
+                console.log(`Loaded ${Object.keys(currentProducts).length} products from Firebase`);
+                updateProductCount();
                 renderProducts();
                 
             } catch (error) {
                 console.error('Error loading products:', error);
-                currentProducts = { ...defaultProducts };
-                renderProducts();
+                showMessage('Failed to load products', 'error');
             }
+        }
+
+        function updateProductCount() {
+            const total = Object.keys(currentProducts).length;
+            const microgreens = Object.values(currentProducts).filter(p => p.category === 'microgreens').length;
+            const sprouts = Object.values(currentProducts).filter(p => p.category === 'sprouts').length;
+            const seeds = Object.values(currentProducts).filter(p => p.category === 'seeds').length;
+            const supplies = Object.values(currentProducts).filter(p => p.category === 'supplies').length;
+            
+            document.getElementById('productCount').textContent = 
+                `Total: ${total} products (${microgreens} microgreens, ${sprouts} sprouts, ${seeds} seeds, ${supplies} supplies)`;
         }
 
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             grid.innerHTML = '';
             
-            Object.entries(currentProducts).forEach(([id, product]) => {
+            const filteredProducts = Object.entries(currentProducts).filter(([id, product]) => {
+                if (currentFilter === 'all') return true;
+                return product.category === currentFilter;
+            });
+            
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No products found in this category</p>';
+                return;
+            }
+            
+            filteredProducts.forEach(([id, product]) => {
                 const card = createProductCard(id, product);
                 grid.appendChild(card);
             });
@@ -818,12 +824,25 @@
             const card = document.createElement('div');
             card.className = 'product-admin-card';
             
+            const categoryColors = {
+                'microgreens': '#4a7c59',
+                'sprouts': '#e67e22',
+                'seeds': '#8e44ad',
+                'supplies': '#3498db'
+            };
+            
+            const categoryColor = categoryColors[product.category] || '#4a7c59';
+            
             card.innerHTML = `
+                <div class="product-category-badge" style="background: ${categoryColor};">
+                    ${product.category || 'uncategorized'}
+                </div>
+                
                 <div class="product-image-upload" onclick="selectImage('${id}')">
-                    ${product.imageUrl ? 
-                        `<img src="${product.imageUrl}" class="product-image-preview" alt="${product.name}">` :
+                    ${product.imageUrl || (product.images && product.images.primary) ? 
+                        `<img src="${product.imageUrl || product.images.primary}" class="product-image-preview" alt="${product.name}">` :
                         `<div class="upload-placeholder">
-                            <div class="upload-icon">${product.icon}</div>
+                            <div class="upload-icon">📸</div>
                             <div>Click to upload image</div>
                         </div>`
                     }
@@ -833,32 +852,42 @@
                 <div class="product-controls">
                     <div class="control-group">
                         <label>Product Name</label>
-                        <input type="text" id="name-${id}" value="${product.name}" onchange="updateProduct('${id}', 'name', this.value)">
+                        <input type="text" id="name-${id}" value="${product.name || ''}" onchange="updateProduct('${id}', 'name', this.value)">
                     </div>
                     
                     <div class="control-row">
                         <div class="control-group">
-                            <label>Base Price per 100g (₹)</label>
-                            <input type="number" id="price-${id}" value="${product.basePrice}" onchange="updateProduct('${id}', 'basePrice', parseInt(this.value))">
+                            <label>Base Price (₹)</label>
+                            <input type="number" id="price-${id}" value="${product.basePrice || 0}" onchange="updateProduct('${id}', 'basePrice', parseInt(this.value))">
                         </div>
                         
                         <div class="control-group">
-                            <label>Status</label>
-                            <div class="status-toggle ${product.available ? 'active' : ''}" onclick="toggleAvailability('${id}')" id="toggle-${id}">
-                                <div class="toggle-slider"></div>
-                            </div>
-                            <small style="color: #666; margin-top: 0.5rem;" id="status-text-${id}">
-                                ${product.available ? 'Available' : 'Out of Stock'}
-                            </small>
+                            <label>Category</label>
+                            <select id="cat-${id}" onchange="updateProduct('${id}', 'category', this.value)">
+                                <option value="microgreens" ${product.category === 'microgreens' ? 'selected' : ''}>Microgreens</option>
+                                <option value="sprouts" ${product.category === 'sprouts' ? 'selected' : ''}>Sprouts</option>
+                                <option value="seeds" ${product.category === 'seeds' ? 'selected' : ''}>Seeds</option>
+                                <option value="supplies" ${product.category === 'supplies' ? 'selected' : ''}>Supplies</option>
+                            </select>
                         </div>
                     </div>
                     
                     <div class="control-group">
-                        <label>Description</label>
-                        <textarea style="min-height: 60px; resize: vertical;" id="desc-${id}" onchange="updateProduct('${id}', 'description', this.value)">${product.description}</textarea>
+                        <label>Status</label>
+                        <div class="status-toggle ${product.available !== false ? 'active' : ''}" onclick="toggleAvailability('${id}')" id="toggle-${id}">
+                            <div class="toggle-slider"></div>
+                        </div>
+                        <small style="color: #666; margin-top: 0.5rem;" id="status-text-${id}">
+                            ${product.available !== false ? 'Available' : 'Out of Stock'}
+                        </small>
                     </div>
                     
-                    <button class="save-btn" onclick="saveProduct('${id}')">Save Changes</button>
+                    <div class="control-group">
+                        <label>Description</label>
+                        <textarea style="min-height: 60px; resize: vertical;" id="desc-${id}" onchange="updateProduct('${id}', 'description', this.value)">${product.description || ''}</textarea>
+                    </div>
+                    
+                    <button class="save-btn" onclick="saveProduct('${id}')">💾 Save Changes</button>
                 </div>
             `;
             
@@ -879,6 +908,11 @@
                 const downloadURL = await snapshot.ref.getDownloadURL();
                 
                 currentProducts[productId].imageUrl = downloadURL;
+                if (!currentProducts[productId].images) {
+currentProducts[productId].images = {};
+                }
+                currentProducts[productId].images.primary = downloadURL;
+                
                 renderProducts();
                 showMessage('Image uploaded successfully!', 'success');
                 
@@ -889,11 +923,19 @@
         }
 
         function updateProduct(productId, field, value) {
+            if (!currentProducts[productId]) {
+                currentProducts[productId] = {};
+            }
             currentProducts[productId][field] = value;
         }
 
         function toggleAvailability(productId) {
-            currentProducts[productId].available = !currentProducts[productId].available;
+            if (!currentProducts[productId]) {
+                currentProducts[productId] = {};
+            }
+            
+            const currentStatus = currentProducts[productId].available !== false;
+            currentProducts[productId].available = !currentStatus;
             
             // Update toggle switch appearance
             const toggle = document.getElementById(`toggle-${productId}`);
@@ -910,7 +952,12 @@
 
         async function saveProduct(productId) {
             try {
-                await db.collection('products').doc(productId).set(currentProducts[productId]);
+                const productData = {
+                    ...currentProducts[productId],
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection('products').doc(productId).set(productData, { merge: true });
                 showMessage(`${currentProducts[productId].name} saved successfully!`, 'success');
             } catch (error) {
                 console.error('Error saving product:', error);
@@ -923,7 +970,10 @@
             
             Object.entries(currentProducts).forEach(([id, product]) => {
                 const ref = db.collection('products').doc(id);
-               batch.set(ref, product);
+                batch.set(ref, {
+                    ...product,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
             });
             
             try {
@@ -964,45 +1014,76 @@
                 return;
             }
             
-            list.innerHTML = orders.map(order => `
-                <div class="order-admin-card">
-                    <div class="order-header">
-                        <div class="order-number">Order #${order.orderNumber}</div>
-                        <select class="order-status-select" onchange="updateOrderStatus('${order.id}', this.value)">
-                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                            <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
-                            <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
-                            <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Ready</option>
-                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                        </select>
-                    </div>
-                    
-                    <div class="order-details">
-                        <div>
-                            <strong>Customer:</strong> ${order.customerInfo?.firstName || 'N/A'} ${order.customerInfo?.lastName || ''}
+            list.innerHTML = orders.map(order => {
+                const orderDate = order.createdAt ? 
+                    new Date(order.createdAt.seconds * 1000).toLocaleString() : 
+                    'N/A';
+                
+                return `
+                    <div class="order-admin-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-number">Order #${order.orderNumber}</div>
+                                <small style="color: #666;">${orderDate}</small>
+                            </div>
+                            <select class="order-status-select" onchange="updateOrderStatus('${order.id}', this.value)">
+                                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                                <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
+                                <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Ready</option>
+                                <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select>
                         </div>
-                        <div>
-                            <strong>Phone:</strong> ${order.customerInfo?.phone || 'N/A'}
+                        
+                        <div class="order-details">
+                            <div>
+                                <strong>Customer:</strong> ${order.customerInfo?.firstName || 'N/A'} ${order.customerInfo?.lastName || ''}
+                            </div>
+                            <div>
+                                <strong>Phone:</strong> ${order.customerInfo?.phone || 'N/A'}
+                            </div>
+                            <div>
+                                <strong>Total:</strong> ₹${order.total || 0}
+                            </div>
+                            <div>
+                                <strong>Payment:</strong> 
+                                <span style="color: ${order.paymentStatus === 'completed' ? '#4a7c59' : '#e67e22'}; font-weight: 600;">
+                                    ${order.paymentStatus || 'pending'}
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <strong>Total:</strong> ₹${order.total || 0}
+                        
+                        <div class="order-items">
+                            <strong>Items:</strong>
+                            ${order.items ? order.items.map(item => `
+                                <div style="padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0;">
+                                    ${item.name} - ${item.quantity}g @ ₹${item.price}
+                                </div>
+                            `).join('') : 'No items'}
                         </div>
-                        <div>
-                            <strong>Payment:</strong> ${order.paymentStatus || 'pending'}
+                        
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e8f5e8;">
+                            <strong>Delivery Address:</strong><br>
+                            ${order.customerInfo?.address || 'N/A'}<br>
+                            ${order.customerInfo?.area || ''}, ${order.customerInfo?.pincode || ''}
                         </div>
+                        
+                        ${order.customerNotes ? `
+                            <div style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-radius: 8px;">
+                                <strong>Customer Notes:</strong><br>
+                                ${order.customerNotes}
+                            </div>
+                        ` : ''}
+                        
+                        ${order.deliveryTime ? `
+                            <div style="margin-top: 0.5rem;">
+                                <strong>Preferred Delivery:</strong> ${order.deliveryTime}
+                            </div>
+                        ` : ''}
                     </div>
-                    
-                    <div class="order-items">
-                        <strong>Items:</strong>
-                        ${order.items ? order.items.map(item => `${item.name} (${item.quantity}g)`).join(', ') : 'No items'}
-                    </div>
-                    
-                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e8f5e8;">
-                        <strong>Address:</strong> ${order.customerInfo?.address || 'N/A'}, ${order.customerInfo?.area || ''}, ${order.customerInfo?.pincode || ''}
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         async function updateOrderStatus(orderId, newStatus) {
@@ -1024,11 +1105,14 @@
             const deliveryFee = document.getElementById('deliveryFee').value;
             
             try {
-                await db.collection('settings').doc('delivery').set({
-                    freeDeliveryMin: parseInt(freeDeliveryMin),
-                    deliveryFee: parseInt(deliveryFee),
+                await db.collection('settings').doc('app').set({
+                    delivery: {
+                        freeDeliveryThreshold: parseInt(freeDeliveryMin),
+                        deliveryFee: parseInt(deliveryFee)
+                    },
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                }, { merge: true });
+                
                 showMessage('Delivery settings saved successfully!', 'success');
             } catch (error) {
                 console.error('Error saving delivery settings:', error);
@@ -1041,15 +1125,40 @@
             const contactNumber = document.getElementById('contactNumber').value;
             
             try {
-                await db.collection('settings').doc('business').set({
-                    businessHours: businessHours,
-                    contactNumber: contactNumber,
+                await db.collection('settings').doc('app').set({
+                    businessInfo: {
+                        businessHours: businessHours,
+                        phone: contactNumber
+                    },
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                }, { merge: true });
+                
                 showMessage('Business settings saved successfully!', 'success');
             } catch (error) {
                 console.error('Error saving business settings:', error);
                 showMessage('Failed to save business settings', 'error');
+            }
+        }
+
+        // Load settings when settings tab is opened
+        async function loadSettings() {
+            try {
+                const doc = await db.collection('settings').doc('app').get();
+                if (doc.exists) {
+                    const settings = doc.data();
+                    
+                    if (settings.delivery) {
+                        document.getElementById('freeDeliveryMin').value = settings.delivery.freeDeliveryThreshold || 200;
+                        document.getElementById('deliveryFee').value = settings.delivery.deliveryFee || 30;
+                    }
+                    
+                    if (settings.businessInfo) {
+                        document.getElementById('businessHours').value = settings.businessInfo.businessHours || '8 AM - 8 PM';
+                        document.getElementById('contactNumber').value = settings.businessInfo.phone || '+917993065647';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
             }
         }
 
@@ -1103,6 +1212,12 @@
                 loadOrders();
             }
         }, 30000);
+
+        // Load settings when tab becomes active
+        const settingsTabBtn = document.querySelector('.tab-btn:nth-child(3)');
+        if (settingsTabBtn) {
+            settingsTabBtn.addEventListener('click', loadSettings);
+        }
 
     </script>
 </body>
