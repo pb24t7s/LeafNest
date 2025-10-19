@@ -436,7 +436,26 @@
             color: #2c5530;
             margin-bottom: 1rem;
         }
+        .product-admin-card.hidden-product {
+            opacity: 0.7;
+            border: 2px solid #e74c3c;
+            position: relative;
+        }
 
+        .product-admin-card.hidden-product::before {
+            content: "HIDDEN FROM CUSTOMERS";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            z-index: 10;
+        }
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .admin-header {
@@ -788,16 +807,19 @@
                 showMessage('Failed to load products', 'error');
             }
         }
-
         function updateProductCount() {
             const total = Object.keys(currentProducts).length;
+            const visible = Object.values(currentProducts).filter(p => p.visible !== false).length;
+            const hidden = total - visible;
+            
             const microgreens = Object.values(currentProducts).filter(p => p.category === 'microgreens').length;
             const sprouts = Object.values(currentProducts).filter(p => p.category === 'sprouts').length;
             const seeds = Object.values(currentProducts).filter(p => p.category === 'seeds').length;
             const supplies = Object.values(currentProducts).filter(p => p.category === 'supplies').length;
             
-            document.getElementById('productCount').textContent = 
-                `Total: ${total} products (${microgreens} microgreens, ${sprouts} sprouts, ${seeds} seeds, ${supplies} supplies)`;
+            document.getElementById('productCount').innerHTML = 
+                `Total: ${total} products (${visible} visible, ${hidden} hidden)<br>
+                <small style="opacity: 0.8;">${microgreens} microgreens, ${sprouts} sprouts, ${seeds} seeds, ${supplies} supplies</small>`;
         }
 
         function renderProducts() {
@@ -816,6 +838,12 @@
             
             filteredProducts.forEach(([id, product]) => {
                 const card = createProductCard(id, product);
+                
+                // Add visual indicator if product is hidden
+                if (product.visible === false) {
+                    card.classList.add('hidden-product');
+                }
+                
                 grid.appendChild(card);
             });
         }
@@ -872,13 +900,25 @@
                         </div>
                     </div>
                     
+                    <!-- Availability Status -->
                     <div class="control-group">
-                        <label>Status</label>
+                        <label>Availability Status</label>
                         <div class="status-toggle ${product.available !== false ? 'active' : ''}" onclick="toggleAvailability('${id}')" id="toggle-${id}">
                             <div class="toggle-slider"></div>
                         </div>
                         <small style="color: #666; margin-top: 0.5rem;" id="status-text-${id}">
-                            ${product.available !== false ? 'Available' : 'Out of Stock'}
+                            ${product.available !== false ? '✅ In Stock' : '❌ Out of Stock'}
+                        </small>
+                    </div>
+                    
+                    <!-- NEW: Visibility Toggle -->
+                    <div class="control-group">
+                        <label>Visibility (Show on Website)</label>
+                        <div class="status-toggle ${product.visible !== false ? 'active' : ''}" onclick="toggleVisibility('${id}')" id="visibility-toggle-${id}">
+                            <div class="toggle-slider"></div>
+                        </div>
+                        <small style="color: #666; margin-top: 0.5rem; font-weight: 600;" id="visibility-text-${id}">
+                            ${product.visible !== false ? '👁️ Visible to Customers' : '🚫 Hidden from Customers'}
                         </small>
                     </div>
                     
@@ -893,7 +933,6 @@
             
             return card;
         }
-
         function selectImage(productId) {
             document.getElementById(`file-${productId}`).click();
         }
@@ -949,7 +988,28 @@ currentProducts[productId].images = {};
                 statusText.textContent = 'Out of Stock';
             }
         }
-
+        function toggleVisibility(productId) {
+            if (!currentProducts[productId]) {
+                currentProducts[productId] = {};
+            }
+            
+            const currentVisibility = currentProducts[productId].visible !== false;
+            currentProducts[productId].visible = !currentVisibility;
+            
+            // Update toggle switch appearance
+            const toggle = document.getElementById(`visibility-toggle-${productId}`);
+            const visibilityText = document.getElementById(`visibility-text-${productId}`);
+            
+            if (currentProducts[productId].visible) {
+                toggle.classList.add('active');
+                visibilityText.textContent = '👁️ Visible to Customers';
+                visibilityText.style.color = '#4a7c59';
+            } else {
+                toggle.classList.remove('active');
+                visibilityText.textContent = '🚫 Hidden from Customers';
+                visibilityText.style.color = '#e74c3c';
+            }
+        }
         async function saveProduct(productId) {
             try {
                 const productData = {
