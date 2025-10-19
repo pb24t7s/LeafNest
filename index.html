@@ -725,6 +725,7 @@
         gap: 3rem;
         margin-top: 4rem;
     }
+    
     .product-card {
         background: #f8fffe;
         padding: 2.5rem;
@@ -983,6 +984,208 @@
         font-weight: bold;
         margin-right: 0.5rem;
     }
+    .price-per-unit {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 4px;
+    font-weight: normal;
+   }
+   /* ============================================
+   HOW TO GROW GUIDE STYLES
+   Add this CSS to your <style> section
+   ============================================ */
+
+.growing-guide {
+    background: linear-gradient(135deg, #f6f9fc 0%, #ffffff 100%);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 60px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* Guide Tabs */
+.guide-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.guide-tab {
+    padding: 14px 32px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #4a5568;
+}
+
+.guide-tab:hover {
+    background: #f7fafc;
+    border-color: #cbd5e0;
+    transform: translateY(-2px);
+}
+
+.guide-tab.active {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    border-color: #48bb78;
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+}
+
+/* Guide Content */
+.guide-content {
+    display: none;
+}
+
+.guide-content.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Steps Grid */
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+/* Step Card */
+.step-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    position: relative;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.step-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    border-color: #48bb78;
+}
+
+.step-number {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+}
+
+.step-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.step-card h3 {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.step-card p {
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+}
+
+.step-supplies {
+    background: #f7fafc;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 3px solid #48bb78;
+}
+
+.step-supplies span {
+    font-size: 0.85rem;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+/* Quick Tips */
+.quick-tips {
+    background: white;
+    border-radius: 12px;
+    padding: 28px;
+    border: 2px solid #e2e8f0;
+}
+
+.quick-tips h3 {
+    font-size: 1.4rem;
+    color: #2d3748;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quick-tips ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.quick-tips li {
+    padding: 10px 0;
+    color: #4a5568;
+    line-height: 1.6;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.quick-tips li:last-child {
+    border-bottom: none;
+}
+
+.quick-tips strong {
+    color: #48bb78;
+    font-weight: 700;
+}
+
+/* Section Divider */
+.section-divider {
+    text-align: center;
+    margin: 60px 0 40px;
+    padding: 30px 0;
+    border-top: 2px solid #e2e8f0;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.section-divider h3 {
+    font-size: 1.8rem;
+    color: #2d3748;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.section-divider p {
+    color: #718096;
+    font-size: 1.1rem;
+}
 
     /* Custom Blend Calculator Section */
     .custom-blend {
@@ -3209,6 +3412,17 @@
     font-style: italic;
 }
 
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .growing-guide {
+        padding: 30px 20px;
+    }
+}
+
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
@@ -3241,6 +3455,21 @@
     
     .professional-name {
         font-size: 1.3rem;
+    }
+      .steps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .guide-tabs {
+        flex-direction: column;
+    }
+    
+    .guide-tab {
+        width: 100%;
+    }
+    
+    .growing-guide {
+        padding: 20px 16px;
     }
 }
 
@@ -3487,6 +3716,8 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#products">Microgreens</a></li>
                 <li><a href="#sprouts">Sprouts</a></li> <!-- ADD THIS LINE -->
+                <li><a href="#seeds">Seeds</a></li> <!-- ADD THIS -->
+                <li><a href="#howtogrow">How to Grow</a></li> <!-- ✅ ADD THIS LINE -->
                 <li><a href="#contact">Contact</a></li>
                 <li>
                     <button class="profile-button" onclick="toggleUserMenu()" id="profileButton">
@@ -3687,6 +3918,8 @@
                     <li><a href="#home" onclick="closeMobileMenu()">Home</a></li>
                     <li><a href="#products" onclick="closeMobileMenu()">Microgreens</a></li>
                     <li><a href="#sprouts" onclick="closeMobileMenu()">Sprouts</a></li> <!-- ADD THIS LINE -->
+                    <li><a href="#seeds" onclick="closeMobileMenu()">Seeds</a></li> <!-- ADD THIS -->
+                    <li><a href="#howtogrow" onclick="closeMobileMenu()">How to Grow</a></li> <!-- ✅ ADD THIS LINE -->
                     <li><a href="#contact" onclick="closeMobileMenu()">Contact</a></li>
                     
                     <!-- Mobile Profile Section -->
@@ -3723,696 +3956,695 @@
             <a href="#products" class="cta-button">Order Fresh Microgreens</a>
         </div>
     </section>
-
-    <!-- Products Section -->
-    <section id="products" class="products">
+ <!-- Products Section -->
+<section id="products" class="products">
         <div class="products-container">
             <h2 class="section-title">Our Fresh Microgreens</h2>
             <div class="products-grid">
     <div class="products-grid">
-   <!-- Alfalfa Microgreens -->
-<div class="product-card">
-    <img src="images/products/alfalfa-microgreens.jpg" alt="Fresh Alfalfa Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🌱</div>
-    <h3>Alfalfa Microgreens</h3>
-    <p>Mild, nutty flavor with tender leaves. Rich in protein and essential vitamins for daily nutrition.</p>
-    <ul class="product-features">
-        <li>High in protein</li>
-        <li>Mild, nutty taste</li>
-        <li>Rich in vitamins K & C</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="alfalfa-mineral" onchange="calculateNutrition('alfalfa')">
-                    <option value="protein">Protein</option>
-                    <option value="vitamin-k">Vitamin K</option>
-                    <option value="vitamin-c">Vitamin C</option>
-                    <option value="calcium">Calcium</option>
-                    <option value="iron">Iron</option>
-                    <option value="fiber">Fiber</option>
-                </select>
-            </div>
-        </div>
-        <div class="nutrition-result" id="alfalfa-result">
-            <span class="result-value">9.2</span><span class="result-unit">g Protein</span>
-        </div>
-    </div>
-
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('alfalfa')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="alfalfa-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
-                    </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('alfalfa')">+</button>
+    <!-- Alfalfa Microgreens -->
+    <div class="product-card">
+        <img src="images/products/alfalfa-microgreens.jpg" alt="Fresh Alfalfa Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🌱</div>
+        <h3>Alfalfa Microgreens</h3>
+        <p>Mild, nutty flavor with tender leaves. Rich in protein and essential vitamins for daily nutrition.</p>
+        <ul class="product-features">
+            <li>High in protein</li>
+            <li>Mild, nutty taste</li>
+            <li>Rich in vitamins K & C</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="alfalfa-mineral" onchange="calculateNutrition('alfalfa')">
+                        <option value="protein">Protein</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="calcium">Calcium</option>
+                        <option value="iron">Iron</option>
+                        <option value="fiber">Fiber</option>
+                    </select>
                 </div>
-                <input type="hidden" id="alfalfa-cart-quantity" value="1">
+            </div>
+            <div class="nutrition-result" id="alfalfa-result">
+                <span class="result-value">9.2</span><span class="result-unit">g Protein</span>
             </div>
         </div>
-        <div class="price-display">
-            <span class="price-amount" id="alfalfa-price">₹75</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('alfalfa', 'Alfalfa Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
 
-  <!-- Beetroot Microgreens -->
-<div class="product-card">
-    <img src="images/products/beetroot-microgreens.jpg" alt="Fresh Beetroot Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🟣</div>
-    <h3>Beetroot Microgreens</h3>
-    <p>Earthy, sweet flavor with vibrant purple stems. Packed with antioxidants and folate.</p>
-    <ul class="product-features">
-        <li>High in antioxidants</li>
-        <li>Sweet, earthy taste</li>
-        <li>Beautiful purple color</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="beetroot-mineral" onchange="calculateNutrition('beetroot')">
-                    <option value="folate">Folate</option>
-                    <option value="vitamin-c">Vitamin C</option>
-                    <option value="potassium">Potassium</option>
-                    <option value="iron">Iron</option>
-                    <option value="fiber">Fiber</option>
-                    <option value="antioxidants">Antioxidants</option>
-                </select>
-            </div>
-        </div>
-        <div class="nutrition-result" id="beetroot-result">
-            <span class="result-value">280</span><span class="result-unit">mcg Folate</span>
-        </div>
-    </div>
-
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('beetroot')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="beetroot-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('alfalfa')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="alfalfa-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('alfalfa')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('beetroot')">+</button>
+                    <input type="hidden" id="alfalfa-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="beetroot-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="beetroot-price">₹90</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('beetroot', 'Beetroot Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-
-<!-- Cauliflower Microgreens -->
-<div class="product-card">
-    <img src="images/products/cauliflower-microgreens.jpg" alt="Fresh Cauliflower Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🥦</div>
-    <h3>Cauliflower Microgreens</h3>
-    <p>Mild cabbage-like flavor with crisp texture. Excellent source of sulforaphane and vitamin K.</p>
-    <ul class="product-features">
-        <li>High in sulforaphane</li>
-        <li>Crisp, fresh texture</li>
-        <li>Mild cabbage flavor</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="cauliflower-mineral" onchange="calculateNutrition('cauliflower')">
-                    <option value="sulforaphane">Sulforaphane</option>
-                    <option value="vitamin-k">Vitamin K</option>
-                    <option value="vitamin-c">Vitamin C</option>
-                    <option value="folate">Folate</option>
-                    <option value="fiber">Fiber</option>
-                    <option value="calcium">Calcium</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="alfalfa-price">₹75</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="cauliflower-result">
-            <span class="result-value">95</span><span class="result-unit">mg Sulforaphane</span>
+            <button class="add-to-cart-btn" onclick="addToCart('alfalfa', 'Alfalfa Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('cauliflower')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="cauliflower-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+    <!-- Beetroot Microgreens -->
+    <div class="product-card">
+        <img src="images/products/beetroot-microgreens.jpg" alt="Fresh Beetroot Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🟣</div>
+        <h3>Beetroot Microgreens</h3>
+        <p>Earthy, sweet flavor with vibrant purple stems. Packed with antioxidants and folate.</p>
+        <ul class="product-features">
+            <li>High in antioxidants</li>
+            <li>Sweet, earthy taste</li>
+            <li>Beautiful purple color</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="beetroot-mineral" onchange="calculateNutrition('beetroot')">
+                        <option value="folate">Folate</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="potassium">Potassium</option>
+                        <option value="iron">Iron</option>
+                        <option value="fiber">Fiber</option>
+                        <option value="antioxidants">Antioxidants</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="beetroot-result">
+                <span class="result-value">280</span><span class="result-unit">mcg Folate</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('beetroot')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="beetroot-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('beetroot')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('cauliflower')">+</button>
+                    <input type="hidden" id="beetroot-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="cauliflower-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="cauliflower-price">₹85</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('cauliflower', 'Cauliflower Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-
-<!-- Chia Microgreens -->
-<div class="product-card">
-    <img src="images/products/chia-microgreens.jpg" alt="Fresh Chia Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🌿</div>
-    <h3>Chia Microgreens</h3>
-    <p>Delicate, mild flavor with incredible nutritional density. Rich in omega-3 fatty acids.</p>
-    <ul class="product-features">
-        <li>High in Omega-3</li>
-        <li>Delicate, mild taste</li>
-        <li>Super nutrient dense</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="chia-mineral" onchange="calculateNutrition('chia')">
-                    <option value="omega-3">Omega-3</option>
-                    <option value="protein">Protein</option>
-                    <option value="calcium">Calcium</option>
-                    <option value="magnesium">Magnesium</option>
-                    <option value="fiber">Fiber</option>
-                    <option value="phosphorus">Phosphorus</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="beetroot-price">₹90</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="chia-result">
-            <span class="result-value">5.8</span><span class="result-unit">g Omega-3</span>
+            <button class="add-to-cart-btn" onclick="addToCart('beetroot', 'Beetroot Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('chia')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="chia-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+    <!-- Cauliflower Microgreens -->
+    <div class="product-card">
+        <img src="images/products/cauliflower-microgreens.jpg" alt="Fresh Cauliflower Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🥦</div>
+        <h3>Cauliflower Microgreens</h3>
+        <p>Mild cabbage-like flavor with crisp texture. Excellent source of sulforaphane and vitamin K.</p>
+        <ul class="product-features">
+            <li>High in sulforaphane</li>
+            <li>Crisp, fresh texture</li>
+            <li>Mild cabbage flavor</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="cauliflower-mineral" onchange="calculateNutrition('cauliflower')">
+                        <option value="sulforaphane">Sulforaphane</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="folate">Folate</option>
+                        <option value="fiber">Fiber</option>
+                        <option value="calcium">Calcium</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="cauliflower-result">
+                <span class="result-value">95</span><span class="result-unit">mg Sulforaphane</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('cauliflower')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="cauliflower-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('cauliflower')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('chia')">+</button>
+                    <input type="hidden" id="cauliflower-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="chia-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="chia-price">₹120</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('chia', 'Chia Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-
-<!-- Flax Microgreens -->
-<div class="product-card">
-    <img src="images/products/flax-microgreens.jpg" alt="Fresh Flax Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🌾</div>
-    <h3>Flax Microgreens</h3>
-    <p>Nutty, slightly bitter flavor. Exceptional source of lignans and alpha-linolenic acid.</p>
-    <ul class="product-features">
-        <li>Rich in lignans</li>
-        <li>High in ALA</li>
-        <li>Nutty, unique flavor</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="flax-mineral" onchange="calculateNutrition('flax')">
-                    <option value="lignans">Lignans</option>
-                    <option value="ala">ALA (Omega-3)</option>
-                    <option value="fiber">Fiber</option>
-                    <option value="protein">Protein</option>
-                    <option value="magnesium">Magnesium</option>
-                    <option value="thiamine">Thiamine</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="cauliflower-price">₹85</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="flax-result">
-            <span class="result-value">294</span><span class="result-unit">mg Lignans</span>
+            <button class="add-to-cart-btn" onclick="addToCart('cauliflower', 'Cauliflower Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('flax')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="flax-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+    <!-- Chia Microgreens -->
+    <div class="product-card">
+        <img src="images/products/chia-microgreens.jpg" alt="Fresh Chia Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🌿</div>
+        <h3>Chia Microgreens</h3>
+        <p>Delicate, mild flavor with incredible nutritional density. Rich in omega-3 fatty acids.</p>
+        <ul class="product-features">
+            <li>High in Omega-3</li>
+            <li>Delicate, mild taste</li>
+            <li>Super nutrient dense</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="chia-mineral" onchange="calculateNutrition('chia')">
+                        <option value="omega-3">Omega-3</option>
+                        <option value="protein">Protein</option>
+                        <option value="calcium">Calcium</option>
+                        <option value="magnesium">Magnesium</option>
+                        <option value="fiber">Fiber</option>
+                        <option value="phosphorus">Phosphorus</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="chia-result">
+                <span class="result-value">5.8</span><span class="result-unit">g Omega-3</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('chia')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="chia-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('chia')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('flax')">+</button>
+                    <input type="hidden" id="chia-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="flax-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="flax-price">₹110</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('flax', 'Flax Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-
-<!-- Mustard Microgreens -->
-<div class="product-card">
-    <img src="images/products/mustard-microgreens.jpg" alt="Fresh Mustard Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🟡</div>
-    <h3>Mustard Microgreens</h3>
-    <p>Spicy, peppery kick with bold flavor. Excellent source of vitamins A, C, and K.</p>
-    <ul class="product-features">
-        <li>Bold, spicy flavor</li>
-        <li>High in vitamins A, C, K</li>
-        <li>Great for Asian dishes</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="mustard-mineral" onchange="calculateNutrition('mustard')">
-                    <option value="vitamin-a">Vitamin A</option>
-                    <option value="vitamin-c">Vitamin C</option>
-                    <option value="vitamin-k">Vitamin K</option>
-                    <option value="calcium">Calcium</option>
-                    <option value="iron">Iron</option>
-                    <option value="folate">Folate</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="chia-price">₹120</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="mustard-result">
-            <span class="result-value">924</span><span class="result-unit">mcg Vitamin A</span>
+            <button class="add-to-cart-btn" onclick="addToCart('chia', 'Chia Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('mustard')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="mustard-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+    <!-- Flax Microgreens -->
+    <div class="product-card">
+        <img src="images/products/flax-microgreens.jpg" alt="Fresh Flax Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🌾</div>
+        <h3>Flax Microgreens</h3>
+        <p>Nutty, slightly bitter flavor. Exceptional source of lignans and alpha-linolenic acid.</p>
+        <ul class="product-features">
+            <li>Rich in lignans</li>
+            <li>High in ALA</li>
+            <li>Nutty, unique flavor</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="flax-mineral" onchange="calculateNutrition('flax')">
+                        <option value="lignans">Lignans</option>
+                        <option value="ala">ALA (Omega-3)</option>
+                        <option value="fiber">Fiber</option>
+                        <option value="protein">Protein</option>
+                        <option value="magnesium">Magnesium</option>
+                        <option value="thiamine">Thiamine</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="flax-result">
+                <span class="result-value">294</span><span class="result-unit">mg Lignans</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('flax')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="flax-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('flax')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('mustard')">+</button>
+                    <input type="hidden" id="flax-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="mustard-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="mustard-price">₹80</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('mustard', 'Mustard Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-
-<!-- Pink Radish Microgreens -->
-<div class="product-card">
-    <img src="images/products/pink-radish-microgreens.jpg" alt="Fresh Pink Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🌸</div>
-    <h3>Pink Radish Microgreens</h3>
-    <p>Beautiful pink stems with spicy radish flavor. Stunning visual appeal with great nutrition.</p>
-    <ul class="product-features">
-        <li>Beautiful pink color</li>
-        <li>Spicy radish taste</li>
-        <li>Perfect for garnishing</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="pinkradish-mineral" onchange="calculateNutrition('pinkradish')">
-                    <option value="vitamin-c">Vitamin C</option>
-                    <option value="anthocyanins">Anthocyanins</option>
-                    <option value="vitamin-k">Vitamin K</option>
-                    <option value="folate">Folate</option>
-                    <option value="potassium">Potassium</option>
-                    <option value="fiber">Fiber</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="flax-price">₹110</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="pinkradish-result">
-            <span class="result-value">320</span><span class="result-unit">mg Vitamin C</span>
+            <button class="add-to-cart-btn" onclick="addToCart('flax', 'Flax Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('pinkradish')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="pinkradish-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+    <!-- Mustard Microgreens -->
+    <div class="product-card">
+        <img src="images/products/mustard-microgreens.jpg" alt="Fresh Mustard Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🟡</div>
+        <h3>Mustard Microgreens</h3>
+        <p>Spicy, peppery kick with bold flavor. Excellent source of vitamins A, C, and K.</p>
+        <ul class="product-features">
+            <li>Bold, spicy flavor</li>
+            <li>High in vitamins A, C, K</li>
+            <li>Great for Asian dishes</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="mustard-mineral" onchange="calculateNutrition('mustard')">
+                        <option value="vitamin-a">Vitamin A</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="calcium">Calcium</option>
+                        <option value="iron">Iron</option>
+                        <option value="folate">Folate</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="mustard-result">
+                <span class="result-value">924</span><span class="result-unit">mcg Vitamin A</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('mustard')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="mustard-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('mustard')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('pinkradish')">+</button>
+                    <input type="hidden" id="mustard-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="pinkradish-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="pinkradish-price">₹95</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('pinkradish', 'Pink Radish Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-
-<!-- Sunflower Microgreens -->
-<div class="product-card">
-    <img src="images/products/sunflower-microgreens.jpg" alt="Fresh Sunflower Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🌻</div>
-    <h3>Sunflower Microgreens</h3>
-    <p>Nutty flavor with satisfying crunch. Packed with healthy fats, protein, and vitamin E.</p>
-    <ul class="product-features">
-        <li>High in healthy fats</li>
-        <li>Nutty, satisfying taste</li>
-        <li>Great texture variety</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="sunflower-mineral" onchange="calculateNutrition('sunflower')">
-                    <option value="vitamin-e">Vitamin E</option>
-                    <option value="protein">Protein</option>
-                    <option value="zinc">Zinc</option>
-                    <option value="magnesium">Magnesium</option>
-                    <option value="healthy-fats">Healthy Fats</option>
-                    <option value="fiber">Fiber</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="mustard-price">₹80</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="sunflower-result">
-            <span class="result-value">15</span><span class="result-unit">mg Vitamin E</span>
+            <button class="add-to-cart-btn" onclick="addToCart('mustard', 'Mustard Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sunflower')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="sunflower-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+    <!-- Pink Radish Microgreens -->
+    <div class="product-card">
+        <img src="images/products/pink-radish-microgreens.jpg" alt="Fresh Pink Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🌸</div>
+        <h3>Pink Radish Microgreens</h3>
+        <p>Beautiful pink stems with spicy radish flavor. Stunning visual appeal with great nutrition.</p>
+        <ul class="product-features">
+            <li>Beautiful pink color</li>
+            <li>Spicy radish taste</li>
+            <li>Perfect for garnishing</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="pinkradish-mineral" onchange="calculateNutrition('pinkradish')">
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="anthocyanins">Anthocyanins</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="folate">Folate</option>
+                        <option value="potassium">Potassium</option>
+                        <option value="fiber">Fiber</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="pinkradish-result">
+                <span class="result-value">320</span><span class="result-unit">mg Vitamin C</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('pinkradish')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="pinkradish-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('pinkradish')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sunflower')">+</button>
+                    <input type="hidden" id="pinkradish-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="sunflower-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="sunflower-price">₹70</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('sunflower', 'Sunflower Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-
-<!-- White Radish Microgreens -->
-<div class="product-card">
-    <img src="images/products/white-radish-microgreens.jpg" alt="Fresh White Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">⚪</div>
-    <h3>White Radish Microgreens</h3>
-    <p>Clean, crisp flavor with mild spiciness. Classic radish taste with beautiful white stems.</p>
-    <ul class="product-features">
-        <li>Clean, crisp flavor</li>
-        <li>Beautiful white stems</li>
-        <li>Mild spicy kick</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="whiteradish-mineral" onchange="calculateNutrition('whiteradish')">
-                    <option value="vitamin-c">Vitamin C</option>
-                    <option value="potassium">Potassium</option>
-                    <option value="folate">Folate</option>
-                    <option value="calcium">Calcium</option>
-                    <option value="phosphorus">Phosphorus</option>
-                    <option value="fiber">Fiber</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="pinkradish-price">₹95</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="whiteradish-result">
-            <span class="result-value">280</span><span class="result-unit">mg Vitamin C</span>
+            <button class="add-to-cart-btn" onclick="addToCart('pinkradish', 'Pink Radish Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('whiteradish')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="whiteradish-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+    <!-- Sunflower Microgreens -->
+    <div class="product-card">
+        <img src="images/products/sunflower-microgreens.jpg" alt="Fresh Sunflower Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🌻</div>
+        <h3>Sunflower Microgreens</h3>
+        <p>Nutty flavor with satisfying crunch. Packed with healthy fats, protein, and vitamin E.</p>
+        <ul class="product-features">
+            <li>High in healthy fats</li>
+            <li>Nutty, satisfying taste</li>
+            <li>Great texture variety</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="sunflower-mineral" onchange="calculateNutrition('sunflower')">
+                        <option value="vitamin-e">Vitamin E</option>
+                        <option value="protein">Protein</option>
+                        <option value="zinc">Zinc</option>
+                        <option value="magnesium">Magnesium</option>
+                        <option value="healthy-fats">Healthy Fats</option>
+                        <option value="fiber">Fiber</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="sunflower-result">
+                <span class="result-value">15</span><span class="result-unit">mg Vitamin E</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('sunflower')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="sunflower-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('sunflower')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('whiteradish')">+</button>
+                    <input type="hidden" id="sunflower-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="whiteradish-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="whiteradish-price">₹85</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('whiteradish', 'White Radish Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-
-<!-- GreenGram Microgreens -->
-<div class="product-card">
-    <img src="images/products/greengram-microgreens.jpg" alt="Fresh GreenGram Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🟢</div>
-    <h3>GreenGram Microgreens</h3>
-    <p>Fresh, crisp mung bean sprouts with mild, nutty flavor. Excellent source of protein and folate.</p>
-    <ul class="product-features">
-        <li>High in protein</li>
-        <li>Rich in folate</li>
-        <li>Mild, nutty taste</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="greengram-mineral" onchange="calculateNutrition('greengram')">
-                    <option value="protein">Protein</option>
-                    <option value="vitamin-c">Vitamin C</option>
-                    <option value="vitamin-k">Vitamin K</option>
-                    <option value="folate">Folate</option>
-                    <option value="iron">Iron</option>
-                    <option value="fiber">Fiber</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="sunflower-price">₹70</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="greengram-result">
-            <span class="result-value">12.5</span><span class="result-unit">g Protein</span>
+            <button class="add-to-cart-btn" onclick="addToCart('sunflower', 'Sunflower Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('greengram')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="greengram-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+    <!-- White Radish Microgreens -->
+    <div class="product-card">
+        <img src="images/products/white-radish-microgreens.jpg" alt="Fresh White Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">⚪</div>
+        <h3>White Radish Microgreens</h3>
+        <p>Clean, crisp flavor with mild spiciness. Classic radish taste with beautiful white stems.</p>
+        <ul class="product-features">
+            <li>Clean, crisp flavor</li>
+            <li>Beautiful white stems</li>
+            <li>Mild spicy kick</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="whiteradish-mineral" onchange="calculateNutrition('whiteradish')">
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="potassium">Potassium</option>
+                        <option value="folate">Folate</option>
+                        <option value="calcium">Calcium</option>
+                        <option value="phosphorus">Phosphorus</option>
+                        <option value="fiber">Fiber</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="whiteradish-result">
+                <span class="result-value">280</span><span class="result-unit">mg Vitamin C</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('whiteradish')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="whiteradish-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('whiteradish')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('greengram')">+</button>
+                    <input type="hidden" id="whiteradish-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="greengram-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="greengram-price">₹85</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('greengram', 'GreenGram Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-<!-- Purple Radish Microgreens -->
-<div class="product-card">
-    <img src="images/products/purple-radish-microgreens.jpg" alt="Fresh Purple Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🟣</div>
-    <h3>Purple Radish Microgreens</h3>
-    <p>Vibrant purple color with peppery, spicy flavor. High in anthocyanins and antioxidants.</p>
-    <ul class="product-features">
-        <li>Rich in anthocyanins</li>
-        <li>Bold, peppery taste</li>
-        <li>Stunning purple stems</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="purpleradish-mineral" onchange="calculateNutrition('purpleradish')">
-                    <option value="vitamin-c">Vitamin C</option>
-                    <option value="anthocyanins">Anthocyanins</option>
-                    <option value="vitamin-k">Vitamin K</option>
-                    <option value="folate">Folate</option>
-                    <option value="potassium">Potassium</option>
-                    <option value="fiber">Fiber</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="whiteradish-price">₹85</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="purpleradish-result">
-            <span class="result-value">310</span><span class="result-unit">mg Vitamin C</span>
+            <button class="add-to-cart-btn" onclick="addToCart('whiteradish', 'White Radish Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('purpleradish')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="purpleradish-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+    <!-- GreenGram Microgreens -->
+    <div class="product-card">
+        <img src="images/products/greengram-microgreens.jpg" alt="Fresh GreenGram Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🟢</div>
+        <h3>GreenGram Microgreens</h3>
+        <p>Fresh, crisp mung bean sprouts with mild, nutty flavor. Excellent source of protein and folate.</p>
+        <ul class="product-features">
+            <li>High in protein</li>
+            <li>Rich in folate</li>
+            <li>Mild, nutty taste</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="greengram-mineral" onchange="calculateNutrition('greengram')">
+                        <option value="protein">Protein</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="folate">Folate</option>
+                        <option value="iron">Iron</option>
+                        <option value="fiber">Fiber</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="greengram-result">
+                <span class="result-value">12.5</span><span class="result-unit">g Protein</span>
+            </div>
+        </div>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('greengram')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="greengram-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('greengram')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('purpleradish')">+</button>
+                    <input type="hidden" id="greengram-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="purpleradish-cart-quantity" value="1">
             </div>
-        </div>
-        <div class="price-display">
-            <span class="price-amount" id="purpleradish-price">₹95</span>
-        </div>
-        <button class="add-to-cart-btn" onclick="addToCart('purpleradish', 'Purple Radish Microgreens')">
-            Add to Cart
-        </button>
-    </div>
-</div>
-
-<!-- Broccoli Microgreens -->
-<div class="product-card">
-    <img src="images/products/broccoli-microgreens.jpg" alt="Fresh Broccoli Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="product-icon" style="display: none;">🥦</div>
-    <h3>Broccoli Microgreens</h3>
-    <p>Mild, fresh broccoli flavor packed with sulforaphane. Excellent cancer-fighting properties.</p>
-    <ul class="product-features">
-        <li>Highest sulforaphane content</li>
-        <li>Mild, pleasant taste</li>
-        <li>Powerful antioxidants</li>
-    </ul>
-    
-    <div class="nutrition-calculator">
-        <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
-        <div class="calculator-controls">
-            <div class="control-group">
-                <label class="control-label">Mineral/Vitamin</label>
-                <select class="calculator-select" id="broccoli-mineral" onchange="calculateNutrition('broccoli')">
-                    <option value="sulforaphane">Sulforaphane</option>
-                    <option value="vitamin-c">Vitamin C</option>
-                    <option value="vitamin-k">Vitamin K</option>
-                    <option value="vitamin-a">Vitamin A</option>
-                    <option value="folate">Folate</option>
-                    <option value="calcium">Calcium</option>
-                </select>
+            <div class="price-display">
+                <span class="price-amount" id="greengram-price">₹85</span>
             </div>
-        </div>
-        <div class="nutrition-result" id="broccoli-result">
-            <span class="result-value">115</span><span class="result-unit">mg Sulforaphane</span>
+            <button class="add-to-cart-btn" onclick="addToCart('greengram', 'GreenGram Microgreens')">
+                Add to Cart
+            </button>
         </div>
     </div>
+    <!-- Purple Radish Microgreens -->
+    <div class="product-card">
+        <img src="images/products/purple-radish-microgreens.jpg" alt="Fresh Purple Radish Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🟣</div>
+        <h3>Purple Radish Microgreens</h3>
+        <p>Vibrant purple color with peppery, spicy flavor. High in anthocyanins and antioxidants.</p>
+        <ul class="product-features">
+            <li>Rich in anthocyanins</li>
+            <li>Bold, peppery taste</li>
+            <li>Stunning purple stems</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="purpleradish-mineral" onchange="calculateNutrition('purpleradish')">
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="anthocyanins">Anthocyanins</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="folate">Folate</option>
+                        <option value="potassium">Potassium</option>
+                        <option value="fiber">Fiber</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="purpleradish-result">
+                <span class="result-value">310</span><span class="result-unit">mg Vitamin C</span>
+            </div>
+        </div>
 
-    <div class="product-purchase">
-        <h4 class="purchase-title">🛒 Add to Cart</h4>
-        <div class="purchase-options">
-            <div class="quantity-selector-container">
-                <label class="option-label">Quantity</label>
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('broccoli')">−</button>
-                    <div class="quantity-display">
-                        <span class="quantity-number" id="broccoli-cart-quantity-display">1</span>
-                        <span class="quantity-unit">× 100g</span>
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('purpleradish')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="purpleradish-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('purpleradish')">+</button>
                     </div>
-                    <button type="button" class="quantity-btn plus" onclick="increaseQuantity('broccoli')">+</button>
+                    <input type="hidden" id="purpleradish-cart-quantity" value="1">
                 </div>
-                <input type="hidden" id="broccoli-cart-quantity" value="1">
+            </div>
+            <div class="price-display">
+                <span class="price-amount" id="purpleradish-price">₹95</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('purpleradish', 'Purple Radish Microgreens')">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Broccoli Microgreens -->
+    <div class="product-card">
+        <img src="images/products/broccoli-microgreens.jpg" alt="Fresh Broccoli Microgreens" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="product-icon" style="display: none;">🥦</div>
+        <h3>Broccoli Microgreens</h3>
+        <p>Mild, fresh broccoli flavor packed with sulforaphane. Excellent cancer-fighting properties.</p>
+        <ul class="product-features">
+            <li>Highest sulforaphane content</li>
+            <li>Mild, pleasant taste</li>
+            <li>Powerful antioxidants</li>
+        </ul>
+        
+        <div class="nutrition-calculator">
+            <h4 class="calculator-title">🧮 Nutrition Calculator</h4>
+            <div class="calculator-controls">
+                <div class="control-group">
+                    <label class="control-label">Mineral/Vitamin</label>
+                    <select class="calculator-select" id="broccoli-mineral" onchange="calculateNutrition('broccoli')">
+                        <option value="sulforaphane">Sulforaphane</option>
+                        <option value="vitamin-c">Vitamin C</option>
+                        <option value="vitamin-k">Vitamin K</option>
+                        <option value="vitamin-a">Vitamin A</option>
+                        <option value="folate">Folate</option>
+                        <option value="calcium">Calcium</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nutrition-result" id="broccoli-result">
+                <span class="result-value">115</span><span class="result-unit">mg Sulforaphane</span>
             </div>
         </div>
-        <div class="price-display">
-            <span class="price-amount" id="broccoli-price">₹100</span>
+
+        <div class="product-purchase">
+            <h4 class="purchase-title">🛒 Add to Cart</h4>
+            <div class="purchase-options">
+                <div class="quantity-selector-container">
+                    <label class="option-label">Quantity</label>
+                    <div class="quantity-selector">
+                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('broccoli')">−</button>
+                        <div class="quantity-display">
+                            <span class="quantity-number" id="broccoli-cart-quantity-display">1</span>
+                            <span class="quantity-unit">× 100g</span>
+                        </div>
+                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity('broccoli')">+</button>
+                    </div>
+                    <input type="hidden" id="broccoli-cart-quantity" value="1">
+                </div>
+            </div>
+            <div class="price-display">
+                <span class="price-amount" id="broccoli-price">₹100</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart('broccoli', 'Broccoli Microgreens')">
+                Add to Cart
+            </button>
         </div>
-        <button class="add-to-cart-btn" onclick="addToCart('broccoli', 'Broccoli Microgreens')">
-            Add to Cart
-        </button>
     </div>
-</div>
-    </section>
+</section>
 <!-- ADD THIS SECTION AFTER YOUR MICROGREENS PRODUCTS SECTION -->
 <!-- Around line 850 in your HTML, after the microgreens products-grid closes -->
 
@@ -5053,11 +5285,939 @@
                     </button>
                 </div>
             </div>
-
-
         </div>
     </div>
 </section>
+<!-- SEEDS -->
+
+<section id="seeds" class="products">
+    <div class="products-container">
+        
+        <h2 class="section-title">Organic Seeds</h2>
+        <p style="text-align: center; color: #666; max-width: 700px; margin: 0 auto 3rem;">
+            Premium organic seeds for growing microgreens & sprouts at home. Starting from 50g!
+        </p>
+        
+        <div class="products-grid">
+            
+            <!-- ALFALFA SEEDS -->
+            <div class="product-card">
+                <img src="images/seeds/alfalfa-seeds.jpg" alt="Alfalfa Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌱</div>
+                <h3>Alfalfa Seeds</h3>
+                <p>Premium organic alfalfa seeds. High germination rate. Grows in 5-7 days. Mild, nutty flavor.</p>
+                <ul class="product-features">
+                    <li>100% organic seeds</li>
+                    <li>95%+ germination rate</li>
+                    <li>Grows in 5-7 days</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-alfalfa')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-alfalfa-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-alfalfa')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-alfalfa-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-alfalfa-price">₹80</span>
+                        <span class="price-per-unit">(₹80 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-alfalfa', 'Alfalfa Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- BEETROOT SEEDS -->
+            <div class="product-card">
+                <img src="images/seeds/beetroot-seeds.jpg" alt="Beetroot Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🟣</div>
+                <h3>Beetroot Seeds</h3>
+                <p>Organic beetroot microgreen seeds. Beautiful purple stems. Sweet, earthy flavor. 8-12 days.</p>
+                <ul class="product-features">
+                    <li>Vibrant purple color</li>
+                    <li>High in antioxidants</li>
+                    <li>Sweet earthy taste</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-beetroot')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-beetroot-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-beetroot')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-beetroot-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-beetroot-price">₹90</span>
+                        <span class="price-per-unit">(₹90 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-beetroot', 'Beetroot Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- BROCCOLI SEEDS -->
+            <div class="product-card">
+                <img src="images/seeds/broccoli-seeds.jpg" alt="Broccoli Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🥦</div>
+                <h3>Broccoli Seeds</h3>
+                <p>Organic broccoli microgreen seeds. Highest sulforaphane content. Cancer-fighting properties. 8-12 days.</p>
+                <ul class="product-features">
+                    <li>Highest sulforaphane</li>
+                    <li>Cancer-fighting properties</li>
+                    <li>Mild pleasant taste</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-broccoli')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-broccoli-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-broccoli')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-broccoli-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-broccoli-price">₹100</span>
+                        <span class="price-per-unit">(₹100 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-broccoli', 'Broccoli Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- MUSTARD SEEDS -->
+            <div class="product-card">
+                <img src="images/seeds/mustard-seeds.jpg" alt="Mustard Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌶️</div>
+                <h3>Mustard Seeds</h3>
+                <p>Organic mustard microgreen seeds. Spicy, peppery flavor. Fast growing. Perfect for Asian dishes.</p>
+                <ul class="product-features">
+                    <li>Bold spicy flavor</li>
+                    <li>Fast growing (4-6 days)</li>
+                    <li>High in vitamins A, C, K</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-mustard')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-mustard-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-mustard')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-mustard-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-mustard-price">₹70</span>
+                        <span class="price-per-unit">(₹70 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-mustard', 'Mustard Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- RADISH SEEDS (PINK) -->
+            <div class="product-card">
+                <img src="images/seeds/radish-seeds.jpg" alt="Pink Radish Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌸</div>
+                <h3>Radish Seeds (Pink)</h3>
+                <p>Organic pink radish microgreen seeds. Beautiful pink stems. Spicy flavor. Great for garnishing.</p>
+                <ul class="product-features">
+                    <li>Beautiful pink color</li>
+                    <li>Spicy radish flavor</li>
+                    <li>Perfect for garnish</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-radish')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-radish-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-radish')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-radish-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-radish-price">₹85</span>
+                        <span class="price-per-unit">(₹85 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-radish', 'Pink Radish Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUNFLOWER SEEDS -->
+            <div class="product-card">
+                <img src="images/seeds/sunflower-seeds.jpg" alt="Sunflower Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌻</div>
+                <h3>Sunflower Seeds</h3>
+                <p>Premium organic sunflower seeds. Nutty flavor, crunchy texture. High in protein and vitamin E.</p>
+                <ul class="product-features">
+                    <li>Nutty, satisfying taste</li>
+                    <li>High in protein</li>
+                    <li>Crunchy texture</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-sunflower')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-sunflower-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-sunflower')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-sunflower-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-sunflower-price">₹120</span>
+                        <span class="price-per-unit">(₹120 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-sunflower', 'Sunflower Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- FENUGREEK SEEDS -->
+            <div class="product-card">
+                <img src="images/seeds/fenugreek-seeds.jpg" alt="Fenugreek Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🍀</div>
+                <h3>Fenugreek Seeds (Methi)</h3>
+                <p>Organic fenugreek (methi) seeds. Traditional Indian superfood. Bitter-sweet flavor. Health benefits.</p>
+                <ul class="product-features">
+                    <li>Blood sugar regulation</li>
+                    <li>High in fiber</li>
+                    <li>Traditional superfood</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-fenugreek')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-fenugreek-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-fenugreek')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-fenugreek-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-fenugreek-price">₹60</span>
+                        <span class="price-per-unit">(₹60 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-fenugreek', 'Fenugreek Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- MUNG BEAN SEEDS -->
+            <div class="product-card">
+                <img src="images/seeds/mungbean-seeds.jpg" alt="Mung Bean Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🟢</div>
+                <h3>Mung Bean Seeds</h3>
+                <p>Premium organic mung bean seeds for sprouting. Classic Asian sprouts. High protein. 3-5 days.</p>
+                <ul class="product-features">
+                    <li>Perfect for sprouting</li>
+                    <li>High in protein</li>
+                    <li>Classic Asian favorite</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-mungbean')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-mungbean-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-mungbean')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-mungbean-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-mungbean-price">₹80</span>
+                        <span class="price-per-unit">(₹80 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-mungbean', 'Mung Bean Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- CHICKPEA SEEDS -->
+            <div class="product-card">
+                <img src="images/seeds/chickpea-seeds.jpg" alt="Chickpea Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🟡</div>
+                <h3>Chickpea Seeds (Chana)</h3>
+                <p>Organic chickpea (chana) seeds for sprouting. Perfect for Indian chaat. High protein, nutty flavor.</p>
+                <ul class="product-features">
+                    <li>Perfect for chaat</li>
+                    <li>High protein content</li>
+                    <li>Nutty satisfying taste</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-chickpea')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-chickpea-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-chickpea')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-chickpea-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-chickpea-price">₹70</span>
+                        <span class="price-per-unit">(₹70 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-chickpea', 'Chickpea Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- CHIA SEEDS -->
+            <div class="product-card">
+                <img src="images/seeds/chia-seeds.jpg" alt="Chia Seeds" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">⭐</div>
+                <h3>Chia Seeds</h3>
+                <p>Premium organic chia seeds. Superfood microgreens. High in omega-3. Mild delicate flavor.</p>
+                <ul class="product-features">
+                    <li>High in Omega-3</li>
+                    <li>Superfood nutrition</li>
+                    <li>Delicate mild taste</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Weight</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('seeds-chia')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="seeds-chia-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× 50g</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('seeds-chia')">+</button>
+                            </div>
+                            <input type="hidden" id="seeds-chia-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="seeds-chia-price">₹150</span>
+                        <span class="price-per-unit">(₹150 per 50g)</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('seeds-chia', 'Chia Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+ <!-- How To Grow -->
+
+<section id="howtogrow" class="products">
+    <div class="products-container">
+        <h2 class="section-title">🌿 How to Grow Microgreens & Sprouts</h2>
+        <p style="text-align: center; color: #666; max-width: 800px; margin: 0 auto 3rem;">
+            Growing your own microgreens and sprouts is easy, rewarding, and takes just minutes a day!<br>
+            Follow our simple step-by-step guide below.
+        </p>
+         <!-- GROWING GUIDE TABS -->
+        <div class="growing-guide">
+            <div class="guide-tabs">
+                <button class="guide-tab active" onclick="showGuide('microgreens')">
+                    🌱 Growing Microgreens
+                </button>
+                <button class="guide-tab" onclick="showGuide('sprouts')">
+                    🌿 Growing Sprouts
+                </button>
+            </div>
+
+            <!-- MICROGREENS GUIDE -->
+            <div id="microgreens-guide" class="guide-content active">
+                <div class="steps-grid">
+                    
+                    <!-- Step 1 -->
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">💧</div>
+                        <h3>Prepare Growing Medium</h3>
+                        <p>Soak cocopeat block in water for 15-20 minutes until fully expanded. Spread evenly in your growing tray, about 1-2 inches deep.</p>
+                        <div class="step-supplies">
+                            <span>Need: Cocopeat, Tray</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">🌱</div>
+                        <h3>Sow Seeds</h3>
+                        <p>Spread seeds evenly across the moist cocopeat. Lightly press them down. Mist with water using spray bottle.</p>
+                        <div class="step-supplies">
+                            <span>Need: Seeds, Spray Bottle</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">🏠</div>
+                        <h3>Cover & Germinate</h3>
+                        <p>Cover with humidity dome or another tray. Keep in dark place for 2-3 days. Spray water twice daily to keep moist.</p>
+                        <div class="step-supplies">
+                            <span>Need: Humidity Dome</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">☀️</div>
+                        <h3>Provide Light</h3>
+                        <p>After germination, move to bright indirect sunlight or under grow lights. Continue misting 2-3 times daily.</p>
+                        <div class="step-supplies">
+                            <span>Need: Grow Light (optional)</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="step-card">
+                        <div class="step-number">5</div>
+                        <div class="step-icon">🌿</div>
+                        <h3>Grow & Monitor</h3>
+                        <p>Watch your microgreens grow! Keep soil moist but not waterlogged. Ensure good air circulation to prevent mold.</p>
+                        <div class="step-supplies">
+                            <span>Time: 5-12 days</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="step-card">
+                        <div class="step-number">6</div>
+                        <div class="step-icon">✂️</div>
+                        <h3>Harvest & Enjoy</h3>
+                        <p>When first true leaves appear, use scissors to cut just above soil level. Rinse, pat dry, and enjoy fresh!</p>
+                        <div class="step-supplies">
+                            <span>Need: Harvesting Scissors</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Quick Tips for Microgreens -->
+                <div class="quick-tips">
+                    <h3>💡 Quick Tips for Success</h3>
+                    <ul>
+                        <li><strong>Water:</strong> Mist 2-3 times daily, but don't oversaturate</li>
+                        <li><strong>Light:</strong> 12-16 hours of light per day for best growth</li>
+                        <li><strong>Temperature:</strong> Keep between 18-24°C (65-75°F)</li>
+                        <li><strong>Harvest:</strong> Cut when 2-3 inches tall with first true leaves</li>
+                        <li><strong>Storage:</strong> Store in refrigerator for 5-7 days in airtight container</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SPROUTS GUIDE -->
+            <div id="sprouts-guide" class="guide-content">
+                <div class="steps-grid">
+                    
+                    <!-- Step 1 -->
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">💧</div>
+                        <h3>Rinse & Soak Seeds</h3>
+                        <p>Rinse seeds thoroughly. Place in sprouting jar and fill with water. Soak for 8-12 hours (overnight works best).</p>
+                        <div class="step-supplies">
+                            <span>Need: Sprouting Jar, Seeds</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">🚰</div>
+                        <h3>Drain & Rinse</h3>
+                        <p>After soaking, drain all water through mesh lid. Rinse seeds with fresh water and drain again completely.</p>
+                        <div class="step-supplies">
+                            <span>Time: Morning & Evening</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">🌙</div>
+                        <h3>Place in Dark</h3>
+                        <p>Keep jar tilted at 45° angle (mesh side down) in a dark place. This allows proper drainage and air circulation.</p>
+                        <div class="step-supplies">
+                            <span>Location: Dark cupboard</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">🔄</div>
+                        <h3>Rinse 2-3 Times Daily</h3>
+                        <p>Rinse thoroughly with fresh water and drain completely. Do this 2-3 times per day to prevent mold and ensure freshness.</p>
+                        <div class="step-supplies">
+                            <span>Frequency: Every 8-12 hours</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="step-card">
+                        <div class="step-number">5</div>
+                        <div class="step-icon">🌱</div>
+                        <h3>Watch Them Grow</h3>
+                        <p>Sprouts will grow quickly! After 3-5 days, you'll see beautiful, crunchy sprouts ready to eat. Continue rinsing daily.</p>
+                        <div class="step-supplies">
+                            <span>Time: 3-5 days</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="step-card">
+                        <div class="step-number">6</div>
+                        <div class="step-icon">🥗</div>
+                        <h3>Final Rinse & Enjoy</h3>
+                        <p>Give one final thorough rinse. Drain well and store in refrigerator. Use within 3-5 days for best freshness!</p>
+                        <div class="step-supplies">
+                            <span>Storage: Refrigerator, 3-5 days</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Quick Tips for Sprouts -->
+                <div class="quick-tips">
+                    <h3>💡 Quick Tips for Success</h3>
+                    <ul>
+                        <li><strong>Rinse:</strong> 2-3 times daily - morning, afternoon, evening</li>
+                        <li><strong>Drainage:</strong> Always drain completely to prevent mold</li>
+                        <li><strong>Temperature:</strong> Room temperature (20-25°C) works best</li>
+                        <li><strong>Light:</strong> Keep in dark until last day, then expose to light for greening (optional)</li>
+                        <li><strong>Signs of readiness:</strong> Crunchy texture, small tails, fresh smell</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="section-divider">
+            <h3>🛒 Everything You Need to Get Started</h3>
+            <p>Shop our complete range of growing supplies below</p>
+        </div>
+
+        <!-- GROWING SUPPLIES PRODUCTS GRID -->
+        <div class="products-grid">
+            <!-- COCOPEAT BLOCK -->
+            <div class="product-card">
+                <img src="images/supplies/cocopeat-block.jpg" alt="Cocopeat Block" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🥥</div>
+                <h3>Cocopeat Block (650g)</h3>
+                <p>Premium quality compressed cocopeat. Expands to 8-9 liters. Perfect growing medium for microgreens.</p>
+                <ul class="product-features">
+                    <li>100% natural & organic</li>
+                    <li>Excellent water retention</li>
+                    <li>Expands 8-9 liters</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-cocopeat')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="supply-cocopeat-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× Block</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-cocopeat')">+</button>
+                            </div>
+                            <input type="hidden" id="supply-cocopeat-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="supply-cocopeat-price">₹80</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('supply-cocopeat', 'Cocopeat Block (650g)')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- GROWING TRAY - 10x20 -->
+            <div class="product-card">
+                <img src="images/supplies/growing-tray-10x20.jpg" alt="Growing Tray 10x20" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">📦</div>
+                <h3>Growing Tray 10"x20"</h3>
+                <p>Professional microgreens growing tray with drainage holes. Durable, reusable, and food-safe plastic.</p>
+                <ul class="product-features">
+                    <li>With drainage holes</li>
+                    <li>Food-grade plastic</li>
+                    <li>Reusable & durable</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-tray-10x20')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="supply-tray-10x20-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× Tray</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-tray-10x20')">+</button>
+                            </div>
+                            <input type="hidden" id="supply-tray-10x20-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="supply-tray-10x20-price">₹120</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('supply-tray-10x20', 'Growing Tray 10x20')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- SPROUTING JAR -->
+            <div class="product-card">
+                <img src="images/supplies/sprouting-jar.jpg" alt="Sprouting Jar" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🫙</div>
+                <h3>Sprouting Jar with Mesh Lid</h3>
+                <p>Glass jar with stainless steel mesh lid. Perfect for growing sprouts at home. Easy to use and clean.</p>
+                <ul class="product-features">
+                    <li>Food-grade glass jar</li>
+                    <li>Stainless mesh lid</li>
+                    <li>Easy drainage system</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-jar')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="supply-jar-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× Jar</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-jar')">+</button>
+                            </div>
+                            <input type="hidden" id="supply-jar-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="supply-jar-price">₹250</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('supply-jar', 'Sprouting Jar with Mesh Lid')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- SPRAY BOTTLE -->
+            <div class="product-card">
+                <img src="images/supplies/spray-bottle.jpg" alt="Spray Bottle" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">💧</div>
+                <h3>Fine Mist Spray Bottle (500ml)</h3>
+                <p>Premium quality spray bottle for gentle watering. Fine mist won't damage delicate microgreens.</p>
+                <ul class="product-features">
+                    <li>500ml capacity</li>
+                    <li>Fine mist spray</li>
+                    <li>Adjustable nozzle</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-spray')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="supply-spray-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× Bottle</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-spray')">+</button>
+                            </div>
+                            <input type="hidden" id="supply-spray-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="supply-spray-price">₹150</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('supply-spray', 'Spray Bottle 500ml')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- SEED STARTER KIT -->
+            <div class="product-card">
+                <img src="images/supplies/starter-kit.jpg" alt="Microgreens Starter Kit" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🎁</div>
+                <h3>Microgreens Starter Kit</h3>
+                <p>Complete beginner's kit! Includes 2 trays, cocopeat, spray bottle, and seeds. Everything to start growing.</p>
+                <ul class="product-features">
+                    <li>2x Growing trays</li>
+                    <li>2x Cocopeat blocks</li>
+                    <li>Spray bottle + Seeds</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-starterkit')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="supply-starterkit-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× Kit</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-starterkit')">+</button>
+                            </div>
+                            <input type="hidden" id="supply-starterkit-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="supply-starterkit-price">₹599</span>
+                        <span class="price-original" style="text-decoration: line-through; color: #999; margin-left: 8px;">₹800</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('supply-starterkit', 'Microgreens Starter Kit')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- GROW LIGHTS -->
+            <div class="product-card">
+                <img src="images/supplies/grow-light.jpg" alt="LED Grow Light" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">💡</div>
+                <h3>LED Grow Light (20W)</h3>
+                <p>Full spectrum LED grow light for indoor growing. Perfect for microgreens with no natural sunlight.</p>
+                <ul class="product-features">
+                    <li>Full spectrum lighting</li>
+                    <li>Energy efficient 20W</li>
+                    <li>Adjustable height stand</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-growlight')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="supply-growlight-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× Light</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-growlight')">+</button>
+                            </div>
+                            <input type="hidden" id="supply-growlight-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="supply-growlight-price">₹1200</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('supply-growlight', 'LED Grow Light 20W')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- MICROGREEN SEEDS PACK -->
+            <div class="product-card">
+                <img src="images/supplies/seeds-pack.jpg" alt="Microgreen Seeds Pack" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🌱</div>
+                <h3>Organic Microgreen Seeds</h3>
+                <p>Premium organic seeds for growing your own microgreens. High germination rate. Choose from 10+ varieties.</p>
+                <ul class="product-features">
+                    <li>100% organic seeds</li>
+                    <li>High germination rate</li>
+                    <li>Multiple varieties</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-seeds')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="supply-seeds-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× Pack</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-seeds')">+</button>
+                            </div>
+                            <input type="hidden" id="supply-seeds-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="supply-seeds-price">₹100</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('supply-seeds', 'Organic Microgreen Seeds')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- HUMIDITY DOME -->
+            <div class="product-card">
+                <img src="images/supplies/humidity-dome.jpg" alt="Humidity Dome" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">🏠</div>
+                <h3>Humidity Dome Cover</h3>
+                <p>Clear plastic dome for maintaining humidity. Perfect germination environment. Fits 10"x20" trays.</p>
+                <ul class="product-features">
+                    <li>Fits 10"x20" trays</li>
+                    <li>Clear plastic material</li>
+                    <li>Ventilation holes</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-dome')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="supply-dome-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× Dome</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-dome')">+</button>
+                            </div>
+                            <input type="hidden" id="supply-dome-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="supply-dome-price">₹180</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('supply-dome', 'Humidity Dome Cover')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- HARVESTING SCISSORS -->
+            <div class="product-card">
+                <img src="images/supplies/scissors.jpg" alt="Harvesting Scissors" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="product-icon" style="display: none;">✂️</div>
+                <h3>Stainless Steel Harvesting Scissors</h3>
+                <p>Sharp, food-safe scissors designed for harvesting microgreens. Comfortable grip, precise cutting.</p>
+                <ul class="product-features">
+                    <li>Stainless steel blades</li>
+                    <li>Ergonomic design</li>
+                    <li>Easy to clean</li>
+                </ul>
+                
+                <div class="product-purchase">
+                    <h4 class="purchase-title">🛒 Add to Cart</h4>
+                    <div class="purchase-options">
+                        <div class="quantity-selector-container">
+                            <label class="option-label">Quantity</label>
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-scissors')">−</button>
+                                <div class="quantity-display">
+                                    <span class="quantity-number" id="supply-scissors-cart-quantity-display">1</span>
+                                    <span class="quantity-unit">× Pair</span>
+                                </div>
+                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-scissors')">+</button>
+                            </div>
+                            <input type="hidden" id="supply-scissors-cart-quantity" value="1">
+                        </div>
+                    </div>
+                    <div class="price-display">
+                        <span class="price-amount" id="supply-scissors-price">₹200</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart('supply-scissors', 'Harvesting Scissors')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+     
     <!-- Custom Blend Calculator Section -->
     <section class="custom-blend">
         <div class="custom-blend-container">
@@ -5643,7 +6803,35 @@
     'sprout-whiteradish': { base: 85 },
     'sprout-greengram': { base: 85 },
     'sprout-purpleradish': { base: 95 },
-    'sprout-broccoli': { base: 100 }
+    'sprout-broccoli': { base: 100 },
+
+     // SEEDS - 50g increments (base price per 50g)
+    'seeds-alfalfa': { base: 80, increment: 50 },      // ₹80 per 50g
+    'seeds-beetroot': { base: 90, increment: 50 },     // ₹90 per 50g
+    'seeds-broccoli': { base: 100, increment: 50 },    // ₹100 per 50g
+    'seeds-mustard': { base: 70, increment: 50 },      // ₹70 per 50g
+    'seeds-radish': { base: 85, increment: 50 },       // ₹85 per 50g
+    'seeds-sunflower': { base: 120, increment: 50 },   // ₹120 per 50g (heavier seeds)
+    'seeds-fenugreek': { base: 60, increment: 50 },    // ₹60 per 50g
+    'seeds-mungbean': { base: 80, increment: 50 },     // ₹80 per 50g
+    'seeds-chickpea': { base: 70, increment: 50 },     // ₹70 per 50g
+    'seeds-chia': { base: 150, increment: 50 },        // ₹150 per 50g (premium)
+    'seeds-lentil': { base: 50, increment: 50 },       // ₹50 per 50g
+    
+    // Seed Bundles (fixed price, no increment)
+    'seeds-beginners-mix': { base: 299, increment: 0 },  // Fixed bundle
+    'seeds-sprouts-mix': { base: 249, increment: 0 },     // Fixed bundle
+
+    // ADD THESE GROWING SUPPLIES PRICES:
+    'supply-cocopeat': { base: 80 },
+    'supply-tray-10x20': { base: 120 },
+    'supply-jar': { base: 250 },
+    'supply-spray': { base: 150 },
+    'supply-starterkit': { base: 599 },
+    'supply-growlight': { base: 1200 },
+    'supply-seeds': { base: 100 },
+    'supply-dome': { base: 180 },
+    'supply-scissors': { base: 200 }
 };
     // Custom blend pricing
   const blendPrices = {
@@ -6396,7 +7584,23 @@ function updateCartQuantity(itemId, action) {
     // User is logged in - proceed directly to delivery form
     proceedToCheckoutForm();
 }
-
+function showGuide(guideType) {
+    // Hide all guide contents
+    document.querySelectorAll('.guide-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.guide-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected guide
+    document.getElementById(`${guideType}-guide`).classList.add('active');
+    
+    // Add active class to clicked tab
+    event.target.classList.add('active');
+}
 function proceedToCheckoutForm() {
     
     updateCheckoutSummary();
