@@ -6060,44 +6060,7 @@
                 </div>
             </div>
 
-            <!-- SEED STARTER KIT -->
-            <div class="product-card">
-                <img src="images/supplies/starter-kit.jpg" alt="Microgreens Starter Kit" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div class="product-icon" style="display: none;">🎁</div>
-                <h3>Microgreens Starter Kit</h3>
-                <p>Complete beginner's kit! Includes 2 trays, cocopeat, spray bottle, and seeds. Everything to start growing.</p>
-                <ul class="product-features">
-                    <li>2x Growing trays</li>
-                    <li>2x Cocopeat blocks</li>
-                    <li>Spray bottle + Seeds</li>
-                </ul>
-                
-                <div class="product-purchase">
-                    <h4 class="purchase-title">🛒 Add to Cart</h4>
-                    <div class="purchase-options">
-                        <div class="quantity-selector-container">
-                            <label class="option-label">Quantity</label>
-                            <div class="quantity-selector">
-                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-starterkit')">−</button>
-                                <div class="quantity-display">
-                                    <span class="quantity-number" id="supply-starterkit-cart-quantity-display">1</span>
-                                    <span class="quantity-unit">× Kit</span>
-                                </div>
-                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-starterkit')">+</button>
-                            </div>
-                            <input type="hidden" id="supply-starterkit-cart-quantity" value="1">
-                        </div>
-                    </div>
-                    <div class="price-display">
-                        <span class="price-amount" id="supply-starterkit-price">₹599</span>
-                        <span class="price-original" style="text-decoration: line-through; color: #999; margin-left: 8px;">₹800</span>
-                    </div>
-                    <button class="add-to-cart-btn" onclick="addToCart('supply-starterkit', 'Microgreens Starter Kit')">
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
-
+        
             <!-- GROW LIGHTS -->
             <div class="product-card">
                 <img src="images/supplies/grow-light.jpg" alt="LED Grow Light" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -6167,43 +6130,6 @@
                         <span class="price-amount" id="supply-seeds-price">₹100</span>
                     </div>
                     <button class="add-to-cart-btn" onclick="addToCart('supply-seeds', 'Organic Microgreen Seeds')">
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
-
-            <!-- HUMIDITY DOME -->
-            <div class="product-card">
-                <img src="images/supplies/humidity-dome.jpg" alt="Humidity Dome" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div class="product-icon" style="display: none;">🏠</div>
-                <h3>Humidity Dome Cover</h3>
-                <p>Clear plastic dome for maintaining humidity. Perfect germination environment. Fits 10"x20" trays.</p>
-                <ul class="product-features">
-                    <li>Fits 10"x20" trays</li>
-                    <li>Clear plastic material</li>
-                    <li>Ventilation holes</li>
-                </ul>
-                
-                <div class="product-purchase">
-                    <h4 class="purchase-title">🛒 Add to Cart</h4>
-                    <div class="purchase-options">
-                        <div class="quantity-selector-container">
-                            <label class="option-label">Quantity</label>
-                            <div class="quantity-selector">
-                                <button type="button" class="quantity-btn minus" onclick="decreaseQuantity('supply-dome')">−</button>
-                                <div class="quantity-display">
-                                    <span class="quantity-number" id="supply-dome-cart-quantity-display">1</span>
-                                    <span class="quantity-unit">× Dome</span>
-                                </div>
-                                <button type="button" class="quantity-btn plus" onclick="increaseQuantity('supply-dome')">+</button>
-                            </div>
-                            <input type="hidden" id="supply-dome-cart-quantity" value="1">
-                        </div>
-                    </div>
-                    <div class="price-display">
-                        <span class="price-amount" id="supply-dome-price">₹180</span>
-                    </div>
-                    <button class="add-to-cart-btn" onclick="addToCart('supply-dome', 'Humidity Dome Cover')">
                         Add to Cart
                     </button>
                 </div>
@@ -6888,12 +6814,6 @@
         snapshot.forEach(doc => {
             const product = doc.data();
             const productId = doc.id;
-            
-            // Skip hidden products
-            if (product.visible === false) {
-                console.log(`Product ${productId} is hidden, skipping...`);
-                return;
-            }
             
             // Update price in productPrices object
             if (productPrices[productId]) {
