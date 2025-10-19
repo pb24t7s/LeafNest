@@ -6889,6 +6889,12 @@
             const product = doc.data();
             const productId = doc.id;
             
+            // Skip hidden products
+            if (product.visible === false) {
+                console.log(`Product ${productId} is hidden, skipping...`);
+                return;
+            }
+            
             // Update price in productPrices object
             if (productPrices[productId]) {
                 productPrices[productId].base = product.basePrice;
