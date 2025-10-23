@@ -3352,7 +3352,7 @@
 
 .professional-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(3, 1fr); /* Changed from auto-fit to 3 columns */
     gap: 3rem;
     max-width: 1200px;
     margin: 0 auto;
@@ -3447,6 +3447,10 @@
     .growing-guide {
         padding: 30px 20px;
     }
+    .professional-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+        gap: 2rem;
+    }
 }
 
 
@@ -3465,8 +3469,8 @@
         height: 22px;
         font-size: 0.7rem;
     }
-    .professional-grid {
-        grid-template-columns: 1fr;
+       .professional-grid {
+        grid-template-columns: 1fr; /* 1 column on mobile */
         gap: 2rem;
     }
     
