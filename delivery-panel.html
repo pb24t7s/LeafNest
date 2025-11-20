@@ -384,19 +384,88 @@
 
         // Load orders
         function loadOrders() {
+            console.log('📦 Loading orders...');
+            
+            // Try loading without orderBy first (in case createdAt field doesn't exist)
             db.collection('orders')
-                .orderBy('createdAt', 'desc')
+                .get()
+                .then((snapshot) => {
+                    console.log(`✅ Found ${snapshot.size} orders`);
+                    
+                    const orders = [];
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        orders.push({ 
+                            id: doc.id, 
+                            ...data,
+                            // Ensure deliveryStatus field exists
+                            deliveryStatus: data.deliveryStatus || 'pending'
+                        });
+                    });
+                    
+                    // Sort by createdAt if available, otherwise by id
+                    orders.sort((a, b) => {
+                        if (a.createdAt && b.createdAt) {
+                            return b.createdAt.toMillis() - a.createdAt.toMillis();
+                        }
+                        return b.id.localeCompare(a.id);
+                    });
+                    
+                    updateStats(orders);
+                    displayOrders(orders);
+                    
+                    // Set up real-time listener after initial load
+                    setupRealtimeListener();
+                })
+                .catch((error) => {
+                    console.error('❌ Error loading orders:', error);
+                    console.error('Error code:', error.code);
+                    console.error('Error message:', error.message);
+                    
+                    const container = document.getElementById('ordersContainer');
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h2>⚠️ Error Loading Orders</h2>
+                            <p>Error: ${error.message}</p>
+                            <p style="font-size: 0.9rem; color: #666;">
+                                ${error.code === 'permission-denied' 
+                                    ? 'Please check Firestore security rules allow read access to orders collection.' 
+                                    : 'Please check your internet connection and Firebase configuration.'}
+                            </p>
+                            <button class="btn btn-start-delivery" onclick="loadOrders()" style="margin-top: 20px;">
+                                🔄 Retry
+                            </button>
+                        </div>
+                    `;
+                });
+        }
+
+        // Setup real-time listener
+        function setupRealtimeListener() {
+            db.collection('orders')
                 .onSnapshot((snapshot) => {
                     const orders = [];
                     snapshot.forEach((doc) => {
-                        orders.push({ id: doc.id, ...doc.data() });
+                        const data = doc.data();
+                        orders.push({ 
+                            id: doc.id, 
+                            ...data,
+                            deliveryStatus: data.deliveryStatus || 'pending'
+                        });
+                    });
+                    
+                    // Sort orders
+                    orders.sort((a, b) => {
+                        if (a.createdAt && b.createdAt) {
+                            return b.createdAt.toMillis() - a.createdAt.toMillis();
+                        }
+                        return b.id.localeCompare(a.id);
                     });
                     
                     updateStats(orders);
                     displayOrders(orders);
                 }, (error) => {
-                    console.error('Error loading orders:', error);
-                    showNotification('Error loading orders', 'error');
+                    console.error('Real-time listener error:', error);
                 });
         }
 
