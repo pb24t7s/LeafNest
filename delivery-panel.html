@@ -74,6 +74,26 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card.active {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+        }
+
+        .stat-card.active .stat-number {
+            color: #a8e6a3;
+        }
+
+        .stat-card.active .stat-label {
+            color: white;
         }
 
         .stat-number {
@@ -93,6 +113,35 @@
         .orders-container {
             display: grid;
             gap: 20px;
+        }
+
+        .date-section {
+            margin-bottom: 30px;
+        }
+
+        .date-header {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #2c5530;
+        }
+
+        .date-header h3 {
+            color: #2c5530;
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-header .order-count {
+            background: #2c5530;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
         }
 
         .order-card {
@@ -332,19 +381,19 @@
     </div>
 
     <div class="stats-container">
-        <div class="stat-card">
+        <div class="stat-card active" id="stat-all" onclick="filterOrders('all')">
             <div class="stat-number" id="totalOrders">0</div>
-            <div class="stat-label">Total Orders</div>
+            <div class="stat-label">All Orders</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" id="stat-pending" onclick="filterOrders('pending')">
             <div class="stat-number" id="pendingOrders">0</div>
             <div class="stat-label">Pending</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" id="stat-out-for-delivery" onclick="filterOrders('out-for-delivery')">
             <div class="stat-number" id="outForDelivery">0</div>
             <div class="stat-label">Out for Delivery</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" id="stat-delivered" onclick="filterOrders('delivered')">
             <div class="stat-number" id="deliveredToday">0</div>
             <div class="stat-label">Delivered Today</div>
         </div>
@@ -372,6 +421,10 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
+        // Global variables
+        let allOrders = [];
+        let currentFilter = 'all';
+
         // Check authentication
         auth.onAuthStateChanged((user) => {
             if (!user) {
@@ -392,10 +445,10 @@
                 .then((snapshot) => {
                     console.log(`✅ Found ${snapshot.size} orders`);
                     
-                    const orders = [];
+                    allOrders = [];
                     snapshot.forEach((doc) => {
                         const data = doc.data();
-                        orders.push({ 
+                        allOrders.push({ 
                             id: doc.id, 
                             ...data,
                             // Ensure deliveryStatus field exists
@@ -404,15 +457,15 @@
                     });
                     
                     // Sort by createdAt if available, otherwise by id
-                    orders.sort((a, b) => {
+                    allOrders.sort((a, b) => {
                         if (a.createdAt && b.createdAt) {
                             return b.createdAt.toMillis() - a.createdAt.toMillis();
                         }
                         return b.id.localeCompare(a.id);
                     });
                     
-                    updateStats(orders);
-                    displayOrders(orders);
+                    updateStats(allOrders);
+                    displayOrders(allOrders);
                     
                     // Set up real-time listener after initial load
                     setupRealtimeListener();
@@ -444,10 +497,10 @@
         function setupRealtimeListener() {
             db.collection('orders')
                 .onSnapshot((snapshot) => {
-                    const orders = [];
+                    allOrders = [];
                     snapshot.forEach((doc) => {
                         const data = doc.data();
-                        orders.push({ 
+                        allOrders.push({ 
                             id: doc.id, 
                             ...data,
                             deliveryStatus: data.deliveryStatus || 'pending'
@@ -455,18 +508,56 @@
                     });
                     
                     // Sort orders
-                    orders.sort((a, b) => {
+                    allOrders.sort((a, b) => {
                         if (a.createdAt && b.createdAt) {
                             return b.createdAt.toMillis() - a.createdAt.toMillis();
                         }
                         return b.id.localeCompare(a.id);
                     });
                     
-                    updateStats(orders);
-                    displayOrders(orders);
+                    updateStats(allOrders);
+                    displayOrdersByFilter();
                 }, (error) => {
                     console.error('Real-time listener error:', error);
                 });
+        }
+
+        // Filter orders based on status
+        function filterOrders(status) {
+            currentFilter = status;
+            
+            // Update active state on cards
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.getElementById('stat-' + status).classList.add('active');
+            
+            displayOrdersByFilter();
+        }
+
+        // Display orders based on current filter
+        function displayOrdersByFilter() {
+            let filteredOrders = allOrders;
+            
+            if (currentFilter === 'pending') {
+                filteredOrders = allOrders.filter(o => o.deliveryStatus === 'pending');
+            } else if (currentFilter === 'out-for-delivery') {
+                filteredOrders = allOrders.filter(o => o.deliveryStatus === 'out-for-delivery');
+            } else if (currentFilter === 'delivered') {
+                const today = new Date().toDateString();
+                filteredOrders = allOrders.filter(o => {
+                    if (o.deliveryStatus === 'delivered' && o.deliveredAt) {
+                        const deliveredDate = o.deliveredAt.toDate().toDateString();
+                        return deliveredDate === today;
+                    }
+                    return false;
+                });
+            } else if (currentFilter === 'all') {
+                // Show only active orders (not delivered)
+                filteredOrders = allOrders.filter(o => o.deliveryStatus !== 'delivered');
+            }
+            
+            displayOrdersGroupedByDate(filteredOrders);
         }
 
         // Update statistics
@@ -488,24 +579,95 @@
                 }).length;
         }
 
-        // Display orders
-        function displayOrders(orders) {
+        // Display orders grouped by date
+        function displayOrdersGroupedByDate(orders) {
             const container = document.getElementById('ordersContainer');
             
-            // Filter only active orders (not delivered)
-            const activeOrders = orders.filter(o => o.deliveryStatus !== 'delivered');
-            
-            if (activeOrders.length === 0) {
+            if (orders.length === 0) {
+                const filterText = currentFilter === 'all' ? 'active orders' :
+                                 currentFilter === 'delivered' ? 'delivered orders today' :
+                                 currentFilter + ' orders';
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h2>🎉 All Deliveries Completed!</h2>
-                        <p>No pending deliveries at the moment.</p>
+                        <h2>📦 No ${filterText}</h2>
+                        <p>There are no ${filterText} at the moment.</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = activeOrders.map(order => createOrderCard(order)).join('');
+            // Group orders by date
+            const ordersByDate = {};
+            orders.forEach(order => {
+                let dateKey, dateLabel;
+                
+                if (order.createdAt) {
+                    const orderDate = order.createdAt.toDate();
+                    dateKey = orderDate.toDateString();
+                    
+                    // Create friendly date labels
+                    const today = new Date().toDateString();
+                    const yesterday = new Date(Date.now() - 86400000).toDateString();
+                    
+                    if (dateKey === today) {
+                        dateLabel = '📅 Today - ' + orderDate.toLocaleDateString('en-IN', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        });
+                    } else if (dateKey === yesterday) {
+                        dateLabel = '📅 Yesterday - ' + orderDate.toLocaleDateString('en-IN', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        });
+                    } else {
+                        dateLabel = '📅 ' + orderDate.toLocaleDateString('en-IN', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        });
+                    }
+                } else {
+                    dateKey = 'Unknown Date';
+                    dateLabel = '📅 Date Unknown';
+                }
+                
+                if (!ordersByDate[dateKey]) {
+                    ordersByDate[dateKey] = {
+                        label: dateLabel,
+                        orders: []
+                    };
+                }
+                ordersByDate[dateKey].orders.push(order);
+            });
+
+            // Build HTML with date sections
+            let html = '';
+            Object.keys(ordersByDate).forEach(dateKey => {
+                const dateGroup = ordersByDate[dateKey];
+                html += `
+                    <div class="date-section">
+                        <div class="date-header">
+                            <h3>
+                                ${dateGroup.label}
+                                <span class="order-count">${dateGroup.orders.length} order${dateGroup.orders.length !== 1 ? 's' : ''}</span>
+                            </h3>
+                        </div>
+                        ${dateGroup.orders.map(order => createOrderCard(order)).join('')}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Old displayOrders function - kept for backward compatibility
+        function displayOrders(orders) {
+            displayOrdersGroupedByDate(orders);
         }
 
         // Create order card HTML
